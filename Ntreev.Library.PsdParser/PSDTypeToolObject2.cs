@@ -1,26 +1,26 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
+//using System.Drawing;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDTypeToolObject2 : Properties
+    sealed class PSDTypeToolObject2 : Properties
     {
-        public void load(BinaryReader br)
+        public PSDTypeToolObject2(BinaryReader br)
         {
-            this.Add("version", EndianReverser.getInt16(br));
-            this.Add("transform", EndianReverser.getDouble(br, 6));
-            this.Add("text_version", EndianReverser.getInt16(br));
-            this.Add("text_desc_version", EndianReverser.getInt32(br));
-            this.Add("text", new DescriptorStructure(br));
-            this.Add("warp_version", EndianReverser.getInt16(br));
-            this.Add("warp_desc_version", EndianReverser.getInt32(br));
-            this.Add("warp", new DescriptorStructure(br));
-            this.Add("bounds", EndianReverser.getDouble(br, 4));
+            this.Add("Version", EndianReverser.getInt16(br));
+            this.Add("Transforms", EndianReverser.getDouble(br, 6));
+            this.Add("TextVersion", EndianReverser.getInt16(br));
+            this.Add("TextDescVersion", EndianReverser.getInt32(br));
+            this.Add("Text", new DescriptorStructure(br));
+            this.Add("WarpVersion", EndianReverser.getInt16(br));
+            this.Add("WarpDescVersion", EndianReverser.getInt32(br));
+            this.Add("Warp", new DescriptorStructure(br));
+            this.Add("Bounds", EndianReverser.getDouble(br, 4));
         }
 
         public PSDRect area
@@ -28,32 +28,32 @@ namespace Ntreev.Library.PsdParser
             get
             {
                 PSDRect rect;
-                double[] transforms = this["transform"] as double[];
+                double[] transforms = this["Transforms"] as double[];
                 return new PSDRect { left = rect.right = (int)transforms[4], top = rect.bottom = (int)transforms[5] };
             }
         }
 
-        public string text
-        {
-            get
-            {
-                IProperties props = this as IProperties;
-                if (props.Contains("text.Txt") == false)
-                    return null;
-                return props["text.Txt"] as string;
-                //if (..descCount > 0)
-                //{
-                //    foreach (DescriptorStructure.Description description in this.textDescriptor.descs)
-                //    {
-                //        if (description.ostype == "TEXT")
-                //        {
-                //            return (description.value as string);
-                //        }
-                //    }
-                //}
-                //return null;
-            }
-        }
+        //public string text
+        //{
+        //    get
+        //    {
+        //        IProperties props = this as IProperties;
+        //        if (props.Contains("Text.Txt") == false)
+        //            return null;
+        //        return props["Text.Txt"] as string;
+        //        //if (..descCount > 0)
+        //        //{
+        //        //    foreach (DescriptorStructure.Description description in this.textDescriptor.descs)
+        //        //    {
+        //        //        if (description.ostype == "TEXT")
+        //        //        {
+        //        //            return (description.value as string);
+        //        //        }
+        //        //    }
+        //        //}
+        //        //return null;
+        //    }
+        //}
 
         //public Color textFillColor
         //{
@@ -446,7 +446,7 @@ namespace Ntreev.Library.PsdParser
 
         internal class Decoder_EngineData
         {
-            public Dictionary<string, object> properties;
+            public Properties properties;
 
             public Decoder_EngineData(BinaryReader br)
             {
@@ -460,12 +460,12 @@ namespace Ntreev.Library.PsdParser
                 this.properties = this.ReadProperties(br, 0);
                 //this.Trace("Root", this.properties);
                 //var ddd = this.GetProperty("EngineDict.StyleRun.RunArray[0].StyleSheet.StyleSheetData.FillColor.Values[0]");
-                var ddd = this.GetProperty("EngineDict.StyleRun.RunArray[0].StyleSheet.StyleSheetData.FontSize");
-                var ddd1 = this.GetProperty("EngineDict.Editor.Text");
-                if (ddd1.ToString() == "팀관리\n")
-                {
-                    int qwer = 0;
-                }
+                //var ddd = this.GetProperty("EngineDict.StyleRun.RunArray[0].StyleSheet.StyleSheetData.FontSize");
+                //var ddd1 = this.GetProperty("EngineDict.Editor.Text");
+                //if (ddd1.ToString() == "팀관리\n")
+                //{
+                //    int qwer = 0;
+                //}
 
             }
 
@@ -524,7 +524,7 @@ namespace Ntreev.Library.PsdParser
             }
 
 
-            private Dictionary<string, object> ReadProperties(BinaryReader reader, int level)
+            private Properties ReadProperties(BinaryReader reader, int level)
             {
                 SkipTabs(reader, level);
                 char c = (char)reader.ReadByte();
@@ -537,7 +537,7 @@ namespace Ntreev.Library.PsdParser
                     SkipString(reader, "<");
                 }
                 SkipEndLine(reader);
-                Dictionary<string, object> map = new Dictionary<string, object>();
+                Properties props = new Properties();
                 while (true)
                 {
                     SkipTabs(reader, level);
@@ -545,7 +545,7 @@ namespace Ntreev.Library.PsdParser
                     if (c == '>')
                     {
                         SkipString(reader, ">");
-                        return map;
+                        return props;
                     }
                     else
                     {
@@ -564,12 +564,12 @@ namespace Ntreev.Library.PsdParser
                         }
                         if (c == 10)
                         {
-                            map.Add(name, ReadProperties(reader, level + 1));
+                            props.Add(name, ReadProperties(reader, level + 1));
                             SkipEndLine(reader);
                         }
                         else if (c == ' ')
                         {
-                            map.Add(name, ReadValue(reader, level + 1));
+                            props.Add(name, ReadValue(reader, level + 1));
                         }
                         else
                         {

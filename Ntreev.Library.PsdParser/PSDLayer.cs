@@ -9,7 +9,7 @@ namespace Ntreev.Library.PsdParser
         private int groupStatus;
         private byte opacityValue;
         private PSDBlendMode blendMode;
-        private IProperties props;
+        public IProperties props;
 
         public void load(BinaryReader br, int bpp)
         {
@@ -86,22 +86,14 @@ namespace Ntreev.Library.PsdParser
             this.drop = resource.drop;
             this.groupStatus = resource.groupStatus;
 
-            if (resource.typeToolObj2.text != null)
+            if (this.props.Contains("TypeToolInfo.Text.Txt"))
             {
-                this.text = new PSDFontLayerInfo()
-                {
-                    text = resource.typeToolObj2.text,
-                    //FillColor = resource.typeToolObj2.textFillColor,
-                    //StorkeColor = resource.typeToolObj2.textStrokeColor,
-                    //fontName = resource.typeToolObj2.fontName,
-                    //fontSize = resource.typeToolObj2.fontSize,
-                    //fontBold = resource.typeToolObj2.fontBold,
-                    //fontItalic = resource.typeToolObj2.fontItalic,
-                };
+                int qwr = 0;
+                //this.text = this.props["TypeToolInfo.Text.Txt"] as string;
             }
             if ((this.area.width == 0) && (this.groupStatus == 0))
             {
-                this.area = resource.typeToolObj2.area;
+                //this.area = resource.typeToolObj2.area;
             }
         }
 
@@ -192,7 +184,7 @@ namespace Ntreev.Library.PsdParser
         {
             get
             {
-                return this.text != null;
+                return this.props.Contains("TypeToolInfo");
             }
         }
 
@@ -214,7 +206,15 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        public PSDFontLayerInfo? text { get; internal set; }
+        public string text
+        {
+            get
+            {
+                if (this.isTextLayer == true)
+                    return this.props["TypeToolInfo.Text.Txt"] as string;
+                return null;
+            }
+        }
 
         private PSDBlendMode ToBlendMode(string text)
         {

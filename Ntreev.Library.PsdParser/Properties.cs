@@ -25,9 +25,9 @@ namespace Ntreev.Library.PsdParser
                         return false;
                     value = arrayList[index];
                 }
-                else if (value is Dictionary<string, object> == true)
+                else if (value is IDictionary<string, object> == true)
                 {
-                    Dictionary<string, object> props = value as Dictionary<string, object>;
+                    IDictionary<string, object> props = value as IDictionary<string, object>;
                     if (props.ContainsKey(item) == false)
                     {
                         return false;
@@ -55,9 +55,9 @@ namespace Ntreev.Library.PsdParser
                         ArrayList arrayList = value as ArrayList;
                         value = arrayList[int.Parse(item)];
                     }
-                    else if (value is Dictionary<string, object> == true)
+                    else if (value is IDictionary<string, object> == true)
                     {
-                        Dictionary<string, object> props = value as Dictionary<string, object>;
+                        IDictionary<string, object> props = value as IDictionary<string, object>;
                         value = props[item];
                     }
 

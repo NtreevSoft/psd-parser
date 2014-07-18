@@ -10,7 +10,7 @@ namespace Ntreev.Library.PsdParser
         public int groupStatus;
         public int id;
         public string name;
-        public SolidFillInfo solidFillInfo;
+
         private const string PSD_LADJ_BALANCE = "blnc";
         private const string PSD_LADJ_BLACK_WHITE = "blwh";
         private const string PSD_LADJ_BRIGHTNESS = "brit";
@@ -59,7 +59,7 @@ namespace Ntreev.Library.PsdParser
         private const string PSD_LTYP_TYPE = "tySh";
         private const string PSD_LTYP_TYPE2 = "TySh";
         public PSDTypeToolObject typeToolObj = new PSDTypeToolObject();
-        public PSDTypeToolObject2 typeToolObj2 = new PSDTypeToolObject2();
+        //public IProperties typeToolObj2 = new PSDTypeToolObject2();
 
         public void load(BinaryReader br)
         {
@@ -111,12 +111,12 @@ namespace Ntreev.Library.PsdParser
                             {
                                 case "dsdw":
                                     {
-                                        ShadowInfo.Parse(br);
+                                        //ShadowInfo.Parse(br);
                                     }
                                     break;
                                 case "sofi":
                                     {
-                                        this.solidFillInfo = SolidFillInfo.Parse(br);
+                                        //this.solidFillInfo = SolidFillInfo.Parse(br);
                                     }
                                     break;
                             }
@@ -130,10 +130,7 @@ namespace Ntreev.Library.PsdParser
                     {
                         int n1 = EndianReverser.getInt32(br);
                         int n2 = EndianReverser.getInt32(br);
-                        DescriptorStructure descriptor = new DescriptorStructure(br);
-                        this.Add("lfx2", descriptor);
-
-                        //PSDTypeToolObject2.Decoder_EngineData d = new PSDTypeToolObject2.Decoder_EngineData(br);
+                        this.Add("LayerEffectInfo", new DescriptorStructure(br));
                     }
                     break;
 
@@ -142,24 +139,23 @@ namespace Ntreev.Library.PsdParser
                     {
                         if (str2 == "TySh")
                         {
-                            this.typeToolObj2.load(br);
-                            this.Add(str2, this.typeToolObj2);
+                            this.Add("TypeToolInfo", new PSDTypeToolObject2(br));
                         }
                         else if (str2 == "luni")
                         {
                             this.name = PSDUtil.readUnicodeString(br);
-                            this.Add(str2, this.name);
+                            this.Add("Name", this.name);
                         }
                         else if (str2 == "lyid")
                         {
                             this.id = EndianReverser.getInt32(br);
-                            this.Add(str2, this.id);
+                            this.Add("ID", this.id);
                         }
                         else if (str2 == "lsct")
                         {
                             this.drop = true;
                             this.groupStatus = EndianReverser.getInt32(br);
-                            this.Add(str2, this.groupStatus);
+                            this.Add("GroupStatus", this.groupStatus);
                         }
                     }
                     break;

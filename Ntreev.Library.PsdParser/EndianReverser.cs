@@ -1,8 +1,8 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace Ntreev.Library.PsdParser
+{
     internal class EndianReverser
     {
         public static bool convert(bool value)

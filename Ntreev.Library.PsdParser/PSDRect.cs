@@ -1,8 +1,8 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.Runtime.InteropServices;
+﻿using System;
+using System.Runtime.InteropServices;
 
+namespace Ntreev.Library.PsdParser
+{
     [StructLayout(LayoutKind.Sequential)]
     public struct PSDRect
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
+//using System.Drawing;
 using System.Text;
 
 namespace Ntreev.Library.PsdParser
@@ -9,6 +9,6 @@ namespace Ntreev.Library.PsdParser
     {
         public int Size { get; set; }
 
-        public Color Color { get; set; }
+        //public Color Color { get; set; }
     }
 }

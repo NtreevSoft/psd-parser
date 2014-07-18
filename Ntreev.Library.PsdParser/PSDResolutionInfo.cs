@@ -1,8 +1,8 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace Ntreev.Library.PsdParser
+{
     public sealed class PSDResolutionInfo
     {
         public short heightUnit;
