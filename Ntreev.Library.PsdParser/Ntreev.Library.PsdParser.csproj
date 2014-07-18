@@ -1,0 +1,117 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+  <PropertyGroup>
+    <ProjectType>local</ProjectType>
+    <ProjectVersion>7.10.3077</ProjectVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2A3BAD6E-CEB1-432B-87E2-0581E36067E7}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <AssemblyName>PsdParser</AssemblyName>
+    <DefaultClientScript>JScript</DefaultClientScript>
+    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
+    <DefaultTargetSchema>IE50</DefaultTargetSchema>
+    <DelaySign>false</DelaySign>
+    <OutputType>Library</OutputType>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>0.0</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>false</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>full</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>TRACE</DefineConstants>
+    <DebugSymbols>false</DebugSymbols>
+    <NoStdLib>false</NoStdLib>
+    <Optimize>true</Optimize>
+    <WarningLevel>4</WarningLevel>
+    <DebugType>none</DebugType>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RootNamespace>Ntreev.Library.PsdParser</RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="IProperties.cs" />
+    <Compile Include="Properties.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="DescriptorStructure.cs" />
+    <Compile Include="Global.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="CommonStateInfo.cs" />
+    <Compile Include="EndianReverser.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="LayerEffect.cs" />
+    <Compile Include="LayerEffectStoke.cs" />
+    <Compile Include="PSD.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDBlendMode.cs" />
+    <Compile Include="PSDChannelInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDColorModeInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDDisplayInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDFontLayerInfo.cs" />
+    <Compile Include="PSDHeaderInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDLayer.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDLayerInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDLayerResource.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDRect.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDResolutionInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDTypeToolObject.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDTypeToolObject2.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="PSDUtil.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ShadowInfo.cs" />
+    <Compile Include="SolidFillInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Drawing" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PreBuildEvent />
+    <PostBuildEvent />
+  </PropertyGroup>
+</Project>
