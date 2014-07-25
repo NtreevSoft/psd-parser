@@ -6,24 +6,34 @@ namespace Ntreev.Library.PsdParser
 {
     public sealed class ChannelInfo
     {
-        public CompressionType compressionType;
-        public byte[] data;
-        public long dataStartPosition;
-        public int height;
-        public ChannelType type;
-        public uint size;
-        public int width;
+        private CompressionType compressionType;
+        private byte[] data;
+        //public long dataStartPosition;
 
-        public void loadData(PSDReader reader, int bps)
+        private readonly ChannelType type;
+        private readonly int size;
+        private int height;
+        private int width;
+
+        internal ChannelInfo(PSDReader reader, int width, int height)
         {
+            this.width = width;
+            this.height = height;
+            this.type = (ChannelType)reader.ReadInt16();
+            this.size = (int)reader.ReadUInt32();
+        }
+
+        internal void LoadImage(PSDReader reader, int bpp)
+        {
+            long position = reader.Position;
             if (this.size > 2)
             {
-                reader.Position = this.dataStartPosition;
+                //reader.Position = this.dataStartPosition;
                 this.compressionType = (CompressionType)reader.ReadInt16();
                 switch (this.compressionType)
                 {
                     case CompressionType.RawData:
-                        this.readData(reader, bps, this.compressionType, null);
+                        this.readData(reader, bpp, this.compressionType, null);
                         return;
 
                     case CompressionType.RLECompressed:
@@ -33,19 +43,17 @@ namespace Ntreev.Library.PsdParser
                         {
                             rlePackLengths[i] = reader.ReadInt16();
                         }
-                        this.readData(reader, bps, this.compressionType, rlePackLengths);
+                        this.readData(reader, bpp, this.compressionType, rlePackLengths);
                         return;
                     }
                 }
                 throw new SystemException(string.Format("Unsupport compression type {0}", this.compressionType));
             }
+
+            reader.Position = position + this.size;
         }
 
-        public void loadHeader(PSDReader reader)
-        {
-            this.type = (ChannelType)reader.ReadInt16();
-            this.size = reader.ReadUInt32();
-        }
+        
 
         private void readData(PSDReader reader, int bps, CompressionType compressionType, short[] rlePackLengths)
         {
@@ -145,6 +153,21 @@ namespace Ntreev.Library.PsdParser
 
                 return this.type == ChannelType.Mask;
             }
+        }
+
+        public byte[] Data
+        {
+            get { return this.data; }
+        }
+
+        public ChannelType Type
+        {
+            get { return this.type; }
+        }
+
+        public int Size
+        {
+            get { return this.size; }
         }
 
         

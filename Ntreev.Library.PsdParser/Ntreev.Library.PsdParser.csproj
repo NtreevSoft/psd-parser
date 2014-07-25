@@ -97,16 +97,13 @@
     <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDLayer.cs">
+    <Compile Include="Layer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDLayerInfo.cs">
+    <Compile Include="LayerInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LayerResource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PSDRect.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ResolutionInfo.cs">

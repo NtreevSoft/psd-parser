@@ -4,7 +4,7 @@ using System.Runtime.CompilerServices;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDLayer : IProperties
+    public sealed class Layer : IProperties
     {
         private int left, top, right, bottom;
         private int id;
@@ -18,7 +18,7 @@ namespace Ntreev.Library.PsdParser
         private Properties props = new Properties();
         private byte[] buffers;
         
-        public void load(PSDReader reader, int bpp)
+        internal Layer(PSDReader reader, int bpp)
         {
             this.top = reader.ReadInt32();
             this.left = reader.ReadInt32();
@@ -34,16 +34,10 @@ namespace Ntreev.Library.PsdParser
             {
                 throw new SystemException(string.Format("Too many channels {0}", channelCount));
             }
-            this.channels = new ChannelInfo[channelCount];
+            this.Channels = new ChannelInfo[channelCount];
             for (int i = 0; i < channelCount; i++)
             {
-                ChannelInfo info = new ChannelInfo 
-                {
-                    width = this.Width,
-                    height = this.Height,
-                };
-                info.loadHeader(reader);
-                this.channels[i] = info;
+                this.Channels[i] = new ChannelInfo(reader, this.Width, this.Height);
             }
             string str = reader.ReadAscii(4);
             if ("8BIM" != str)
@@ -51,7 +45,7 @@ namespace Ntreev.Library.PsdParser
                 throw new SystemException(string.Format("Wrong signature {0}", str));
             }
             //reader.ReadInt32();
-            this.blendMode = this.ToBlendMode(reader.ReadAscii(4));
+            this.blendMode = PSDUtil.ToBlendMode(reader.ReadAscii(4));
             this.opacity = reader.ReadByte();
             this.clipping = reader.ReadBoolean();
             this.flags = (LayerFlags)reader.ReadByte(); // Flags
@@ -113,46 +107,55 @@ namespace Ntreev.Library.PsdParser
             this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
         }
 
-        public byte[] mergeChannels()
+        internal void LoadChannels(PSDReader reader, int bpp)
         {
-            if (!this.isImageLayer)
+            foreach (var item in this.Channels)
             {
-                return null;
+                item.LoadImage(reader, bpp);
             }
-
-            if (this.buffers == null)
-            {
-                int length = this.channels.Length;
-                int num2 = this.channels[0].data.Length;
-                byte[] buffer = new byte[(this.Width * this.Height) * length];
-                int num3 = 0;
-                for (int i = 0; i < num2; i++)
-                {
-                    switch (length)
-                    {
-                        case 4:
-                            buffer[num3++] = this.channels[3].data[i];
-                            buffer[num3++] = this.channels[2].data[i];
-                            buffer[num3++] = this.channels[1].data[i];
-                            buffer[num3++] = this.channels[0].data[i];
-                            break;
-
-                        case 3:
-                            buffer[num3++] = this.channels[2].data[i];
-                            buffer[num3++] = this.channels[1].data[i];
-                            buffer[num3++] = this.channels[0].data[i];
-                            break;
-                    }
-                }
-
-                this.buffers = buffer;
-            }
-            return this.buffers;
         }
 
-        //public PSDRect area { get; internal set; }
+        public byte[] MergedChannels
+        {
+            get
+            {
+                if (!this.isImageLayer)
+                {
+                    return null;
+                }
 
-        public ChannelInfo[] channels { get; internal set; }
+                if (this.buffers == null)
+                {
+                    int length = this.Channels.Length;
+                    int num2 = this.Channels[0].Data.Length;
+                    byte[] buffer = new byte[(this.Width * this.Height) * length];
+                    int num3 = 0;
+                    for (int i = 0; i < num2; i++)
+                    {
+                        switch (length)
+                        {
+                            case 4:
+                                buffer[num3++] = this.Channels[3].Data[i];
+                                buffer[num3++] = this.Channels[2].Data[i];
+                                buffer[num3++] = this.Channels[1].Data[i];
+                                buffer[num3++] = this.Channels[0].Data[i];
+                                break;
+
+                            case 3:
+                                buffer[num3++] = this.Channels[2].Data[i];
+                                buffer[num3++] = this.Channels[1].Data[i];
+                                buffer[num3++] = this.Channels[0].Data[i];
+                                break;
+                        }
+                    }
+
+                    this.buffers = buffer;
+                }
+                return this.buffers;
+            }
+        }
+
+        public ChannelInfo[] Channels { get; internal set; }
 
         public bool drop { get; internal set; }
 
@@ -167,7 +170,7 @@ namespace Ntreev.Library.PsdParser
         {
             get
             {
-                return (((!this.drop && (this.Width > 0)) && (this.Height > 0)) && (this.channels.Length > 0));
+                return (((!this.drop && (this.Width > 0)) && (this.Height > 0)) && (this.Channels.Length > 0));
             }
         }
 
@@ -192,21 +195,11 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        public int pitch
+        public int Pitch
         {
             get
             {
-                return (this.Width * this.channels.Length);
-            }
-        }
-
-        public string text
-        {
-            get
-            {
-                if (this.isTextLayer == true)
-                    return this.props["TypeToolInfo.Text.Txt"] as string;
-                return null;
+                return (this.Width * this.Channels.Length);
             }
         }
 
@@ -240,69 +233,17 @@ namespace Ntreev.Library.PsdParser
             get { return this.bottom - this.top; }
         }
 
-        private BlendMode ToBlendMode(string text)
+        public BlendMode BlendMode
         {
-            switch (text)
-            {
-                case "pass":
-                    return BlendMode.PassThrough;
-                case "norm":
-                    return BlendMode.Normal;
-                case "diss":
-                    return BlendMode.Dissolve;
-                case "dark":
-                    return BlendMode.Darken;
-                case "mul":
-                    return BlendMode.Multiply;
-                case "idiv":
-                    return BlendMode.ColorBurn;
-                case "lbrn":
-                    return BlendMode.LinearBurn;
-                case "dkCl":
-                    return BlendMode.DarkerColor;
-                case "lite":
-                    return BlendMode.Lighten;
-                case "scrn":
-                    return BlendMode.Screen;
-                case "div":
-                    return BlendMode.ColorDodge;
-                case "lddg":
-                    return BlendMode.LinearDodge;
-                case "lgCl":
-                    return BlendMode.LighterColor;
-                case "over":
-                    return BlendMode.Overlay;
-                case "sLit":
-                    return BlendMode.SoftLight;
-                case "hLit":
-                    return BlendMode.HardLight;
-                case "vLit":
-                    return BlendMode.VividLight;
-                case "lLit":
-                    return BlendMode.LinearLight;
-                case "pLit":
-                    return BlendMode.PinLight;
-                case "hMix":
-                    return BlendMode.HardMix;
-                case "diff":
-                    return BlendMode.Difference;
-                case "smud":
-                    return BlendMode.Exclusion;
-                case "fsub":
-                    return BlendMode.Subtract;
-                case "fdiv":
-                    return BlendMode.Divide;
-                case "hue":
-                    return BlendMode.Hue;
-                case "sat":
-                    return BlendMode.Saturation;
-                case "colr":
-                    return BlendMode.Color;
-                case "lum":
-                    return BlendMode.Luminosity;
-            }
-            return BlendMode.Normal;
+            get { return this.blendMode; }
         }
+
+        public Layer[] Childs
+        {
+            get { return null; }
+        }
+
+       
 
         #region IProperties
 

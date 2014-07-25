@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDUtil
+    sealed class PSDUtil
     {
         public static void decodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)
         {
@@ -132,6 +132,70 @@ namespace Ntreev.Library.PsdParser
         //    }
         //    return str;
         //}
+
+        public static BlendMode ToBlendMode(string text)
+        {
+            switch (text)
+            {
+                case "pass":
+                    return BlendMode.PassThrough;
+                case "norm":
+                    return BlendMode.Normal;
+                case "diss":
+                    return BlendMode.Dissolve;
+                case "dark":
+                    return BlendMode.Darken;
+                case "mul":
+                    return BlendMode.Multiply;
+                case "idiv":
+                    return BlendMode.ColorBurn;
+                case "lbrn":
+                    return BlendMode.LinearBurn;
+                case "dkCl":
+                    return BlendMode.DarkerColor;
+                case "lite":
+                    return BlendMode.Lighten;
+                case "scrn":
+                    return BlendMode.Screen;
+                case "div":
+                    return BlendMode.ColorDodge;
+                case "lddg":
+                    return BlendMode.LinearDodge;
+                case "lgCl":
+                    return BlendMode.LighterColor;
+                case "over":
+                    return BlendMode.Overlay;
+                case "sLit":
+                    return BlendMode.SoftLight;
+                case "hLit":
+                    return BlendMode.HardLight;
+                case "vLit":
+                    return BlendMode.VividLight;
+                case "lLit":
+                    return BlendMode.LinearLight;
+                case "pLit":
+                    return BlendMode.PinLight;
+                case "hMix":
+                    return BlendMode.HardMix;
+                case "diff":
+                    return BlendMode.Difference;
+                case "smud":
+                    return BlendMode.Exclusion;
+                case "fsub":
+                    return BlendMode.Subtract;
+                case "fdiv":
+                    return BlendMode.Divide;
+                case "hue":
+                    return BlendMode.Hue;
+                case "sat":
+                    return BlendMode.Saturation;
+                case "colr":
+                    return BlendMode.Color;
+                case "lum":
+                    return BlendMode.Luminosity;
+            }
+            return BlendMode.Normal;
+        }
     }
 }
 

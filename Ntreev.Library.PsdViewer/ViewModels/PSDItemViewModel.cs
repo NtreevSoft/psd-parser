@@ -15,7 +15,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             : base(null)
         {
             this.psd = psd;
-            foreach (var item in psd.layerInfo.layers)
+            foreach (var item in psd.Layers)
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }
@@ -23,7 +23,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
         public override string Text
         {
-            get { return this.psd.fileName; }
+            get { return "Root"; }
         }
     }
 }

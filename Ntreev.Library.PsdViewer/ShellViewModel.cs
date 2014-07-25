@@ -11,12 +11,12 @@ namespace Ntreev.Library.PsdViewer
 
         public ShellViewModel()
         {
-            psd.loadHeader(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\sprite_test.psd");
+            psd.Read(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\sprite_test.psd");
             //psd.loadHeader(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\game login process_140716.psd");
             //psd.loadHeader(@"D:\Users\s2quake\Documents\GW 받은 파일\holecup's height.psd");
             
 
-            psd.loadData();
+            //psd.loadData();
 
             //var dsdd  = psd.layerInfo.layers[8].props["TypeToolInfo.Transforms"];
 

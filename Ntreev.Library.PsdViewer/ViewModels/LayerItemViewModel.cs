@@ -9,9 +9,9 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 {
     class LayerItemViewModel : TreeViewItemViewModel
     {
-        private readonly PSDLayer layer;
+        private readonly Layer layer;
 
-        public LayerItemViewModel(PSDLayer layer, PSDItemViewModel parent)
+        public LayerItemViewModel(Layer layer, PSDItemViewModel parent)
             : base(parent)
         {
             this.layer = layer;

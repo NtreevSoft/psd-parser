@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public class PSDReader : IDisposable
+    class PSDReader : IDisposable
     {
         private readonly BinaryReader reader;
 
