@@ -4,12 +4,11 @@ using System.IO;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDLayerResource : Properties
+    sealed class LayerResource : Properties
     {
         public bool drop;
-        public int groupStatus;
-        public int id;
-        public string name;
+        //public int groupStatus;
+        //public int id;
 
         private const string PSD_LADJ_BALANCE = "blnc";
         private const string PSD_LADJ_BLACK_WHITE = "blwh";
@@ -58,24 +57,22 @@ namespace Ntreev.Library.PsdParser
         private const string PSD_LPRP_UNICODE = "luni";
         private const string PSD_LTYP_TYPE = "tySh";
         private const string PSD_LTYP_TYPE2 = "TySh";
-        public PSDTypeToolObject typeToolObj = new PSDTypeToolObject();
+        //public PSDTypeToolObject typeToolObj = new PSDTypeToolObject();
         //public IProperties typeToolObj2 = new PSDTypeToolObject2();
 
-        public void load(BinaryReader br)
+        internal void Load(PSDReader reader)
         {
-            string str = PSDUtil.readAscii(br, 4);
-            string str2 = PSDUtil.readAscii(br, 4);
+            string str = reader.ReadAscii(4);
+            string str2 = reader.ReadAscii(4);
             
                 
-            int num = EndianReverser.getInt32(br);
+            int num = reader.ReadInt32();
             if (str != "8BIM")
             {
                 throw new SystemException(string.Format("Wrong signature {0}", str));
             }
 
-            
-
-            long position = br.BaseStream.Position;
+            long position = reader.Position;
             switch (str2)
             {
                 case "levl":
@@ -97,123 +94,124 @@ namespace Ntreev.Library.PsdParser
                     break;
                 case "lrFX":
                     {
-                        short version = EndianReverser.getInt16(br);
-                        int count = EndianReverser.getInt16(br);
+                        short version = reader.ReadInt16();
+                        int count = reader.ReadInt16();
 
                         for (int i = 0; i < count; i++)
                         {
-                            string _8bim = PSDUtil.readAscii(br, 4);
-                            string effectType = PSDUtil.readAscii(br, 4);
-                            int size = EndianReverser.getInt32(br);
-                            long p = br.BaseStream.Position;
+                            string _8bim = reader.ReadAscii(4);
+                            string effectType = reader.ReadAscii(4);
+                            int size = reader.ReadInt32();
+                            long p = reader.Position;
 
                             switch (effectType)
                             {
                                 case "dsdw":
                                     {
-                                        //ShadowInfo.Parse(br);
+                                        //ShadowInfo.Parse(reader);
                                     }
                                     break;
                                 case "sofi":
                                     {
-                                        //this.solidFillInfo = SolidFillInfo.Parse(br);
+                                        //this.solidFillInfo = SolidFillInfo.Parse(reader);
                                     }
                                     break;
                             }
 
-                            br.BaseStream.Position = p + size;
+                            reader.Position = p + size;
 
                         }
                     }
                     break;
                 case "SoLd":
                     {
-                        int id = EndianReverser.getInt32(br);
-                        int ver = EndianReverser.getInt32(br);
-                        int descVer = EndianReverser.getInt32(br);
-                        //DescriptorStructure desc = new DescriptorStructure(br);
-                        this.Add("SoLd", new DescriptorStructure(br));
+                        Properties props = new Properties();
+                        props.Add("ID", reader.ReadInt32());
+                        props.Add("Version", reader.ReadInt32());
+                        props.Add("DescriptorVersion", reader.ReadInt32());
+                        props.Add("Descriptor", new DescriptorStructure(reader));
+                        this.Add(str2, props);
                     }
                     break;
                 case "lfx2":
                     {
-                        int n1 = EndianReverser.getInt32(br);
-                        int n2 = EndianReverser.getInt32(br);
-                        this.Add("LayerEffectInfo", new DescriptorStructure(br));
+                        Properties props = new Properties();
+                        props.Add("Version", reader.ReadInt32());
+                        props.Add("DescriptorVersion", reader.ReadInt32());
+                        props.Add("Descriptor", new DescriptorStructure(reader));
+                        this.Add(str2, props);
                     }
                     break;
                 case "PlLd":
                     {
                         Properties props = new Properties();
-                        //props.Add("Version", EndianReverser.getInt32(br));
-                        //props.Add("Version", EndianReverser.getInt32(br));
-                        props.Add("Type", EndianReverser.getInt32(br));
-                        props.Add("Version", EndianReverser.getInt32(br));
-                        props.Add("UniqueID", PSDUtil.readPascalString(br, 1));
-                        props.Add("PageNumbers", EndianReverser.getInt32(br));
-                        props.Add("Pages", EndianReverser.getInt32(br));
-                        props.Add("AntiAlias", EndianReverser.getInt32(br));
-                        props.Add("LayerType", EndianReverser.getInt32(br));
-                        props.Add("Transformation", EndianReverser.getDouble(br, 8));
-                        props.Add("WarpVersion ", EndianReverser.getInt32(br));
-                        props.Add("WarpDescriptorVersion ", EndianReverser.getInt32(br));
-                        props.Add("WarpDescriptor", new DescriptorStructure(br));
+                        props.Add("Type", reader.ReadInt32());
+                        props.Add("Version", reader.ReadInt32());
+                        props.Add("UniqueID", reader.ReadPascalString(1));
+                        props.Add("PageNumbers", reader.ReadInt32());
+                        props.Add("Pages", reader.ReadInt32());
+                        props.Add("AntiAlias", reader.ReadInt32());
+                        props.Add("LayerType", reader.ReadInt32());
+                        props.Add("Transformation", reader.ReadDoubles(8));
+                        props.Add("WarpVersion ", reader.ReadInt32());
+                        props.Add("WarpDescriptorVersion ", reader.ReadInt32());
+                        props.Add("WarpDescriptor", new DescriptorStructure(reader));
 
                         this.Add(str2, props);
                     }
                     break;
                 case "lnsr":
                     {
-                        this.Add(str2, PSDUtil.readAscii(br, 4));
+                        this.Add(str2, reader.ReadAscii(4));
                     }
                     break;
                 case "fxrp":
                     {
                         Properties props = new Properties();
-                        props.Add("RefernecePoint", EndianReverser.getDouble(br, 2));
+                        props.Add("RefernecePoint", reader.ReadDoubles(2));
                         this.Add(str2, props);
+                    }
+                    break;
+                case "TySh":
+                    {
+                        this.Add(str2, new TypeToolInfo(reader));
+                    }
+                    break;
+                case "lyid":
+                    {
+                        Properties props = new Properties();
+                        props.Add("ID", reader.ReadInt32());
+                        this.Add(str2, props);
+                    }
+                    break;
+                case "luni":
+                    {
+                        Properties props = new Properties();
+                        props.Add("Name", reader.ReadUnicodeString());
+                        this.Add(str2, props);
+                    }
+                    break;
+                case "lsct":
+                    {
+                        Properties props = new Properties();
+                        props.Add("SectionType", (SectionType)reader.ReadInt32());
+                        this.Add(str2, props);
+                        this.drop = true;
                     }
                     break;
 
                 default:
                     if ((((str2 != "SoCo") && (str2 != "PtFl")) && ((str2 != "GdFl") && (str2 != "lrFX"))) && ((str2 != "lfx2") && (str2 != "tySh")))
                     {
-                        if (str2 == "TySh")
-                        {
-                            this.Add("TypeToolInfo", new PSDTypeToolObject2(br));
-                        }
-                        else if (str2 == "luni")
-                        {
-                            Properties props = new Properties();
-                            this.name = PSDUtil.readUnicodeString(br);
-                            props.Add("Name", this.name);
-                            this.Add(str2, props);
-                            this.Add("Name", this.name);
-                        }
-                        else if (str2 == "lyid")
-                        {
-                            Properties props = new Properties();
-                            this.id = EndianReverser.getInt32(br);
-                            props.Add("ID", this.id);
-                            this.Add(str2, props);
-                            this.Add("ID", this.id);
-                        }
-                        else if (str2 == "lsct")
-                        {
-                            this.drop = true;
-                            this.groupStatus = EndianReverser.getInt32(br);
-                            this.Add("GroupStatus", this.groupStatus);
-                        }
+           
                     }
                     break;
             }
-            br.BaseStream.Position = position;
-            Stream baseStream = br.BaseStream;
-            baseStream.Position += num;
+            reader.Position = position;
+            reader.Position += num;
             if ((num % 2) != 0)
             {
-                Stream stream2 = br.BaseStream;
-                stream2.Position += 1L;
+                reader.Position += 1L;
             }
 
             if (this.ContainsKey(str2) == false)

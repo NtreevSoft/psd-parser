@@ -80,58 +80,58 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        public static string readAscii(BinaryReader br, int length)
-        {
-            return Encoding.ASCII.GetString(br.ReadBytes(length));
-        }
+        //public static string readAscii(PSDReader reader, int length)
+        //{
+        //    return Encoding.ASCII.GetString(reader.ReadBytes(length));
+        //}
 
-        public static string readPascalString(BinaryReader br, int modLength)
-        {
-            byte count = br.ReadByte();
-            string str = "";
-            if (count == 0)
-            {
-                Stream baseStream = br.BaseStream;
-                baseStream.Position += modLength - 1;
-                return str;
-            }
-            byte[] bytes = br.ReadBytes(count);
-            str = Encoding.UTF8.GetString(bytes);
-            for (int i = count + 1; (i % modLength) != 0; i++)
-            {
-                Stream stream2 = br.BaseStream;
-                stream2.Position += 1L;
-            }
-            return str;
-        }
+        //public static string readPascalString(PSDReader reader, int modLength)
+        //{
+        //    byte count = reader.ReadByte();
+        //    string str = "";
+        //    if (count == 0)
+        //    {
+        //        Stream baseStream = reader;
+        //        baseStream.Position += modLength - 1;
+        //        return str;
+        //    }
+        //    byte[] bytes = reader.ReadBytes(count);
+        //    str = Encoding.UTF8.GetString(bytes);
+        //    for (int i = count + 1; (i % modLength) != 0; i++)
+        //    {
+        //        Stream stream2 = reader;
+        //        stream2.Position += 1L;
+        //    }
+        //    return str;
+        //}
 
-        public static string readUnicodeString(BinaryReader br)
-        {
-            int num = 4;
-            int num2 = EndianReverser.getInt32(br);
-            string str = "";
-            if (num2 == 0)
-            {
-                Stream baseStream = br.BaseStream;
-                baseStream.Position += num - 1;
-                return str;
-            }
-            byte[] bytes = br.ReadBytes(num2 * 2);
-            for (int i = 0; i < num2; i++)
-            {
-                int index = i * 2;
-                byte num5 = bytes[index];
-                bytes[index] = bytes[index + 1];
-                bytes[index + 1] = num5;
-            }
-            str = Encoding.Unicode.GetString(bytes);
-            for (int j = num2 + 1; (j % num) != 0; j++)
-            {
-                Stream stream2 = br.BaseStream;
-                stream2.Position += 1L;
-            }
-            return str;
-        }
+        //public static string readUnicodeString(PSDReader reader)
+        //{
+        //    int num = 4;
+        //    int num2 = reader.ReadInt32();
+        //    string str = "";
+        //    if (num2 == 0)
+        //    {
+        //        Stream baseStream = reader;
+        //        baseStream.Position += num - 1;
+        //        return str;
+        //    }
+        //    byte[] bytes = reader.ReadBytes(num2 * 2);
+        //    for (int i = 0; i < num2; i++)
+        //    {
+        //        int index = i * 2;
+        //        byte num5 = bytes[index];
+        //        bytes[index] = bytes[index + 1];
+        //        bytes[index + 1] = num5;
+        //    }
+        //    str = Encoding.Unicode.GetString(bytes);
+        //    for (int j = num2 + 1; (j % num) != 0; j++)
+        //    {
+        //        Stream stream2 = reader;
+        //        stream2.Position += 1L;
+        //    }
+        //    return str;
+        //}
     }
 }
 

@@ -54,36 +54,46 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
+    <Compile Include="Decoders\BaseDecoder.cs" />
+    <Compile Include="Decoders\DecoderFactory.cs" />
+    <Compile Include="Decoders\DecoderAlias.cs" />
+    <Compile Include="Decoders\DecoderClass.cs" />
+    <Compile Include="Decoders\DecoderEngineData.cs" />
+    <Compile Include="Decoders\DecoderEnumerate.cs" />
+    <Compile Include="Decoders\DecoderEnumerateReference.cs" />
+    <Compile Include="Decoders\DecoderList.cs" />
+    <Compile Include="Decoders\DecoderOffset.cs" />
+    <Compile Include="Decoders\DecoderProperty.cs" />
+    <Compile Include="Decoders\DecoderReference.cs" />
+    <Compile Include="Decoders\DecoderUnitFloat.cs" />
+    <Compile Include="Decoders\DecoderUnknownOSType.cs" />
     <Compile Include="IProperties.cs" />
     <Compile Include="IPropertiesExtension.cs" />
+    <Compile Include="LayerBlendingRanges.cs" />
+    <Compile Include="LayerFlags.cs" />
+    <Compile Include="SectionType.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DescriptorStructure.cs" />
-    <Compile Include="Global.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="CommonStateInfo.cs" />
-    <Compile Include="EndianReverser.cs">
+    <Compile Include="PSDReader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LayerEffect.cs" />
-    <Compile Include="LayerEffectStoke.cs" />
     <Compile Include="PSD.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BlendMode.cs" />
-    <Compile Include="PSDChannelInfo.cs">
+    <Compile Include="ChannelInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDColorModeInfo.cs">
+    <Compile Include="ColorModeData.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DisplayInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDFontLayerInfo.cs" />
     <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -93,7 +103,7 @@
     <Compile Include="PSDLayerInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDLayerResource.cs">
+    <Compile Include="LayerResource.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDRect.cs">
@@ -105,13 +115,12 @@
     <Compile Include="PSDTypeToolObject.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDTypeToolObject2.cs">
+    <Compile Include="TypeToolInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDUtil.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="SolidFillInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

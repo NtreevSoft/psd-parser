@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public class Properties : Dictionary<string, object>, IProperties
+    class Properties : Dictionary<string, object>, IProperties
     {
-        bool IProperties.Contains(string property)
+        public bool ContainsProperty(string property)
         {
             string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);
 
@@ -37,32 +37,42 @@ namespace Ntreev.Library.PsdParser
                 }
 
             }
-            return true;
+            return true; 
+        }
+
+        public object GetProperty(string property)
+        {
+            string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);
+
+            object value = this;
+
+            foreach (var item in ss)
+            {
+                if (value is ArrayList == true)
+                {
+                    ArrayList arrayList = value as ArrayList;
+                    value = arrayList[int.Parse(item)];
+                }
+                else if (value is IDictionary<string, object> == true)
+                {
+                    IDictionary<string, object> props = value as IDictionary<string, object>;
+                    value = props[item];
+                }
+
+            }
+            return value;
+        }
+
+        bool IProperties.Contains(string property)
+        {
+            return this.ContainsProperty(property);
         }
 
         object IProperties.this[string property]
         {
-            get 
+            get
             {
-                string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);
-
-                object value = this;
-
-                foreach (var item in ss)
-                {
-                    if (value is ArrayList == true)
-                    {
-                        ArrayList arrayList = value as ArrayList;
-                        value = arrayList[int.Parse(item)];
-                    }
-                    else if (value is IDictionary<string, object> == true)
-                    {
-                        IDictionary<string, object> props = value as IDictionary<string, object>;
-                        value = props[item];
-                    }
-
-                }
-                return value;
+                return this.GetProperty(property);
             }
         }
     }

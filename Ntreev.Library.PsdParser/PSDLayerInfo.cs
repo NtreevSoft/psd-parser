@@ -10,9 +10,9 @@ namespace Ntreev.Library.PsdParser
         public long channelDataStartPosition;
         public PSDLayer[] layers;
 
-        public void loadData(BinaryReader br, int bpp)
+        public void loadData(PSDReader reader, int bpp)
         {
-            br.BaseStream.Position = this.channelDataStartPosition;
+            reader.Position = this.channelDataStartPosition;
             for (int i = 0; i < this.layers.Length; i++)
             {
                 PSDLayer layer = this.layers[i];
@@ -20,30 +20,29 @@ namespace Ntreev.Library.PsdParser
                 bool flag = !layer.drop && layer.isImageLayer;
                 for (int j = 0; j < length; j++)
                 {
-                    PSDChannelInfo info = layer.channels[j];
+                    ChannelInfo info = layer.channels[j];
                     if (flag)
                     {
-                        info.loadData(br, bpp);
+                        info.loadData(reader, bpp);
                     }
                     else
                     {
-                        Stream baseStream = br.BaseStream;
-                        baseStream.Position += info.size;
+                        reader.Position += info.size;
                     }
                 }
             }
-            br.BaseStream.Position = this.channelDataEndPosition;
+            reader.Position = this.channelDataEndPosition;
         }
 
-        public void loadHeader(BinaryReader br, int bpp)
+        public void loadHeader(PSDReader reader, int bpp)
         {
-            int num = (int) EndianReverser.getUInt32(br);
-            long num2 = br.BaseStream.Position + num;
-            EndianReverser.getInt32(br);
-            int layerCount = EndianReverser.getInt16(br);
+            int num = (int) reader.ReadUInt32();
+            long num2 = reader.Position + num;
+            reader.ReadInt32();
+            int layerCount = reader.ReadInt16();
             if (layerCount == 0)
             {
-                br.BaseStream.Position = num2;
+                reader.Position = num2;
             }
             else
             {
@@ -55,10 +54,10 @@ namespace Ntreev.Library.PsdParser
                 for (int i = 0; i < layerCount; i++)
                 {
                     PSDLayer layer = new PSDLayer();
-                    layer.load(br, bpp);
+                    layer.load(reader, bpp);
                     this.layers[i] = layer;
                 }
-                this.channelDataStartPosition = br.BaseStream.Position;
+                this.channelDataStartPosition = reader.Position;
                 this.channelDataEndPosition = num2;
                 for (int j = 0; j < this.layers.Length; j++)
                 {
@@ -66,13 +65,12 @@ namespace Ntreev.Library.PsdParser
                     int length = layer2.channels.Length;
                     for (int k = 0; k < length; k++)
                     {
-                        PSDChannelInfo info = layer2.channels[k];
-                        info.dataStartPosition = br.BaseStream.Position;
-                        Stream baseStream = br.BaseStream;
-                        baseStream.Position += info.size;
+                        ChannelInfo info = layer2.channels[k];
+                        info.dataStartPosition = reader.Position;
+                        reader.Position += info.size;
                     }
                 }
-                br.BaseStream.Position = num2;
+                reader.Position = num2;
             }
         }
     }

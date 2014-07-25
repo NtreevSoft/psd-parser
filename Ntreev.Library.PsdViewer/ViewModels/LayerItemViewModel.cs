@@ -16,7 +16,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         {
             this.layer = layer;
 
-            foreach (var item in layer.props)
+            foreach (var item in layer)
             {
                 if (item.Value is IProperties == true)
                 {
@@ -31,7 +31,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
         public override string Text
         {
-            get { return this.layer.name; }
+            get { return this.layer.Name; }
         }
     }
 }

@@ -4,97 +4,113 @@ using System.Runtime.CompilerServices;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDLayer
+    public sealed class PSDLayer : IProperties
     {
-        private int groupStatus;
-        private byte opacityValue;
+        private int left, top, right, bottom;
+        private int id;
+        private string name;
+        private SectionType sectionType;
+        private byte opacity;
         private BlendMode blendMode;
-        public IProperties props;
-
-        public void load(BinaryReader br, int bpp)
+        private bool clipping;
+        private LayerFlags flags;
+        private int filter;
+        private Properties props = new Properties();
+        private byte[] buffers;
+        
+        public void load(PSDReader reader, int bpp)
         {
-            PSDRect rect;
-            rect.top = EndianReverser.getInt32(br);
-            rect.left = EndianReverser.getInt32(br);
-            rect.bottom = EndianReverser.getInt32(br);
-            rect.right = EndianReverser.getInt32(br);
-            this.area = rect;
-            int width = this.area.width;
-            int height = this.area.height;
-            if ((width > 0x3000) || (height > 0x3000))
+            this.top = reader.ReadInt32();
+            this.left = reader.ReadInt32();
+            this.bottom = reader.ReadInt32();
+            this.right = reader.ReadInt32();
+
+            if ((this.Width > 0x3000) || (this.Height > 0x3000))
             {
-                throw new SystemException(string.Format("Too big image (width:{0} height{1})", width, height));
+                throw new SystemException(string.Format("Too big image (width:{0} height{1})", this.Width, this.Height));
             }
-            ushort num3 = EndianReverser.getUInt16(br);
-            if (num3 > 0x38)
+            ushort channelCount = reader.ReadUInt16();
+            if (channelCount > 0x38)
             {
-                throw new SystemException(string.Format("Too many channels {0}", num3));
+                throw new SystemException(string.Format("Too many channels {0}", channelCount));
             }
-            this.channels = new PSDChannelInfo[num3];
-            for (int i = 0; i < num3; i++)
+            this.channels = new ChannelInfo[channelCount];
+            for (int i = 0; i < channelCount; i++)
             {
-                PSDChannelInfo info = new PSDChannelInfo {
-                    width = this.area.width,
-                    height = this.area.height
+                ChannelInfo info = new ChannelInfo 
+                {
+                    width = this.Width,
+                    height = this.Height,
                 };
-                info.loadHeader(br);
+                info.loadHeader(reader);
                 this.channels[i] = info;
             }
-            string str = PSDUtil.readAscii(br, 4);
+            string str = reader.ReadAscii(4);
             if ("8BIM" != str)
             {
                 throw new SystemException(string.Format("Wrong signature {0}", str));
             }
-            //br.ReadInt32();
-            this.blendMode = this.ToBlendMode(PSDUtil.readAscii(br, 4));
-            this.opacityValue = br.ReadByte();
-            bool clipping = EndianReverser.getBoolean(br);
-            br.ReadByte(); // Flags
-            br.ReadByte(); // Filter
-            long num5 = EndianReverser.getUInt32(br); // Length of the extra data field ( = the total length of the next five fields).
-            long position = br.BaseStream.Position;
-            uint num7 = EndianReverser.getUInt32(br);
-            Stream baseStream = br.BaseStream;
-            baseStream.Position += num7;
-            num5 -= br.BaseStream.Position - position;
-            position = br.BaseStream.Position;
-            num7 = EndianReverser.getUInt32(br);
-            Stream stream2 = br.BaseStream;
-            stream2.Position += num7;
-            num5 -= br.BaseStream.Position - position;
-            position = br.BaseStream.Position;
-            this.name = PSDUtil.readPascalString(br, 4);
-            num5 -= br.BaseStream.Position - position;
-            PSDLayerResource resource = new PSDLayerResource();
-            this.props = resource;
-            while (num5 > 7L)
-            {
-                position = br.BaseStream.Position;
-                resource.load(br);
-                num5 -= br.BaseStream.Position - position;
-            }
-            if (num5 > 0L)
-            {
-                Stream stream3 = br.BaseStream;
-                stream3.Position += num5;
-            }
-            this.id = resource.id;
-            if (!string.IsNullOrEmpty(resource.name))
-            {
-                this.name = resource.name;
-            }
-            this.drop = resource.drop;
-            this.groupStatus = resource.groupStatus;
+            //reader.ReadInt32();
+            this.blendMode = this.ToBlendMode(reader.ReadAscii(4));
+            this.opacity = reader.ReadByte();
+            this.clipping = reader.ReadBoolean();
+            this.flags = (LayerFlags)reader.ReadByte(); // Flags
+            this.filter = reader.ReadByte(); // Filter
 
-            if (this.props.Contains("TypeToolInfo.Text.Txt"))
+            long extraSize = reader.ReadUInt32(); // Length of the extra data field ( = the total length of the next five fields).
+
+            long position = reader.Position;
+            uint num7 = reader.ReadUInt32();
+            reader.Position += num7;
+            extraSize -= reader.Position - position;
+
+            position = reader.Position;
+            new LayerBlendingRanges(reader);
+            extraSize -= reader.Position - position;
+
+            position = reader.Position;
+            this.name = reader.ReadPascalString(4);
+            extraSize -= reader.Position - position;
+
+            LayerResource resource = new LayerResource();
+            
+            while (extraSize > 7L)
             {
-                int qwr = 0;
-                //this.text = this.props["TypeToolInfo.Text.Txt"] as string;
+                position = reader.Position;
+                resource.Load(reader);
+                extraSize -= reader.Position - position;
             }
-            if ((this.area.width == 0) && (this.groupStatus == 0))
+
+            this.props.Add("Resources", resource);
+
+            if (extraSize > 0L)
             {
+                reader.Position += extraSize;
+            }
+
+            this.id = resource.ToInt32("lyid.ID");
+            if (resource.ContainsProperty("luni.Name") == true)
+                this.name = resource.ToString("luni.Name");
+            this.drop = resource.drop;
+            if (resource.ContainsProperty("lsct.SectionType") == true)
+                this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
+
+            if ((this.Width == 0) && (this.sectionType == 0))
+            {
+                int qwer = 0;
                 //this.area = resource.typeToolObj2.area;
             }
+
+            this.props.Add("ID", this.id);
+            this.props.Add("Name", this.name);
+            this.props.Add("SectionType", this.sectionType);
+            this.props.Add("Left", this.left);
+            this.props.Add("Top", this.top);
+            this.props.Add("Right", this.right);
+            this.props.Add("Bottom", this.bottom);
+            this.props.Add("Width", this.Width);
+            this.props.Add("Height", this.Height);
+            this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
         }
 
         public byte[] mergeChannels()
@@ -103,80 +119,55 @@ namespace Ntreev.Library.PsdParser
             {
                 return null;
             }
-            int length = this.channels.Length;
-            int num2 = this.channels[0].data.Length;
-            byte[] buffer = new byte[(this.area.width * this.area.height) * length];
-            int num3 = 0;
-            for (int i = 0; i < num2; i++)
-            {
-                switch (length)
-                {
-                    case 4:
-                        buffer[num3++] = this.channels[3].data[i];
-                        buffer[num3++] = this.channels[2].data[i];
-                        buffer[num3++] = this.channels[1].data[i];
-                        buffer[num3++] = this.channels[0].data[i];
-                        break;
 
-                    case 3:
-                        buffer[num3++] = this.channels[2].data[i];
-                        buffer[num3++] = this.channels[1].data[i];
-                        buffer[num3++] = this.channels[0].data[i];
-                        break;
+            if (this.buffers == null)
+            {
+                int length = this.channels.Length;
+                int num2 = this.channels[0].data.Length;
+                byte[] buffer = new byte[(this.Width * this.Height) * length];
+                int num3 = 0;
+                for (int i = 0; i < num2; i++)
+                {
+                    switch (length)
+                    {
+                        case 4:
+                            buffer[num3++] = this.channels[3].data[i];
+                            buffer[num3++] = this.channels[2].data[i];
+                            buffer[num3++] = this.channels[1].data[i];
+                            buffer[num3++] = this.channels[0].data[i];
+                            break;
+
+                        case 3:
+                            buffer[num3++] = this.channels[2].data[i];
+                            buffer[num3++] = this.channels[1].data[i];
+                            buffer[num3++] = this.channels[0].data[i];
+                            break;
+                    }
                 }
+
+                this.buffers = buffer;
             }
-            return buffer;
+            return this.buffers;
         }
 
-        public PSDRect area { get; internal set; }
+        //public PSDRect area { get; internal set; }
 
-        public PSDChannelInfo[] channels { get; internal set; }
+        public ChannelInfo[] channels { get; internal set; }
 
         public bool drop { get; internal set; }
 
-        public bool groupClosed
+        public SectionType SectionType
         {
-            get
-            {
-                return (this.groupStatus == 2);
-            }
+            get { return this.sectionType; }
         }
 
-        public bool groupEnded
-        {
-            get
-            {
-                return (this.groupStatus == 3);
-            }
-        }
-
-        public bool groupOpened
-        {
-            get
-            {
-                return (this.groupStatus == 1);
-            }
-        }
-
-        public bool groupStarted
-        {
-            get
-            {
-                if (!this.groupOpened)
-                {
-                    return this.groupClosed;
-                }
-                return true;
-            }
-        }
-
-        public int id { get; internal set; }
+        public int ID { get { return this.id; } }
 
         public bool isImageLayer
         {
             get
             {
-                return (((!this.drop && (this.area.width > 0)) && (this.area.height > 0)) && (this.channels.Length > 0));
+                return (((!this.drop && (this.Width > 0)) && (this.Height > 0)) && (this.channels.Length > 0));
             }
         }
 
@@ -184,17 +175,20 @@ namespace Ntreev.Library.PsdParser
         {
             get
             {
-                return this.props.Contains("TypeToolInfo");
+                return this.props.ContainsProperty("TypeToolInfo");
             }
         }
 
-        public string name { get; internal set; }
+        public string Name
+        {
+            get { return this.name; }
+        }
 
-        public float opacity
+        public float Opacity
         {
             get
             {
-                return (((float) this.opacityValue) / 255f);
+                return (((float) this.opacity) / 255f);
             }
         }
 
@@ -202,7 +196,7 @@ namespace Ntreev.Library.PsdParser
         {
             get
             {
-                return (this.area.width * this.channels.Length);
+                return (this.Width * this.channels.Length);
             }
         }
 
@@ -214,6 +208,36 @@ namespace Ntreev.Library.PsdParser
                     return this.props["TypeToolInfo.Text.Txt"] as string;
                 return null;
             }
+        }
+
+        public int Left
+        {
+            get { return this.left; }
+        }
+
+        public int Top
+        {
+            get { return this.top; }
+        }
+
+        public int Right
+        {
+            get { return this.right; }
+        }
+
+        public int Bottom
+        {
+            get { return this.bottom; }
+            }
+
+        public int Width
+        {
+            get { return this.right - this.left; }
+        }
+
+        public int Height
+        {
+            get { return this.bottom - this.top; }
         }
 
         private BlendMode ToBlendMode(string text)
@@ -279,6 +303,35 @@ namespace Ntreev.Library.PsdParser
             }
             return BlendMode.Normal;
         }
+
+        #region IProperties
+
+        bool IProperties.Contains(string property)
+        {
+            return this.props.ContainsProperty(property);
+        }
+
+        object IProperties.this[string property]
+        {
+            get { return this.props[property]; }
+        }
+
+        int IProperties.Count
+        {
+            get { return this.props.Count; }
+        }
+
+        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>.GetEnumerator()
+        {
+            return this.props.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.props.GetEnumerator();
+        }
+
+        #endregion
     }
 }
 

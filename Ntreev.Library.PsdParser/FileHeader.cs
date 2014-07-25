@@ -6,42 +6,68 @@ namespace Ntreev.Library.PsdParser
 {
     public sealed class FileHeader
     {
-        private string signature;
-        private short version;
-        private byte[] reserved;
-        public short bpp;
-        public short channels;
-        public short colorMode;
-        public int height;
-        public int width;
+        private readonly string signature;
+        private readonly short version;
+        private readonly byte[] reserved;
+        private readonly short bpp;
+        private readonly int channels;
+        private readonly ColorMode colorMode;
+        private readonly int height;
+        private readonly int width;
 
-        public void load(BinaryReader br)
+        internal FileHeader(PSDReader reader)
         {
-            this.signature = PSDUtil.readAscii(br, 4);
-            this.version = EndianReverser.getInt16(br);
-            this.reserved = br.ReadBytes(6);
+            this.signature = reader.ReadAscii(4);
+            this.version = reader.ReadInt16();
+            this.reserved = reader.ReadBytes(6);
             if ((this.signature != "8BPS") || (this.version != 1))
             {
                 throw new Exception("Invalid PSD file");
             }
-            this.channels = EndianReverser.getInt16(br);
-            this.height = EndianReverser.getInt32(br);
-            this.width = EndianReverser.getInt32(br);
-            this.bpp = EndianReverser.getInt16(br);
-            this.colorMode = EndianReverser.getInt16(br);
+            this.channels = reader.ReadInt16();
+            this.height = reader.ReadInt32();
+            this.width = reader.ReadInt32();
+            this.bpp = reader.ReadInt16();
+            this.colorMode = (ColorMode)reader.ReadInt16();
         }
 
-        public void save(BinaryWriter bw)
+        public int BPP
         {
-            bw.Write(Encoding.ASCII.GetBytes("8BPS"));
-            bw.Write(EndianReverser.convert((short) 1));
-            bw.Write(new byte[6]);
-            bw.Write(EndianReverser.convert(this.channels));
-            bw.Write(EndianReverser.convert(this.height));
-            bw.Write(EndianReverser.convert(this.width));
-            bw.Write(EndianReverser.convert(this.bpp));
-            bw.Write(EndianReverser.convert(this.colorMode));
+            get { return this.bpp; }
         }
+
+        public int NumberOfChannels
+        {
+            get { return this.channels; }
+        }
+
+        public ColorMode ColorMode
+        {
+            get { return this.colorMode; }
+        }
+
+        public int Height
+        {
+            get { return this.height; }
+        }
+
+        public int Width
+        {
+            get { return this.width; }
+        }
+
+
+        //public void save(BinaryWriter bw)
+        //{
+        //    bw.Write(Encoding.ASCII.GetBytes("8BPS"));
+        //    bw.Write(reader.convert((short) 1));
+        //    bw.Write(new byte[6]);
+        //    bw.Write(reader.convert(this.channels));
+        //    bw.Write(reader.convert(this.height));
+        //    bw.Write(reader.convert(this.width));
+        //    bw.Write(reader.convert(this.bpp));
+        //    bw.Write(reader.convert(this.colorMode));
+        //}
     }
 }
 

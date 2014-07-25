@@ -12,6 +12,11 @@ namespace Ntreev.Library.PsdParser
             return props[property] as string;
         }
 
+        public static int ToInt32(this IProperties props, string property)
+        {
+            return (int)props[property];
+        }
+
         public static float ToSingle(this IProperties props, string property)
         {
             return (float)props[property];

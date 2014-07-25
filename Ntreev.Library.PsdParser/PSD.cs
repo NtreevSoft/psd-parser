@@ -5,13 +5,13 @@ namespace Ntreev.Library.PsdParser
 {
     public sealed class PSD
     {
-        public ColorModeData colorModeInfo;
-        public DisplayInfo displayInfo;
+        private ColorModeData colorModeData;
+        private DisplayInfo displayInfo;
         public string fileName;
         public string filePath;
-        public FileHeader headerInfo;
+        private FileHeader fileHeader;
         public PSDLayerInfo layerInfo;
-        public ResolutionInfo resolutionInfo;
+        private ResolutionInfo resolutionInfo;
 
         public void loadData()
         {
@@ -21,9 +21,9 @@ namespace Ntreev.Library.PsdParser
             }
             using (FileStream stream = new FileStream(this.filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (BinaryReader reader = new BinaryReader(stream))
+                using (PSDReader reader = new PSDReader(stream))
                 {
-                    this.layerInfo.loadData(reader, this.headerInfo.bpp);
+                    this.layerInfo.loadData(reader, this.fileHeader.BPP);
                 }
             }
         }
@@ -42,7 +42,7 @@ namespace Ntreev.Library.PsdParser
             }
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (BinaryReader reader = new BinaryReader(stream))
+                using (PSDReader reader = new PSDReader(stream))
                 {
                     this.ReadFileHeader(reader);
                     this.ReadColorModeData(reader);
@@ -52,68 +52,84 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        private void ReadColorModeData(BinaryReader br)
+        public FileHeader FileHeader
         {
-            this.colorModeInfo = new ColorModeData();
-            this.colorModeInfo.load(br);
+            get { return this.fileHeader; }
         }
 
-        private void ReadFileHeader(BinaryReader br)
+        public ColorModeData ColorModeData
         {
-            this.headerInfo = new FileHeader();
-            this.headerInfo.load(br);
-            if (this.headerInfo.bpp != 8)
+            get { return this.colorModeData; }
+        }
+
+        public DisplayInfo DisplayInfo
+        {
+            get { return this.displayInfo; }
+        }
+
+        public ResolutionInfo ResolutionInfo
+        {
+            get { return this.resolutionInfo; }
+        }
+
+        private void ReadColorModeData(PSDReader reader)
+        {
+            this.colorModeData = new ColorModeData(reader);
+        }
+
+        private void ReadFileHeader(PSDReader reader)
+        {
+            this.fileHeader = new FileHeader(reader);
+            if (this.fileHeader.BPP != 8)
             {
                 throw new SystemException("For now, only Support 8 Bit Per Channel");
             }
         }
 
-        private void ReadImageResources(BinaryReader br)
+        private void ReadImageResources(PSDReader reader)
         {
-            int size = EndianReverser.getInt32(br);
-            long position = br.BaseStream.Position;
-            while ((br.BaseStream.Position - position) < size)
+            int size = reader.ReadInt32();
+            long position = reader.Position;
+            while ((reader.Position - position) < size)
             {
-                string signature = PSDUtil.readAscii(br, 4);
+                string signature = reader.ReadAscii(4);
                 if (signature != "8BIM")
                 {
                     continue;
                 }
-                short imageResourceID = EndianReverser.getInt16(br);
-                string name = PSDUtil.readPascalString(br, 2);
-                int resourceSize = EndianReverser.getInt32(br);
+                short imageResourceID = reader.ReadInt16();
+                string name = reader.ReadPascalString(2);
+                int resourceSize = reader.ReadInt32();
                 if (resourceSize > 0)
                 {
                     switch (imageResourceID)
                     {
                         case 0x3ed:
-                            this.resolutionInfo = new ResolutionInfo(br);
+                            this.resolutionInfo = new ResolutionInfo(reader);
                             break;
 
                         case 0x3ef:
-                            this.displayInfo = new DisplayInfo(br);
+                            this.displayInfo = new DisplayInfo(reader);
                             break;
 
                         default:
                         {
-                            Stream baseStream = br.BaseStream;
-                            baseStream.Position += resourceSize;
+                            reader.Position += resourceSize;
                             break;
                         }
                     }
                     if ((resourceSize % 2) != 0)
                     {
-                        Stream stream2 = br.BaseStream;
-                        stream2.Position += 1L;
+                        reader.Position += 1L;
                     }
                 }
             }
         }
 
-        private void ReadLayers(BinaryReader br)
+        private void ReadLayers(PSDReader reader)
         {
             this.layerInfo = new PSDLayerInfo();
-            this.layerInfo.loadHeader(br, this.headerInfo.bpp);
+            this.layerInfo.loadHeader(reader, this.fileHeader.BPP);
         }
     }
 }

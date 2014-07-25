@@ -5,21 +5,51 @@ namespace Ntreev.Library.PsdParser
 {
     public sealed class ResolutionInfo
     {
-        public readonly short heightUnit;
-        public readonly short horizontalRes;
-        public readonly int horizontalResUnit;
-        public readonly short verticalRes;
-        public readonly int verticalResUnit;
-        public readonly short widthUnit;
+        private readonly int heightUnit;
+        private readonly int horizontalRes;
+        private readonly int horizontalResUnit;
+        private readonly int verticalRes;
+        private readonly int verticalResUnit;
+        private readonly int widthUnit;
 
-        public ResolutionInfo(BinaryReader br)
+        internal ResolutionInfo(PSDReader reader)
         {
-            this.horizontalRes = EndianReverser.getInt16(br);
-            this.horizontalResUnit = EndianReverser.getInt32(br);
-            this.widthUnit = EndianReverser.getInt16(br);
-            this.verticalRes = EndianReverser.getInt16(br);
-            this.verticalResUnit = EndianReverser.getInt32(br);
-            this.heightUnit = EndianReverser.getInt16(br);
+            this.horizontalRes = reader.ReadInt16();
+            this.horizontalResUnit = reader.ReadInt32();
+            this.widthUnit = reader.ReadInt16();
+            this.verticalRes = reader.ReadInt16();
+            this.verticalResUnit = reader.ReadInt32();
+            this.heightUnit = reader.ReadInt16();
+        }
+
+        public int HeightUnit
+        {
+            get { return this.heightUnit; }
+        }
+
+        public int HorizontalRes
+        {
+            get { return this.horizontalRes; }
+        }
+
+        public int HorizontalResUnit
+        {
+            get { return this.horizontalResUnit; }
+        }
+
+        public int VerticalRes
+        {
+            get { return this.verticalRes; }
+        }
+
+        public int VerticalResUnit
+        {
+            get { return this.verticalResUnit; }
+        }
+
+        public int WidthUnit
+        {
+            get { return this.widthUnit; }
         }
     }
 }

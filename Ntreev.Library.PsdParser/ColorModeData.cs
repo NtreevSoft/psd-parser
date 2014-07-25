@@ -8,22 +8,13 @@ namespace Ntreev.Library.PsdParser
         private int size;
         private byte[] data;
 
-        public void load(BinaryReader br)
+        internal ColorModeData(PSDReader reader)
         {
-            this.size = EndianReverser.getInt32(br);
+            this.size = reader.ReadInt32();
             if (this.size > 0)
             {
                 this.data = new byte[this.size];
-                this.data = br.ReadBytes(this.size);
-            }
-        }
-
-        public void save(BinaryWriter bw)
-        {
-            bw.Write(EndianReverser.convert(this.size));
-            if (this.size > 0)
-            {
-                bw.Write(this.data);
+                this.data = reader.ReadBytes(this.size);
             }
         }
 

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSDChannelInfo
+    public sealed class ChannelInfo
     {
         public CompressionType compressionType;
         public byte[] data;
@@ -14,16 +14,16 @@ namespace Ntreev.Library.PsdParser
         public uint size;
         public int width;
 
-        public void loadData(BinaryReader br, int bps)
+        public void loadData(PSDReader reader, int bps)
         {
             if (this.size > 2)
             {
-                br.BaseStream.Position = this.dataStartPosition;
-                this.compressionType = (CompressionType)EndianReverser.getInt16(br);
+                reader.Position = this.dataStartPosition;
+                this.compressionType = (CompressionType)reader.ReadInt16();
                 switch (this.compressionType)
                 {
                     case CompressionType.RawData:
-                        this.readData(br, bps, this.compressionType, null);
+                        this.readData(reader, bps, this.compressionType, null);
                         return;
 
                     case CompressionType.RLECompressed:
@@ -31,9 +31,9 @@ namespace Ntreev.Library.PsdParser
                         short[] rlePackLengths = new short[this.height * 2];
                         for (int i = 0; i < this.height; i++)
                         {
-                            rlePackLengths[i] = EndianReverser.getInt16(br);
+                            rlePackLengths[i] = reader.ReadInt16();
                         }
-                        this.readData(br, bps, this.compressionType, rlePackLengths);
+                        this.readData(reader, bps, this.compressionType, rlePackLengths);
                         return;
                     }
                 }
@@ -41,13 +41,13 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        public void loadHeader(BinaryReader br)
+        public void loadHeader(PSDReader reader)
         {
-            this.type = (ChannelType)EndianReverser.getInt16(br);
-            this.size = EndianReverser.getUInt32(br);
+            this.type = (ChannelType)reader.ReadInt16();
+            this.size = reader.ReadUInt32();
         }
 
-        private void readData(BinaryReader br, int bps, CompressionType compressionType, short[] rlePackLengths)
+        private void readData(PSDReader reader, int bps, CompressionType compressionType, short[] rlePackLengths)
         {
             int unpackedLength = 0;
             if (bps == 1)
@@ -62,7 +62,7 @@ namespace Ntreev.Library.PsdParser
             switch (compressionType)
             {
                 case CompressionType.RawData:
-                    br.Read(this.data, 0, this.data.Length);
+                    reader.Read(this.data, 0, this.data.Length);
                     break;
 
                 case CompressionType.RLECompressed:
@@ -70,7 +70,7 @@ namespace Ntreev.Library.PsdParser
                     {
                         byte[] buffer = new byte[rlePackLengths[i]];
                         byte[] dst = new byte[unpackedLength];
-                        br.Read(buffer, 0, rlePackLengths[i]);
+                        reader.Read(buffer, 0, rlePackLengths[i]);
                         PSDUtil.decodeRLE(buffer, dst, rlePackLengths[i], unpackedLength);
                         for (int j = 0; j < unpackedLength; j++)
                         {
@@ -127,15 +127,15 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        public void saveData(BinaryWriter bw)
-        {
-            uint size = this.size;
-        }
+        //public void saveData(BinaryWriter bw)
+        //{
+        //    uint size = this.size;
+        //}
 
         //public void saveHeader(BinaryWriter bw)
         //{
-        //    bw.Write(EndianReverser.convert(this.id));
-        //    bw.Write(EndianReverser.convert(this.size));
+        //    bw.Write(reader.convert(this.id));
+        //    bw.Write(reader.convert(this.size));
         //}
 
         public bool maskChannel

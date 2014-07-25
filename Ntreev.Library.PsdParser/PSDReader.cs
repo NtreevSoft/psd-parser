@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    class PSDReader : IDisposable
+    public class PSDReader : IDisposable
     {
         private readonly BinaryReader reader;
 
@@ -55,7 +55,7 @@ namespace Ntreev.Library.PsdParser
         public string ReadUnicodeString()
         {
             int num = 4;
-            int num2 = EndianReverser.getInt32(this.reader);
+            int num2 = this.ReadInt32();
             string str = "";
             if (num2 == 0)
             {
@@ -80,6 +80,48 @@ namespace Ntreev.Library.PsdParser
             return str;
         }
 
+        public string ReadUnicodeString2()
+        {
+            int num = this.ReadInt32();
+            if (num == 0)
+            {
+                return "";
+            }
+            byte[] bytes = this.ReadBytes(num * 2);
+            for (int i = 0; i < num; i++)
+            {
+                int index = i * 2;
+                byte num4 = bytes[index];
+                bytes[index] = bytes[index + 1];
+                bytes[index + 1] = num4;
+            }
+            return Encoding.Unicode.GetString(bytes);
+        }
+
+        public string ReadStringOrKey()
+        {
+            int length = this.ReadInt32();
+            length = (length > 0) ? length : 4;
+            return this.ReadAscii(length);
+        }
+
+        
+
+        public int Read(byte[] buffer, int index, int count)
+        {
+            return this.reader.Read(buffer, index, count);
+        }
+
+        public byte ReadByte()
+        {
+            return this.reader.ReadByte();
+        }
+
+        public byte[] ReadBytes(int count)
+        {
+            return this.reader.ReadBytes(count);
+        }
+
         public bool ReadBoolean()
         {
             return this.ReverseValue(this.reader.ReadBoolean());
@@ -90,7 +132,7 @@ namespace Ntreev.Library.PsdParser
             return this.ReverseValue(this.reader.ReadDouble());
         }
 
-        public double[] ReadDouble(int count)
+        public double[] ReadDoubles(int count)
         {
             double[] values = new double[count];
             for (int i = 0; i < count; i++)
@@ -205,113 +247,113 @@ namespace Ntreev.Library.PsdParser
         }
     }
 
-    internal class EndianReverser
-    {
-        public static bool convert(bool value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToBoolean(bytes, 0);
-        }
+    //internal class reader
+    //{
+    //    public static bool convert(bool value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToBoolean(bytes, 0);
+    //    }
 
-        public static double convert(double value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToDouble(bytes, 0);
-        }
+    //    public static double convert(double value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToDouble(bytes, 0);
+    //    }
 
-        public static short convert(short value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToInt16(bytes, 0);
-        }
+    //    public static short convert(short value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToInt16(bytes, 0);
+    //    }
 
-        public static int convert(int value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToInt32(bytes, 0);
-        }
+    //    public static int convert(int value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToInt32(bytes, 0);
+    //    }
 
-        public static long convert(long value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToInt64(bytes, 0);
-        }
+    //    public static long convert(long value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToInt64(bytes, 0);
+    //    }
 
-        public static ushort convert(ushort value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToUInt16(bytes, 0);
-        }
+    //    public static ushort convert(ushort value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToUInt16(bytes, 0);
+    //    }
 
-        public static uint convert(uint value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToUInt32(bytes, 0);
-        }
+    //    public static uint convert(uint value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToUInt32(bytes, 0);
+    //    }
 
-        public static ulong convert(ulong value)
-        {
-            byte[] bytes = BitConverter.GetBytes(value);
-            Array.Reverse(bytes);
-            return BitConverter.ToUInt64(bytes, 0);
-        }
+    //    public static ulong convert(ulong value)
+    //    {
+    //        byte[] bytes = BitConverter.GetBytes(value);
+    //        Array.Reverse(bytes);
+    //        return BitConverter.ToUInt64(bytes, 0);
+    //    }
 
-        public static bool getBoolean(BinaryReader br)
-        {
-            return convert(br.ReadBoolean());
-        }
+    //    public static bool getBoolean(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadBoolean());
+    //    }
 
-        public static double getDouble(BinaryReader br)
-        {
-            return convert(br.ReadDouble());
-        }
+    //    public static double getDouble(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadDouble());
+    //    }
 
-        public static double[] getDouble(BinaryReader br, int count)
-        {
-            double[] values = new double[count];
-            for (int i = 0; i < count; i++)
-            {
-                values[i] = convert(br.ReadDouble());
-            }
-            return values;
-        }
+    //    public static double[] getDouble(PSDReader reader, int count)
+    //    {
+    //        double[] values = new double[count];
+    //        for (int i = 0; i < count; i++)
+    //        {
+    //            values[i] = convert(reader.ReadDouble());
+    //        }
+    //        return values;
+    //    }
 
-        public static short getInt16(BinaryReader br)
-        {
-            return convert(br.ReadInt16());
-        }
+    //    public static short getInt16(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadInt16());
+    //    }
 
-        public static int getInt32(BinaryReader br)
-        {
-            return convert(br.ReadInt32());
-        }
+    //    public static int getInt32(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadInt32());
+    //    }
 
-        public static long getInt64(BinaryReader br)
-        {
-            return convert(br.ReadInt64());
-        }
+    //    public static long getInt64(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadInt64());
+    //    }
 
-        public static ushort getUInt16(BinaryReader br)
-        {
-            return convert(br.ReadUInt16());
-        }
+    //    public static ushort getUInt16(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadUInt16());
+    //    }
 
-        public static uint getUInt32(BinaryReader br)
-        {
-            return convert(br.ReadUInt32());
-        }
+    //    public static uint ReadUInt32(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadUInt32());
+    //    }
 
-        public static ulong getUInt64(BinaryReader br)
-        {
-            return convert(br.ReadUInt64());
-        }
-    }
+    //    public static ulong getUInt64(PSDReader reader)
+    //    {
+    //        return convert(reader.ReadUInt64());
+    //    }
+    //}
 }
 
