@@ -1,15 +1,16 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 
+namespace Ntreev.Library.PsdParser
+{
     public sealed class PSDChannelInfo
     {
-        public short compressionType;
+        public CompressionType compressionType;
         public byte[] data;
         public long dataStartPosition;
         public int height;
-        public short id;
+        public ChannelType type;
         public uint size;
         public int width;
 
@@ -18,14 +19,14 @@
             if (this.size > 2)
             {
                 br.BaseStream.Position = this.dataStartPosition;
-                this.compressionType = EndianReverser.getInt16(br);
+                this.compressionType = (CompressionType)EndianReverser.getInt16(br);
                 switch (this.compressionType)
                 {
-                    case 0:
+                    case CompressionType.RawData:
                         this.readData(br, bps, this.compressionType, null);
                         return;
 
-                    case 1:
+                    case CompressionType.RLECompressed:
                     {
                         short[] rlePackLengths = new short[this.height * 2];
                         for (int i = 0; i < this.height; i++)
@@ -42,11 +43,11 @@
 
         public void loadHeader(BinaryReader br)
         {
-            this.id = EndianReverser.getInt16(br);
+            this.type = (ChannelType)EndianReverser.getInt16(br);
             this.size = EndianReverser.getUInt32(br);
         }
 
-        private void readData(BinaryReader br, int bps, int compressionType, short[] rlePackLengths)
+        private void readData(BinaryReader br, int bps, CompressionType compressionType, short[] rlePackLengths)
         {
             int unpackedLength = 0;
             if (bps == 1)
@@ -60,11 +61,11 @@
             this.data = new byte[unpackedLength * this.height];
             switch (compressionType)
             {
-                case 0:
+                case CompressionType.RawData:
                     br.Read(this.data, 0, this.data.Length);
                     break;
 
-                case 1:
+                case CompressionType.RLECompressed:
                     for (int i = 0; i < this.height; i++)
                     {
                         byte[] buffer = new byte[rlePackLengths[i]];
@@ -131,28 +132,22 @@
             uint size = this.size;
         }
 
-        public void saveHeader(BinaryWriter bw)
-        {
-            bw.Write(EndianReverser.convert(this.id));
-            bw.Write(EndianReverser.convert(this.size));
-        }
+        //public void saveHeader(BinaryWriter bw)
+        //{
+        //    bw.Write(EndianReverser.convert(this.id));
+        //    bw.Write(EndianReverser.convert(this.size));
+        //}
 
         public bool maskChannel
         {
             get
             {
-                return (this.id == -2);
+
+                return this.type == ChannelType.Mask;
             }
         }
 
-        private enum PSDChannelID
-        {
-            PSD_CHANNEL_ALPHA = -1,
-            PSD_CHANNEL_BLUE = 2,
-            PSD_CHANNEL_GREEN = 1,
-            PSD_CHANNEL_MASK = -2,
-            PSD_CHANNEL_RED = 0
-        }
+        
     }
 }
 

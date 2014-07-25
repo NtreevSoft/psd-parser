@@ -1,0 +1,16 @@
+<mah:MetroWindow x:Class="Ntreev.Library.PsdViewer.ShellView"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
+                 xmlns:cal="http://www.caliburnproject.org"
+                 xmlns:ctrl="clr-namespace:Ntreev.Library.PsdViewer.Controls"
+                 Width="500" x:Name="uc1">
+    <mah:MetroWindow.RightWindowCommands>
+        <mah:WindowCommands >
+            <Button x:Name="Setting" Content="settings" cal:Message.Attach="Setting" />
+        </mah:WindowCommands>
+    </mah:MetroWindow.RightWindowCommands>
+    <Grid>
+        <ctrl:TreeListView ItemsSource="{Binding ItemsSource}" />
+    </Grid>
+</mah:MetroWindow>

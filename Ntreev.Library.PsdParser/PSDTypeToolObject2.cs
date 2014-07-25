@@ -458,6 +458,19 @@ namespace Ntreev.Library.PsdParser
                     //assert ch == 10;
                 }
                 this.properties = this.ReadProperties(br, 0);
+
+                //string s = string.Empty;
+                //for (int i = 0; i < count - 2; i++)
+                //{
+
+                //    char c = (char)br.ReadByte();
+                //    if (c == 0)
+                //        continue;
+                //    s += c;
+                //}
+
+                //int wqer = 0;
+
                 //this.Trace("Root", this.properties);
                 //var ddd = this.GetProperty("EngineDict.StyleRun.RunArray[0].StyleSheet.StyleSheetData.FillColor.Values[0]");
                 //var ddd = this.GetProperty("EngineDict.StyleRun.RunArray[0].StyleSheet.StyleSheetData.FontSize");

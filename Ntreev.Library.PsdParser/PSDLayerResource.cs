@@ -126,11 +126,52 @@ namespace Ntreev.Library.PsdParser
                         }
                     }
                     break;
+                case "SoLd":
+                    {
+                        int id = EndianReverser.getInt32(br);
+                        int ver = EndianReverser.getInt32(br);
+                        int descVer = EndianReverser.getInt32(br);
+                        //DescriptorStructure desc = new DescriptorStructure(br);
+                        this.Add("SoLd", new DescriptorStructure(br));
+                    }
+                    break;
                 case "lfx2":
                     {
                         int n1 = EndianReverser.getInt32(br);
                         int n2 = EndianReverser.getInt32(br);
                         this.Add("LayerEffectInfo", new DescriptorStructure(br));
+                    }
+                    break;
+                case "PlLd":
+                    {
+                        Properties props = new Properties();
+                        //props.Add("Version", EndianReverser.getInt32(br));
+                        //props.Add("Version", EndianReverser.getInt32(br));
+                        props.Add("Type", EndianReverser.getInt32(br));
+                        props.Add("Version", EndianReverser.getInt32(br));
+                        props.Add("UniqueID", PSDUtil.readPascalString(br, 1));
+                        props.Add("PageNumbers", EndianReverser.getInt32(br));
+                        props.Add("Pages", EndianReverser.getInt32(br));
+                        props.Add("AntiAlias", EndianReverser.getInt32(br));
+                        props.Add("LayerType", EndianReverser.getInt32(br));
+                        props.Add("Transformation", EndianReverser.getDouble(br, 8));
+                        props.Add("WarpVersion ", EndianReverser.getInt32(br));
+                        props.Add("WarpDescriptorVersion ", EndianReverser.getInt32(br));
+                        props.Add("WarpDescriptor", new DescriptorStructure(br));
+
+                        this.Add(str2, props);
+                    }
+                    break;
+                case "lnsr":
+                    {
+                        this.Add(str2, PSDUtil.readAscii(br, 4));
+                    }
+                    break;
+                case "fxrp":
+                    {
+                        Properties props = new Properties();
+                        props.Add("RefernecePoint", EndianReverser.getDouble(br, 2));
+                        this.Add(str2, props);
                     }
                     break;
 
@@ -143,12 +184,18 @@ namespace Ntreev.Library.PsdParser
                         }
                         else if (str2 == "luni")
                         {
+                            Properties props = new Properties();
                             this.name = PSDUtil.readUnicodeString(br);
+                            props.Add("Name", this.name);
+                            this.Add(str2, props);
                             this.Add("Name", this.name);
                         }
                         else if (str2 == "lyid")
                         {
+                            Properties props = new Properties();
                             this.id = EndianReverser.getInt32(br);
+                            props.Add("ID", this.id);
+                            this.Add(str2, props);
                             this.Add("ID", this.id);
                         }
                         else if (str2 == "lsct")
@@ -167,6 +214,11 @@ namespace Ntreev.Library.PsdParser
             {
                 Stream stream2 = br.BaseStream;
                 stream2.Position += 1L;
+            }
+
+            if (this.ContainsKey(str2) == false)
+            {
+                this.Add(str2, "empty");
             }
         }
     }

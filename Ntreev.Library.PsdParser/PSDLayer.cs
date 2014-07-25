@@ -8,7 +8,7 @@ namespace Ntreev.Library.PsdParser
     {
         private int groupStatus;
         private byte opacityValue;
-        private PSDBlendMode blendMode;
+        private BlendMode blendMode;
         public IProperties props;
 
         public void load(BinaryReader br, int bpp)
@@ -216,68 +216,68 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        private PSDBlendMode ToBlendMode(string text)
+        private BlendMode ToBlendMode(string text)
         {
             switch (text)
             {
                 case "pass":
-                    return PSDBlendMode.PassThrough;
+                    return BlendMode.PassThrough;
                 case "norm":
-                    return PSDBlendMode.Normal;
+                    return BlendMode.Normal;
                 case "diss":
-                    return PSDBlendMode.Dissolve;
+                    return BlendMode.Dissolve;
                 case "dark":
-                    return PSDBlendMode.Darken;
+                    return BlendMode.Darken;
                 case "mul":
-                    return PSDBlendMode.Multiply;
+                    return BlendMode.Multiply;
                 case "idiv":
-                    return PSDBlendMode.ColorBurn;
+                    return BlendMode.ColorBurn;
                 case "lbrn":
-                    return PSDBlendMode.LinearBurn;
+                    return BlendMode.LinearBurn;
                 case "dkCl":
-                    return PSDBlendMode.DarkerColor;
+                    return BlendMode.DarkerColor;
                 case "lite":
-                    return PSDBlendMode.Lighten;
+                    return BlendMode.Lighten;
                 case "scrn":
-                    return PSDBlendMode.Screen;
+                    return BlendMode.Screen;
                 case "div":
-                    return PSDBlendMode.ColorDodge;
+                    return BlendMode.ColorDodge;
                 case "lddg":
-                    return PSDBlendMode.LinearDodge;
+                    return BlendMode.LinearDodge;
                 case "lgCl":
-                    return PSDBlendMode.LighterColor;
+                    return BlendMode.LighterColor;
                 case "over":
-                    return PSDBlendMode.Overlay;
+                    return BlendMode.Overlay;
                 case "sLit":
-                    return PSDBlendMode.SoftLight;
+                    return BlendMode.SoftLight;
                 case "hLit":
-                    return PSDBlendMode.HardLight;
+                    return BlendMode.HardLight;
                 case "vLit":
-                    return PSDBlendMode.VividLight;
+                    return BlendMode.VividLight;
                 case "lLit":
-                    return PSDBlendMode.LinearLight;
+                    return BlendMode.LinearLight;
                 case "pLit":
-                    return PSDBlendMode.PinLight;
+                    return BlendMode.PinLight;
                 case "hMix":
-                    return PSDBlendMode.HardMix;
+                    return BlendMode.HardMix;
                 case "diff":
-                    return PSDBlendMode.Difference;
+                    return BlendMode.Difference;
                 case "smud":
-                    return PSDBlendMode.Exclusion;
+                    return BlendMode.Exclusion;
                 case "fsub":
-                    return PSDBlendMode.Subtract;
+                    return BlendMode.Subtract;
                 case "fdiv":
-                    return PSDBlendMode.Divide;
+                    return BlendMode.Divide;
                 case "hue":
-                    return PSDBlendMode.Hue;
+                    return BlendMode.Hue;
                 case "sat":
-                    return PSDBlendMode.Saturation;
+                    return BlendMode.Saturation;
                 case "colr":
-                    return PSDBlendMode.Color;
+                    return BlendMode.Color;
                 case "lum":
-                    return PSDBlendMode.Luminosity;
+                    return BlendMode.Luminosity;
             }
-            return PSDBlendMode.Normal;
+            return BlendMode.Normal;
         }
     }
 }

@@ -1,9 +1,9 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
-    using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 
+namespace Ntreev.Library.PsdParser
+{
     public sealed class PSDUtil
     {
         public static void decodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)

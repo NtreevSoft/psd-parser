@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public enum PSDBlendMode
+    public enum BlendMode
     {
         PassThrough,
         Normal,

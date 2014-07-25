@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public interface IProperties
+    public interface IProperties : IEnumerable<KeyValuePair<string, object>>
     {
         bool Contains(string property);
 

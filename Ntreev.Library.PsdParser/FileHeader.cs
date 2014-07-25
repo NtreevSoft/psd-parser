@@ -1,11 +1,14 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
-    using System.Text;
+﻿using System;
+using System.IO;
+using System.Text;
 
-    public sealed class PSDHeaderInfo
+namespace Ntreev.Library.PsdParser
+{
+    public sealed class FileHeader
     {
+        private string signature;
+        private short version;
+        private byte[] reserved;
         public short bpp;
         public short channels;
         public short colorMode;
@@ -14,10 +17,10 @@
 
         public void load(BinaryReader br)
         {
-            string str = PSDUtil.readAscii(br, 4);
-            short num = EndianReverser.getInt16(br);
-            br.ReadBytes(6);
-            if ((str != "8BPS") || (num != 1))
+            this.signature = PSDUtil.readAscii(br, 4);
+            this.version = EndianReverser.getInt16(br);
+            this.reserved = br.ReadBytes(6);
+            if ((this.signature != "8BPS") || (this.version != 1))
             {
                 throw new Exception("Invalid PSD file");
             }
@@ -38,18 +41,6 @@
             bw.Write(EndianReverser.convert(this.width));
             bw.Write(EndianReverser.convert(this.bpp));
             bw.Write(EndianReverser.convert(this.colorMode));
-        }
-
-        private enum PSDColorMode
-        {
-            PSD_BITMAP = 0,
-            PSD_CMYK = 4,
-            PSD_DUOTONE = 8,
-            PSD_GRAYSCALE = 1,
-            PSD_INDEXED = 2,
-            PSD_LAB = 9,
-            PSD_MULTICHANNEL = 7,
-            PSD_RGB = 3
         }
     }
 }

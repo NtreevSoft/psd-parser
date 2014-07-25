@@ -1,17 +1,17 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace Ntreev.Library.PsdParser
+{
     public sealed class PSD
     {
-        public PSDColorModeInfo colorModeInfo;
-        public PSDDisplayInfo displayInfo;
+        public ColorModeData colorModeInfo;
+        public DisplayInfo displayInfo;
         public string fileName;
         public string filePath;
-        public PSDHeaderInfo headerInfo;
+        public FileHeader headerInfo;
         public PSDLayerInfo layerInfo;
-        public PSDResolutionInfo resolutionInfo;
+        public ResolutionInfo resolutionInfo;
 
         public void loadData()
         {
@@ -44,23 +44,23 @@
             {
                 using (BinaryReader reader = new BinaryReader(stream))
                 {
-                    this.readHeader(reader);
-                    this.readColorMode(reader);
-                    this.readImageResource(reader);
-                    this.readLayers(reader);
+                    this.ReadFileHeader(reader);
+                    this.ReadColorModeData(reader);
+                    this.ReadImageResources(reader);
+                    this.ReadLayers(reader);
                 }
             }
         }
 
-        private void readColorMode(BinaryReader br)
+        private void ReadColorModeData(BinaryReader br)
         {
-            this.colorModeInfo = new PSDColorModeInfo();
+            this.colorModeInfo = new ColorModeData();
             this.colorModeInfo.load(br);
         }
 
-        private void readHeader(BinaryReader br)
+        private void ReadFileHeader(BinaryReader br)
         {
-            this.headerInfo = new PSDHeaderInfo();
+            this.headerInfo = new FileHeader();
             this.headerInfo.load(br);
             if (this.headerInfo.bpp != 8)
             {
@@ -68,41 +68,40 @@
             }
         }
 
-        private void readImageResource(BinaryReader br)
+        private void ReadImageResources(BinaryReader br)
         {
-            int num = EndianReverser.getInt32(br);
+            int size = EndianReverser.getInt32(br);
             long position = br.BaseStream.Position;
-            while ((br.BaseStream.Position - position) < num)
+            while ((br.BaseStream.Position - position) < size)
             {
-                if (PSDUtil.readAscii(br, 4) != "8BIM")
+                string signature = PSDUtil.readAscii(br, 4);
+                if (signature != "8BIM")
                 {
                     continue;
                 }
-                short num3 = EndianReverser.getInt16(br);
-                PSDUtil.readPascalString(br, 2);
-                int num4 = EndianReverser.getInt32(br);
-                if (num4 > 0)
+                short imageResourceID = EndianReverser.getInt16(br);
+                string name = PSDUtil.readPascalString(br, 2);
+                int resourceSize = EndianReverser.getInt32(br);
+                if (resourceSize > 0)
                 {
-                    switch (num3)
+                    switch (imageResourceID)
                     {
                         case 0x3ed:
-                            this.resolutionInfo = new PSDResolutionInfo();
-                            this.resolutionInfo.load(br);
+                            this.resolutionInfo = new ResolutionInfo(br);
                             break;
 
                         case 0x3ef:
-                            this.displayInfo = new PSDDisplayInfo();
-                            this.displayInfo.load(br);
+                            this.displayInfo = new DisplayInfo(br);
                             break;
 
                         default:
                         {
                             Stream baseStream = br.BaseStream;
-                            baseStream.Position += num4;
+                            baseStream.Position += resourceSize;
                             break;
                         }
                     }
-                    if ((num4 % 2) != 0)
+                    if ((resourceSize % 2) != 0)
                     {
                         Stream stream2 = br.BaseStream;
                         stream2.Position += 1L;
@@ -111,7 +110,7 @@
             }
         }
 
-        private void readLayers(BinaryReader br)
+        private void ReadLayers(BinaryReader br)
         {
             this.layerInfo = new PSDLayerInfo();
             this.layerInfo.loadHeader(br, this.headerInfo.bpp);

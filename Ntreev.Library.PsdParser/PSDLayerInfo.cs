@@ -1,10 +1,11 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
+namespace Ntreev.Library.PsdParser
+{
     public sealed class PSDLayerInfo
     {
+        private int length;
         public long channelDataEndPosition;
         public long channelDataStartPosition;
         public PSDLayer[] layers;
@@ -39,19 +40,19 @@
             int num = (int) EndianReverser.getUInt32(br);
             long num2 = br.BaseStream.Position + num;
             EndianReverser.getInt32(br);
-            int num3 = EndianReverser.getInt16(br);
-            if (num3 == 0)
+            int layerCount = EndianReverser.getInt16(br);
+            if (layerCount == 0)
             {
                 br.BaseStream.Position = num2;
             }
             else
             {
-                if (num3 < 0)
+                if (layerCount < 0)
                 {
-                    num3 = -num3;
+                    layerCount = -layerCount;
                 }
-                this.layers = new PSDLayer[num3];
-                for (int i = 0; i < num3; i++)
+                this.layers = new PSDLayer[layerCount];
+                for (int i = 0; i < layerCount; i++)
                 {
                     PSDLayer layer = new PSDLayer();
                     layer.load(br, bpp);

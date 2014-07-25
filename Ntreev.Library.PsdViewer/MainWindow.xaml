@@ -1,0 +1,12 @@
+﻿<Window x:Class="Ntreev.Library.PsdViewer.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="MainWindow" Height="350" Width="525">
+    <Grid>
+        <TreeView>
+            <Menu Height="100" Margin="0,0,0,-84" VerticalAlignment="Top" Width="100">
+                <MenuItem Header="MenuItem"/>
+            </Menu>
+        </TreeView>
+    </Grid>
+</Window>

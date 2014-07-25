@@ -1,12 +1,12 @@
-﻿namespace Ntreev.Library.PsdParser
-{
-    using System;
-    using System.IO;
+﻿using System;
+using System.IO;
 
-    public sealed class PSDColorModeInfo
+namespace Ntreev.Library.PsdParser
+{
+    public sealed class ColorModeData
     {
-        public byte[] data;
-        public int size;
+        private int size;
+        private byte[] data;
 
         public void load(BinaryReader br)
         {
@@ -25,6 +25,11 @@
             {
                 bw.Write(this.data);
             }
+        }
+
+        public byte[] Data
+        {
+            get { return this.data; }
         }
     }
 }

@@ -15,11 +15,12 @@
     <OutputType>Library</OutputType>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -31,6 +32,7 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>full</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
@@ -42,11 +44,16 @@
     <WarningLevel>4</WarningLevel>
     <DebugType>none</DebugType>
     <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
     <RootNamespace>Ntreev.Library.PsdParser</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ChannelType.cs" />
+    <Compile Include="ColorMode.cs" />
+    <Compile Include="ColorSpace.cs" />
+    <Compile Include="CompressionType.cs" />
     <Compile Include="IProperties.cs" />
     <Compile Include="IPropertiesExtension.cs" />
     <Compile Include="Properties.cs" />
@@ -66,18 +73,18 @@
     <Compile Include="PSD.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDBlendMode.cs" />
+    <Compile Include="BlendMode.cs" />
     <Compile Include="PSDChannelInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDColorModeInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDDisplayInfo.cs">
+    <Compile Include="DisplayInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDFontLayerInfo.cs" />
-    <Compile Include="PSDHeaderInfo.cs">
+    <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDLayer.cs">
@@ -92,7 +99,7 @@
     <Compile Include="PSDRect.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDResolutionInfo.cs">
+    <Compile Include="ResolutionInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PSDTypeToolObject.cs">
