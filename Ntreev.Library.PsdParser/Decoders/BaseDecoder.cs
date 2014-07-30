@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Library.PsdParser.Decoders
 {
@@ -15,7 +14,8 @@ namespace Ntreev.Library.PsdParser.Decoders
             int num = reader.ReadInt32();
             while (num-- > 0)
             {
-                DecoderFactory.DecodeFunc func = DecoderFactory.GetDecoder(reader.ReadAscii(4));
+                string osType = reader.ReadAscii(4);
+                DecoderFactory.DecodeFunc func = DecoderFactory.GetDecoder(osType);
                 if (func != null)
                 {
                     object item = func(reader, key);

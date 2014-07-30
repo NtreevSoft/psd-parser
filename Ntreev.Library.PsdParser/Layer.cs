@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
+using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class Layer : IProperties
+    public sealed class Layer : IImageSource
     {
         private int left, top, right, bottom;
         private int id;
@@ -16,10 +18,19 @@ namespace Ntreev.Library.PsdParser
         private LayerFlags flags;
         private int filter;
         private Properties props = new Properties();
-        private byte[] buffers;
-        
-        internal Layer(PSDReader reader, int bpp)
+        private List<Layer> childs = new List<Layer>();
+        private Layer[] childArray;
+        private Layer parent;
+        private Guid placedID;
+        private int depth;
+        private int index;
+        private PSD psd;
+
+        internal Layer(PSDReader reader, PSD psd, int bpp, int index)
         {
+            this.psd = psd;
+            this.index = index;
+            this.depth = bpp;
             this.top = reader.ReadInt32();
             this.left = reader.ReadInt32();
             this.bottom = reader.ReadInt32();
@@ -34,10 +45,13 @@ namespace Ntreev.Library.PsdParser
             {
                 throw new SystemException(string.Format("Too many channels {0}", channelCount));
             }
-            this.Channels = new ChannelInfo[channelCount];
+            this.Channels = new Channel[channelCount];
             for (int i = 0; i < channelCount; i++)
             {
-                this.Channels[i] = new ChannelInfo(reader, this.Width, this.Height);
+                ChannelType type = (ChannelType)reader.ReadInt16();
+                long size = reader.ReadLength();
+                //    this.size = reader.ReadLength();
+                this.Channels[i] = new Channel(type, this.Width, this.Height);
             }
             string str = reader.ReadAscii(4);
             if ("8BIM" != str)
@@ -52,35 +66,40 @@ namespace Ntreev.Library.PsdParser
             this.filter = reader.ReadByte(); // Filter
 
             long extraSize = reader.ReadUInt32(); // Length of the extra data field ( = the total length of the next five fields).
+            long end = reader.Position + extraSize;
 
             long position = reader.Position;
-            uint num7 = reader.ReadUInt32();
-            reader.Position += num7;
-            extraSize -= reader.Position - position;
+            LayerMask layerMask = new LayerMask(reader);
 
-            position = reader.Position;
-            new LayerBlendingRanges(reader);
-            extraSize -= reader.Position - position;
+            if (layerMask.Size > 0)
+            {
+                var mask = this.Channels.Where(item => item.Type == ChannelType.Mask).First();
+                mask.Width = layerMask.Width;
+                mask.Height = layerMask.Height;
+            }
 
-            position = reader.Position;
-            this.name = reader.ReadPascalString(4);
-            extraSize -= reader.Position - position;
+            
+
+            new LayerBlendingRanges(reader); // Layer blending ranges
+            this.name = reader.ReadPascalString(4); // Layer name: Pascal string, padded to a multiple of 4 bytes.
 
             LayerResource resource = new LayerResource();
-            
-            while (extraSize > 7L)
+
+            while (reader.Position < end)
             {
-                position = reader.Position;
-                resource.Load(reader);
-                extraSize -= reader.Position - position;
+                resource.Load(reader, index);
             }
 
             this.props.Add("Resources", resource);
 
-            if (extraSize > 0L)
-            {
-                reader.Position += extraSize;
-            }
+            //if (extraSize > 0L)
+            //{
+            //    reader.Position += extraSize;
+            //}
+
+            
+
+       
 
             this.id = resource.ToInt32("lyid.ID");
             if (resource.ContainsProperty("luni.Name") == true)
@@ -88,12 +107,19 @@ namespace Ntreev.Library.PsdParser
             this.drop = resource.drop;
             if (resource.ContainsProperty("lsct.SectionType") == true)
                 this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
+            if (resource.ContainsProperty("SoLd.Descriptor.Idnt") == true)
+                this.placedID = new Guid(resource.GetProperty("SoLd.Descriptor.Idnt") as string);
 
             if ((this.Width == 0) && (this.sectionType == 0))
             {
                 int qwer = 0;
                 //this.area = resource.typeToolObj2.area;
             }
+
+            if(reader.Version == 1)
+                System.Diagnostics.Trace.WriteLine(string.Format("{0}, {1}", this.id, this.name));
+            else
+                System.Diagnostics.Trace.WriteLine(string.Format("\t{0}, {1}", this.id, this.name));
 
             this.props.Add("ID", this.id);
             this.props.Add("Name", this.name);
@@ -107,55 +133,7 @@ namespace Ntreev.Library.PsdParser
             this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
         }
 
-        internal void LoadChannels(PSDReader reader, int bpp)
-        {
-            foreach (var item in this.Channels)
-            {
-                item.LoadImage(reader, bpp);
-            }
-        }
-
-        public byte[] MergedChannels
-        {
-            get
-            {
-                if (!this.isImageLayer)
-                {
-                    return null;
-                }
-
-                if (this.buffers == null)
-                {
-                    int length = this.Channels.Length;
-                    int num2 = this.Channels[0].Data.Length;
-                    byte[] buffer = new byte[(this.Width * this.Height) * length];
-                    int num3 = 0;
-                    for (int i = 0; i < num2; i++)
-                    {
-                        switch (length)
-                        {
-                            case 4:
-                                buffer[num3++] = this.Channels[3].Data[i];
-                                buffer[num3++] = this.Channels[2].Data[i];
-                                buffer[num3++] = this.Channels[1].Data[i];
-                                buffer[num3++] = this.Channels[0].Data[i];
-                                break;
-
-                            case 3:
-                                buffer[num3++] = this.Channels[2].Data[i];
-                                buffer[num3++] = this.Channels[1].Data[i];
-                                buffer[num3++] = this.Channels[0].Data[i];
-                                break;
-                        }
-                    }
-
-                    this.buffers = buffer;
-                }
-                return this.buffers;
-            }
-        }
-
-        public ChannelInfo[] Channels { get; internal set; }
+        public Channel[] Channels { get; internal set; }
 
         public bool drop { get; internal set; }
 
@@ -191,15 +169,7 @@ namespace Ntreev.Library.PsdParser
         {
             get
             {
-                return (((float) this.opacity) / 255f);
-            }
-        }
-
-        public int Pitch
-        {
-            get
-            {
-                return (this.Width * this.Channels.Length);
+                return (((float)this.opacity) / 255f);
             }
         }
 
@@ -221,7 +191,7 @@ namespace Ntreev.Library.PsdParser
         public int Bottom
         {
             get { return this.bottom; }
-            }
+        }
 
         public int Width
         {
@@ -233,46 +203,110 @@ namespace Ntreev.Library.PsdParser
             get { return this.bottom - this.top; }
         }
 
+        public int Depth
+        {
+            get { return this.depth; }
+        }
+
+        public int Pitch
+        {
+            get
+            {
+                return (this.Width * this.Channels.Length);
+            }
+        }
+
         public BlendMode BlendMode
         {
             get { return this.blendMode; }
         }
 
+        public Layer Parent
+        {
+            get { return this.parent; }
+        }
+
         public Layer[] Childs
         {
-            get { return null; }
+            get
+            {
+                if (this.childArray == null)
+                {
+                    this.childArray = this.childs.ToArray();
+                }
+
+                return this.childArray;
+            }
         }
 
-       
-
-        #region IProperties
-
-        bool IProperties.Contains(string property)
+        public IProperties Properties
         {
-            return this.props.ContainsProperty(property);
+            get { return this.props; }
         }
 
-        object IProperties.this[string property]
+        public Guid PlacedID
         {
-            get { return this.props[property]; }
+            get { return this.placedID; }
         }
 
-        int IProperties.Count
+        public PSD PSD
         {
-            get { return this.props.Count; }
+            get { return this.psd; }
         }
 
-        System.Collections.Generic.IEnumerator<System.Collections.Generic.KeyValuePair<string, object>> System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, object>>.GetEnumerator()
+        public LinkedLayer LinkedLayer
         {
-            return this.props.GetEnumerator();
+            get;
+            internal set;
         }
 
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        internal void LoadChannels(PSDReader reader, int bpp)
         {
-            return this.props.GetEnumerator();
+            foreach (var item in this.Channels)
+            {
+                CompressionType compressionType = (CompressionType)reader.ReadInt16();
+
+                if (this.name == "Layer 12" && reader.Version == 2 && this.index == 7)
+                {
+                    int qwer = 0;
+                }
+                item.LoadHeader(reader, compressionType);
+                item.Load(reader, bpp, compressionType);
+            }
         }
 
-        #endregion
+        internal static Layer[] Initialize(Layer parent, Layer[] layers)
+        {
+            Stack<Layer> stack = new Stack<Layer>();
+            List<Layer> rootLayers = new List<Layer>();
+
+            foreach (var item in layers.Reverse())
+            {
+                if (item.SectionType == SectionType.Divider == true)
+                {
+                    parent = stack.Pop();
+                    continue;
+                }
+
+                if (parent != null)
+                {
+                    parent.childs.Insert(0, item);
+                    item.parent = parent;
+                }
+                else
+                {
+                    rootLayers.Insert(0, item);
+                }
+
+                if (item.sectionType == SectionType.Opend || item.sectionType == SectionType.Closed)
+                {
+                    stack.Push(parent);
+                    parent = item;
+                }
+            }
+
+            return rootLayers.ToArray();
+        }
     }
 }
 

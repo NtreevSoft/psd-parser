@@ -20,7 +20,7 @@ namespace Ntreev.Library.PsdParser
             this.Add("WarpVersion", reader.ReadInt16());
             this.Add("WarpDescVersion", reader.ReadInt32());
             this.Add("Warp", new DescriptorStructure(reader));
-            this.Add("Bounds", reader.ReadDoubles(4));
+            this.Add("Bounds", reader.ReadDoubles(2));
         }
 
         //public PSDRect area

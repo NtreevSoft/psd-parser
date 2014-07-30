@@ -60,11 +60,16 @@ namespace Ntreev.Library.PsdParser
         //public PSDTypeToolObject typeToolObj = new PSDTypeToolObject();
         //public IProperties typeToolObj2 = new PSDTypeToolObject2();
 
-        internal void Load(PSDReader reader)
+        internal void Load(PSDReader reader, int index)
         {
             string str = reader.ReadAscii(4);
             string str2 = reader.ReadAscii(4);
             
+            if(reader.Version == 2)
+            {
+                int qwer = 0;
+
+        }
                 
             int num = reader.ReadInt32();
             if (str != "8BIM")
@@ -125,6 +130,10 @@ namespace Ntreev.Library.PsdParser
                     break;
                 case "SoLd":
                     {
+                        if (index == 129)
+                        {
+                            int qwer = 0;
+                        }
                         Properties props = new Properties();
                         props.Add("ID", reader.ReadInt32());
                         props.Add("Version", reader.ReadInt32());
@@ -207,12 +216,13 @@ namespace Ntreev.Library.PsdParser
                     }
                     break;
             }
-            reader.Position = position;
-            reader.Position += num;
-            if ((num % 2) != 0)
+
+            if (reader.Position > position + num)
             {
-                reader.Position += 1L;
+               throw new Exception();
             }
+
+            reader.Position = position + num;
 
             if (this.ContainsKey(str2) == false)
             {

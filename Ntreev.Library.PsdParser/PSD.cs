@@ -1,25 +1,39 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSD
+    public sealed class PSD : IImageSource
     {
         private ColorModeData colorModeData;
         private DisplayInfo displayInfo;
         private FileHeader fileHeader;
         private Layer[] layers;
         private ResolutionInfo resolutionInfo;
+        private Channel[] channels;
+        private LinkedLayer[] linkedLayers;
+        private GlobalLayerMask globalLayerMask;
 
         public void Read(string filename)
         {
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                this.Read(stream);
+            }
+        }
+
+        public void Read(Stream stream)
+        {
             using (PSDReader reader = new PSDReader(stream))
             {
                 this.ReadFileHeader(reader);
                 this.ReadColorModeData(reader);
                 this.ReadImageResources(reader);
                 this.ReadLayers(reader);
+                this.ReadImageData(reader);
             }
         }
 
@@ -48,6 +62,36 @@ namespace Ntreev.Library.PsdParser
             get { return this.layers; }
         }
 
+        public LinkedLayer[] LinkedLayers
+        {
+            get { return this.linkedLayers; }
+        }
+
+        public int Width
+        {
+            get { return this.fileHeader.Width; }
+        }
+
+        public int Height
+        {
+            get { return this.fileHeader.Height; }
+        }
+
+        public int Depth
+        {
+            get { return this.fileHeader.Depth; }
+        }
+
+        public Channel[] Channels
+        {
+            get { return this.channels; }
+        }
+
+        public GlobalLayerMask GlobalLayerMask
+        {
+            get { return this.globalLayerMask; }
+        }
+
         private void ReadColorModeData(PSDReader reader)
         {
             this.colorModeData = new ColorModeData(reader);
@@ -56,7 +100,8 @@ namespace Ntreev.Library.PsdParser
         private void ReadFileHeader(PSDReader reader)
         {
             this.fileHeader = new FileHeader(reader);
-            if (this.fileHeader.BPP != 8)
+            reader.Version = this.fileHeader.Version;
+            if (this.fileHeader.Depth != 8)
             {
                 throw new SystemException("For now, only Support 8 Bit Per Channel");
             }
@@ -104,8 +149,129 @@ namespace Ntreev.Library.PsdParser
 
         private void ReadLayers(PSDReader reader)
         {
-            this.layers = LayerInfo.LoadLayers(reader, this.fileHeader.BPP);
+            if (reader.Version == 2)
+            {
+                int qewr = 0;
+            }
+            int length = (int)reader.ReadLength();
+            long end = reader.Position + length;
+
+            this.layers = LayerInfo.ReadLayers(reader, this, this.fileHeader.Depth);
+            this.globalLayerMask = new GlobalLayerMask(reader);
+
+            List<string> keys = new List<string>(new string[]{"LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD",});
+            List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
+
+            string oldKey = string.Empty;
+
+            
+            
+            while (reader.Position < end)
+            {
+                string signature = reader.ReadAscii(4);
+                string key = reader.ReadAscii(4);
+                if (signature != "8BIM" && signature != "8B64")
+                    throw new Exception();
+
+                long ssss = reader.Position;
+
+                long l = 0;
+                long p;
+
+                if (keys.Contains(key) == true && reader.Version == 2)
+                {
+                    l = reader.ReadInt64();
+                    p = reader.Position;
+                }
+                else
+                {
+                    l = reader.ReadInt32();
+                    p = reader.Position;
+                }
+
+                switch (key)
+                {
+                    case "lnkD":
+                    case "lnk2":
+                    case "lnk3":
+                        {
+                            linkedLayers.Add(new LinkedLayer(reader));
+                        }
+                        break;
+                    case "Patt":
+                        {
+                            //var ddddddd = reader.ReadInt32();
+                        }
+                        break;
+                    case "Txt2":
+                        {
+                            //l = (l + 0 - 1) / 0 * 0;
+                            //reader.readp
+
+                            //reader.ReadBytes("DocumentResources".Length + 3);
+                            //var qwer = reader.ReadAscii(1000);
+                            //new Ntreev.Library.PsdParser.Decoders.DecoderEngineData(reader, 0);
+                            l += 2;
+                        }
+                        break;
+                }
+                reader.Position = p + l;
+                if (l % 2 != 0)
+                    reader.Position++;
+                oldKey = key;
+            }
+            this.linkedLayers = linkedLayers.ToArray();
+
+            this.SetLinkedLayer(this.layers);
         }
+
+        private void SetLinkedLayer(Layer[] layers)
+        {
+            foreach (var item in layers)
+            {
+                if (item.PlacedID != Guid.Empty)
+                {
+                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID).FirstOrDefault();
+                }
+
+                this.SetLinkedLayer(item.Childs);
+            }
+        }
+
+        private void ReadImageData(PSDReader reader)
+        {
+            if (reader.Position >= reader.Length)
+            {
+                int qwer = 0;
+            }
+            CompressionType compressionType = (CompressionType)reader.ReadInt16();
+
+            ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha, };
+            Channel[] channels = new Channel[this.fileHeader.NumberOfChannels];
+
+            for(int i=0; i <channels.Length ; i++)
+            {
+                channels[i] = new Channel(types[i], this.Width, this.Height);
+            }
+
+            for (int i = 0; i < channels.Length; i++)
+            {
+                channels[i] = new Channel(types[i], this.Width, this.Height);
+                channels[i].LoadHeader(reader, compressionType);
+            }
+
+            for (int i = 0; i < channels.Length; i++)
+            {
+                channels[i].Load(reader, this.fileHeader.Depth, compressionType);
+            }
+
+            this.channels = channels.OrderBy(item => item.Type).ToArray();
+        }
+
+        float IImageSource.Opacity
+        {
+            get { return 1.0f; }
+        }    
     }
 }
 

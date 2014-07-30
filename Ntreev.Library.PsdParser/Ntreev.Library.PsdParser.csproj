@@ -15,12 +15,11 @@
     <OutputType>Library</OutputType>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -49,7 +48,17 @@
   <PropertyGroup>
     <RootNamespace>Ntreev.Library.PsdParser</RootNamespace>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_Unity|AnyCPU'">
+    <OutputPath>bin\Release_Unity\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <Optimize>true</Optimize>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
   <ItemGroup>
+    <Compile Include="ChannelRLE.cs" />
     <Compile Include="ChannelType.cs" />
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
@@ -67,10 +76,15 @@
     <Compile Include="Decoders\DecoderReference.cs" />
     <Compile Include="Decoders\DecoderUnitFloat.cs" />
     <Compile Include="Decoders\DecoderUnknownOSType.cs" />
+    <Compile Include="Extension.cs" />
+    <Compile Include="GlobalLayerMask.cs" />
+    <Compile Include="IImageSource.cs" />
     <Compile Include="IProperties.cs" />
     <Compile Include="IPropertiesExtension.cs" />
     <Compile Include="LayerBlendingRanges.cs" />
     <Compile Include="LayerFlags.cs" />
+    <Compile Include="LayerMask.cs" />
+    <Compile Include="LinkedLayer.cs" />
     <Compile Include="SectionType.cs" />
     <Compile Include="Properties.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -85,7 +99,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BlendMode.cs" />
-    <Compile Include="ChannelInfo.cs">
+    <Compile Include="Channel.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ColorModeData.cs">

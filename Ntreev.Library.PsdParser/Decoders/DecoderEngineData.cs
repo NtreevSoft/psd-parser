@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Ntreev.Library.PsdParser.Decoders
 {
@@ -18,6 +17,11 @@ namespace Ntreev.Library.PsdParser.Decoders
                 byte ch = reader.ReadByte();
                 //assert ch == 10;
             }
+            this.ReadProperties(reader, 0, this);
+        }
+
+        public DecoderEngineData(PSDReader reader, int index)
+        {
             this.ReadProperties(reader, 0, this);
         }
 
@@ -77,7 +81,7 @@ namespace Ntreev.Library.PsdParser.Decoders
                     //assert c == 9;
                     c = (char)reader.ReadByte();
                     //assert c == '/' : "unknown char: " + c + " on level: " + level;
-                    string name = "";
+                    string name = string.Empty;
                     while (true)
                     {
                         c = (char)reader.ReadByte();
@@ -97,7 +101,8 @@ namespace Ntreev.Library.PsdParser.Decoders
                     }
                     else if (c == ' ')
                     {
-                        props.Add(name, ReadValue(reader, level + 1));
+                        object value = ReadValue(reader, level + 1);
+                        props.Add(name, value);
                     }
                     else
                     {
@@ -209,7 +214,7 @@ namespace Ntreev.Library.PsdParser.Decoders
                     if (bool.TryParse(val, out f) == true)
                         return f;
                 }
-
+                
                 return val;
                 //if (val.Equals("true") || val.Equals("false"))
                 //{

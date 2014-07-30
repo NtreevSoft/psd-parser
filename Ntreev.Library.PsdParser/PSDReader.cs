@@ -7,6 +7,7 @@ namespace Ntreev.Library.PsdParser
     class PSDReader : IDisposable
     {
         private readonly BinaryReader reader;
+        private int version = 1;
 
         public PSDReader(BinaryReader reader)
         {
@@ -21,14 +22,15 @@ namespace Ntreev.Library.PsdParser
 
         public void Dispose()
         {
-            if (this.reader is InternalBinaryReader == true)
-                this.reader.Dispose();
-            else
-                this.reader.Close();
+            this.reader.Close();
         }
 
         public string ReadAscii(int length)
         {
+            if (length > 1000)
+            {
+                int qwer = 0;
+            }
             return Encoding.ASCII.GetString(this.reader.ReadBytes(length));
         }
 
@@ -72,30 +74,29 @@ namespace Ntreev.Library.PsdParser
                 bytes[index + 1] = num5;
             }
             str = Encoding.Unicode.GetString(bytes);
-            for (int j = num2 + 1; (j % num) != 0; j++)
-            {
-                Stream stream2 = this.reader.BaseStream;
-                stream2.Position += 1L;
-            }
+            //for (int j = num2 + 1; (j % num) != 0; j++)
+            //{
+            //    Stream stream2 = this.reader.BaseStream;
+            //    stream2.Position += 1L;
+            //}
             return str;
         }
 
         public string ReadUnicodeString2()
         {
-            int num = this.ReadInt32();
-            if (num == 0)
-            {
-                return "";
-            }
-            byte[] bytes = this.ReadBytes(num * 2);
-            for (int i = 0; i < num; i++)
+            int length = this.ReadInt32();
+            if (length == 0)
+                return string.Empty;
+
+            byte[] bytes = this.ReadBytes(length * 2);
+            for (int i = 0; i < length; i++)
             {
                 int index = i * 2;
-                byte num4 = bytes[index];
+                byte b = bytes[index];
                 bytes[index] = bytes[index + 1];
-                bytes[index + 1] = num4;
+                bytes[index + 1] = b;
             }
-            return Encoding.Unicode.GetString(bytes);
+            return Encoding.Unicode.GetString(bytes, 0, (length - 1) * 2);
         }
 
         public string ReadStringOrKey()
@@ -104,8 +105,6 @@ namespace Ntreev.Library.PsdParser
             length = (length > 0) ? length : 4;
             return this.ReadAscii(length);
         }
-
-        
 
         public int Read(byte[] buffer, int index, int count)
         {
@@ -137,7 +136,7 @@ namespace Ntreev.Library.PsdParser
             double[] values = new double[count];
             for (int i = 0; i < count; i++)
             {
-                values[i] = this.ReverseValue(this.reader.ReadDouble());
+                values[i] = this.ReadDouble();
             }
             return values;
         }
@@ -172,6 +171,13 @@ namespace Ntreev.Library.PsdParser
             return this.ReverseValue(this.reader.ReadUInt64());
         }
 
+        public int ReadLength()
+        {
+            if (this.version == 1)
+                return this.ReadInt32();
+            return (int)this.ReadInt64();
+        }
+
         public long Position
         {
             get { return this.reader.BaseStream.Position; }
@@ -179,6 +185,22 @@ namespace Ntreev.Library.PsdParser
             {
                 this.reader.BaseStream.Position = value;
             }
+        }
+
+        public long Length
+        {
+            get { return this.reader.BaseStream.Length; }
+        }
+
+        public int Version
+        {
+            get { return this.version; }
+            set { this.version = value; }
+        }
+
+        internal BinaryReader InternalReader
+        {
+            get { return this.reader; }
         }
 
         private bool ReverseValue(bool value)
@@ -245,6 +267,8 @@ namespace Ntreev.Library.PsdParser
 
             }
         }
+
+        
     }
 
     //internal class reader

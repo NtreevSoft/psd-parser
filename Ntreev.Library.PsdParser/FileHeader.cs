@@ -20,7 +20,7 @@ namespace Ntreev.Library.PsdParser
             this.signature = reader.ReadAscii(4);
             this.version = reader.ReadInt16();
             this.reserved = reader.ReadBytes(6);
-            if ((this.signature != "8BPS") || (this.version != 1))
+            if ((this.signature != "8BPS") || (this.version != 1 && this.version != 2))
             {
                 throw new Exception("Invalid PSD file");
             }
@@ -31,7 +31,7 @@ namespace Ntreev.Library.PsdParser
             this.colorMode = (ColorMode)reader.ReadInt16();
         }
 
-        public int BPP
+        public int Depth
         {
             get { return this.bpp; }
         }
@@ -54,6 +54,11 @@ namespace Ntreev.Library.PsdParser
         public int Width
         {
             get { return this.width; }
+        }
+
+        public int Version
+        {
+            get { return this.version; }
         }
     }
 }

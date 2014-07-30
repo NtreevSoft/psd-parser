@@ -1,11 +1,31 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
     sealed class PSDUtil
     {
+        public static byte[] decodeRLE(byte[] source)
+        {
+            List<byte> dest = new List<byte>();
+            byte runLength;
+
+            for (int i = 1; i < source.Length; i += 2)
+            {
+                runLength = source[i - 1];
+
+                while (runLength > 0)
+                {
+                    dest.Add(source[i]);
+                    runLength--;
+                }
+            }
+            return dest.ToArray();
+        }
+
         public static void decodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)
         {
             int index = 0;
@@ -195,6 +215,20 @@ namespace Ntreev.Library.PsdParser
                     return BlendMode.Luminosity;
             }
             return BlendMode.Normal;
+        }
+
+        public static int DepthToPitch(int depth, int width)
+        {
+            switch (depth)
+            {
+                case 1:
+                    return width;//NOT Sure
+                case 8:
+                    return width;
+                case 16:
+                    return width * 2;
+            }
+            throw new NotSupportedException();
         }
     }
 }
