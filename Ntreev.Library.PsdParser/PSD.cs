@@ -62,6 +62,11 @@ namespace Ntreev.Library.PsdParser
             get { return this.layers; }
         }
 
+        public LinkedLayer[] LinkedLayers
+        {
+            get { return this.linkedLayers; }
+        }
+
         public int Width
         {
             get { return this.fileHeader.Width; }
