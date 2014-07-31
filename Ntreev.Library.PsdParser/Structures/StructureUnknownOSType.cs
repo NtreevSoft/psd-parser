@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderUnknownOSType : Properties
+    class StructureUnknownOSType : Properties
     {
         private readonly string value;
 
-        public DecoderUnknownOSType(string value)
+        public StructureUnknownOSType(string value)
         {
             this.value = value;
             this.Add("Value", this.value);

@@ -27,10 +27,6 @@ namespace Ntreev.Library.PsdParser
 
         public string ReadAscii(int length)
         {
-            if (length > 1000)
-            {
-                int qwer = 0;
-            }
             return Encoding.ASCII.GetString(this.reader.ReadBytes(length));
         }
 

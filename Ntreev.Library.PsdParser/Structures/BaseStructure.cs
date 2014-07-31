@@ -3,19 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class BaseDecoder
+    class BaseStructure
     {
         public List<object> items = new List<object>();
 
-        public BaseDecoder(PSDReader reader, string key)
+        public BaseStructure(PSDReader reader, string key)
         {
             int num = reader.ReadInt32();
             while (num-- > 0)
             {
                 string osType = reader.ReadAscii(4);
-                DecoderFactory.DecodeFunc func = DecoderFactory.GetDecoder(osType);
+                StructureFactory.DecodeFunc func = StructureFactory.GetDecoder(osType);
                 if (func != null)
                 {
                     object item = func(reader, key);

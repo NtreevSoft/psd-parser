@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderList : BaseDecoder
+    class StructureReference : BaseStructure
     {
-        public DecoderList(PSDReader reader, string key)
+        public StructureReference(PSDReader reader, string key)
             : base(reader, key)
         {
         }

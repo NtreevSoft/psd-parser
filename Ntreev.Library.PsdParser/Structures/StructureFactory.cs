@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderFactory
+    class StructureFactory
     {
         public const string ALIAS = "alis";
         public const string BOOLEAN = "bool";
@@ -31,7 +31,7 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_ALIAS(PSDReader reader, string key)
         {
-            return new DecoderAlias(reader);
+            return new StructureAlias(reader);
         }
 
         private static object decode_BOOLEAN(PSDReader reader, string key)
@@ -41,17 +41,17 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_CLASS(PSDReader reader, string key)
         {
-            return new DecoderClass(reader);
+            return new StructureClass(reader);
         }
 
         private static object decode_CLASS1(PSDReader reader, string key)
         {
-            return new DecoderClass(reader);
+            return new StructureClass(reader);
         }
 
         private static object decode_CLASS2(PSDReader reader, string key)
         {
-            return new DecoderClass(reader);
+            return new StructureClass(reader);
         }
 
         private static object decode_DESCRIPTOR(PSDReader reader, string key)
@@ -66,12 +66,12 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_ENUMERATED(PSDReader reader, string key)
         {
-            return new DecoderEnumerate(reader);
+            return new StructureEnumerate(reader);
         }
 
         private static object decode_ENUMERATED_REFERENCE(PSDReader reader, string key)
         {
-            return new DecoderEnumerateReference(reader);
+            return new StructureEnumerateReference(reader);
         }
 
         private static object decode_GLOBAL_OBJECT(PSDReader reader, string key)
@@ -81,12 +81,12 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_IDENTIFIER(PSDReader reader, string key)
         {
-            return new DecoderUnknownOSType("Cannot decode IDENTIFIER data");
+            return new StructureUnknownOSType("Cannot decode IDENTIFIER data");
         }
 
         private static object decode_INDEX(PSDReader reader, string key)
         {
-            return new DecoderUnknownOSType("Cannot decode INDEX data");
+            return new StructureUnknownOSType("Cannot decode INDEX data");
         }
 
         private static object decode_INTEGER(PSDReader reader, string key)
@@ -96,36 +96,43 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_LIST(PSDReader reader, string key)
         {
-            return new DecoderList(reader, key);
+            return new StructureList(reader, key);
         }
 
         private static object decode_NAME(PSDReader reader, string key)
         {
-            return new DecoderUnknownOSType("Cannot decode NAME data");
+            return new StructureUnknownOSType("Cannot decode NAME data");
         }
+
+        private static object docode_OBJECTARRAY(PSDReader reader, string key)
+        {
+            return new StructureObjectArray(reader, key);
+        }
+
+        
 
         private static object decode_OFFSET(PSDReader reader, string key)
         {
-            return new DecoderOffset(reader);
+            return new StructureOffset(reader);
         }
 
         private static object decode_PROPERTY(PSDReader reader, string key)
         {
-            return new DecoderProperty(reader);
+            return new StructureProperty(reader);
         }
 
         private static object decode_RAW_DATA(PSDReader reader, string key)
         {
             if (key == "EngineData")
             {
-                return new DecoderEngineData(reader);
+                return new StructureEngineData(reader);
             }
-            return new DecoderUnknownOSType("Cannot decode RAW_DATA data");
+            return new StructureUnknownOSType("Cannot decode RAW_DATA data");
         }
 
         private static object decode_REFERENCE(PSDReader reader, string key)
         {
-            return new DecoderReference(reader, key);
+            return new StructureReference(reader, key);
         }
 
         private static object decode_STRING(PSDReader reader, string key)
@@ -135,7 +142,7 @@ namespace Ntreev.Library.PsdParser.Decoders
 
         private static object decode_UNIT_FLOAT(PSDReader reader, string key)
         {
-            return new DecoderUnitFloat(reader);
+            return new StructureUnitFloat(reader);
         }
 
         public static DecodeFunc GetDecoder(string ostype)
@@ -143,67 +150,70 @@ namespace Ntreev.Library.PsdParser.Decoders
             switch (ostype)
             {
                 case "obj ":
-                    return new DecodeFunc(DecoderFactory.decode_REFERENCE);
+                    return new DecodeFunc(StructureFactory.decode_REFERENCE);
 
                 case "Objc":
-                    return new DecodeFunc(DecoderFactory.decode_DESCRIPTOR);
+                    return new DecodeFunc(StructureFactory.decode_DESCRIPTOR);
 
                 case "VlLs":
-                    return new DecodeFunc(DecoderFactory.decode_LIST);
+                    return new DecodeFunc(StructureFactory.decode_LIST);
 
                 case "doub":
-                    return new DecodeFunc(DecoderFactory.decode_DOUBLE);
+                    return new DecodeFunc(StructureFactory.decode_DOUBLE);
 
                 case "UntF":
-                    return new DecodeFunc(DecoderFactory.decode_UNIT_FLOAT);
+                    return new DecodeFunc(StructureFactory.decode_UNIT_FLOAT);
 
                 case "TEXT":
-                    return new DecodeFunc(DecoderFactory.decode_STRING);
+                    return new DecodeFunc(StructureFactory.decode_STRING);
 
                 case "enum":
-                    return new DecodeFunc(DecoderFactory.decode_ENUMERATED);
+                    return new DecodeFunc(StructureFactory.decode_ENUMERATED);
 
                 case "long":
-                    return new DecodeFunc(DecoderFactory.decode_INTEGER);
+                    return new DecodeFunc(StructureFactory.decode_INTEGER);
 
                 case "bool":
-                    return new DecodeFunc(DecoderFactory.decode_BOOLEAN);
+                    return new DecodeFunc(StructureFactory.decode_BOOLEAN);
 
                 case "GlbO":
-                    return new DecodeFunc(DecoderFactory.decode_GLOBAL_OBJECT);
+                    return new DecodeFunc(StructureFactory.decode_GLOBAL_OBJECT);
 
                 case "type":
-                    return new DecodeFunc(DecoderFactory.decode_CLASS1);
+                    return new DecodeFunc(StructureFactory.decode_CLASS1);
 
                 case "GlbC":
-                    return new DecodeFunc(DecoderFactory.decode_CLASS2);
+                    return new DecodeFunc(StructureFactory.decode_CLASS2);
 
                 case "alis":
-                    return new DecodeFunc(DecoderFactory.decode_ALIAS);
+                    return new DecodeFunc(StructureFactory.decode_ALIAS);
 
                 case "tdta":
-                    return new DecodeFunc(DecoderFactory.decode_RAW_DATA);
+                    return new DecodeFunc(StructureFactory.decode_RAW_DATA);
 
                 case "prop":
-                    return new DecodeFunc(DecoderFactory.decode_PROPERTY);
+                    return new DecodeFunc(StructureFactory.decode_PROPERTY);
 
                 case "Clss":
-                    return new DecodeFunc(DecoderFactory.decode_CLASS);
+                    return new DecodeFunc(StructureFactory.decode_CLASS);
 
                 case "Enmr":
-                    return new DecodeFunc(DecoderFactory.decode_ENUMERATED);
+                    return new DecodeFunc(StructureFactory.decode_ENUMERATED);
 
                 case "rele":
-                    return new DecodeFunc(DecoderFactory.decode_OFFSET);
+                    return new DecodeFunc(StructureFactory.decode_OFFSET);
 
                 case "Idnt":
-                    return new DecodeFunc(DecoderFactory.decode_IDENTIFIER);
+                    return new DecodeFunc(StructureFactory.decode_IDENTIFIER);
 
                 case "indx":
-                    return new DecodeFunc(DecoderFactory.decode_INDEX);
+                    return new DecodeFunc(StructureFactory.decode_INDEX);
 
                 case "name":
-                    return new DecodeFunc(DecoderFactory.decode_NAME);
+                    return new DecodeFunc(StructureFactory.decode_NAME);
+
+                case "ObAr":
+                    return new DecodeFunc(StructureFactory.docode_OBJECTARRAY);
             }
             return null;
         }

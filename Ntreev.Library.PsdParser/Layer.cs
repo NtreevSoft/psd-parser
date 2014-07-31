@@ -25,6 +25,8 @@ namespace Ntreev.Library.PsdParser
         private int depth;
         private int index;
         private PSD psd;
+        private Guid placedID2;
+        private Guid placedID3;
 
         internal Layer(PSDReader reader, PSD psd, int bpp, int index)
         {
@@ -78,8 +80,6 @@ namespace Ntreev.Library.PsdParser
                 mask.Height = layerMask.Height;
             }
 
-            
-
             new LayerBlendingRanges(reader); // Layer blending ranges
             this.name = reader.ReadPascalString(4); // Layer name: Pascal string, padded to a multiple of 4 bytes.
 
@@ -92,34 +92,18 @@ namespace Ntreev.Library.PsdParser
 
             this.props.Add("Resources", resource);
 
-            //if (extraSize > 0L)
-            //{
-            //    reader.Position += extraSize;
-            //}
-
-            
-
-       
-
             this.id = resource.ToInt32("lyid.ID");
             if (resource.ContainsProperty("luni.Name") == true)
                 this.name = resource.ToString("luni.Name");
-            this.drop = resource.drop;
             if (resource.ContainsProperty("lsct.SectionType") == true)
                 this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
             if (resource.ContainsProperty("SoLd.Descriptor.Idnt") == true)
                 this.placedID = new Guid(resource.GetProperty("SoLd.Descriptor.Idnt") as string);
+            if (resource.ContainsProperty("SoLd.Descriptor.placed") == true)
+                this.placedID2 = new Guid(resource.GetProperty("SoLd.Descriptor.placed") as string);
+            if (resource.ContainsProperty("PlLd.UniqueID") == true)
+                this.placedID3 = new Guid(resource.GetProperty("PlLd.UniqueID") as string);
 
-            if ((this.Width == 0) && (this.sectionType == 0))
-            {
-                int qwer = 0;
-                //this.area = resource.typeToolObj2.area;
-            }
-
-            if(reader.Version == 1)
-                System.Diagnostics.Trace.WriteLine(string.Format("{0}, {1}", this.id, this.name));
-            else
-                System.Diagnostics.Trace.WriteLine(string.Format("\t{0}, {1}", this.id, this.name));
 
             this.props.Add("ID", this.id);
             this.props.Add("Name", this.name);
@@ -135,30 +119,12 @@ namespace Ntreev.Library.PsdParser
 
         public Channel[] Channels { get; internal set; }
 
-        public bool drop { get; internal set; }
-
         public SectionType SectionType
         {
             get { return this.sectionType; }
         }
 
         public int ID { get { return this.id; } }
-
-        public bool isImageLayer
-        {
-            get
-            {
-                return (((!this.drop && (this.Width > 0)) && (this.Height > 0)) && (this.Channels.Length > 0));
-            }
-        }
-
-        public bool isTextLayer
-        {
-            get
-            {
-                return this.props.ContainsProperty("TypeToolInfo");
-            }
-        }
 
         public string Name
         {
@@ -249,6 +215,16 @@ namespace Ntreev.Library.PsdParser
             get { return this.placedID; }
         }
 
+        public Guid PlacedID2
+        {
+            get { return this.placedID2; }
+        }
+
+        public Guid PlacedID3
+        {
+            get { return this.placedID3; }
+        }
+
         public PSD PSD
         {
             get { return this.psd; }
@@ -265,11 +241,6 @@ namespace Ntreev.Library.PsdParser
             foreach (var item in this.Channels)
             {
                 CompressionType compressionType = (CompressionType)reader.ReadInt16();
-
-                if (this.name == "Layer 12" && reader.Version == 2 && this.index == 7)
-                {
-                    int qwer = 0;
-                }
                 item.LoadHeader(reader, compressionType);
                 item.Load(reader, bpp, compressionType);
             }

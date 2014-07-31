@@ -56,6 +56,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ChannelRLE.cs" />
@@ -63,19 +64,20 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
-    <Compile Include="Decoders\BaseDecoder.cs" />
-    <Compile Include="Decoders\DecoderFactory.cs" />
-    <Compile Include="Decoders\DecoderAlias.cs" />
-    <Compile Include="Decoders\DecoderClass.cs" />
-    <Compile Include="Decoders\DecoderEngineData.cs" />
-    <Compile Include="Decoders\DecoderEnumerate.cs" />
-    <Compile Include="Decoders\DecoderEnumerateReference.cs" />
-    <Compile Include="Decoders\DecoderList.cs" />
-    <Compile Include="Decoders\DecoderOffset.cs" />
-    <Compile Include="Decoders\DecoderProperty.cs" />
-    <Compile Include="Decoders\DecoderReference.cs" />
-    <Compile Include="Decoders\DecoderUnitFloat.cs" />
-    <Compile Include="Decoders\DecoderUnknownOSType.cs" />
+    <Compile Include="Structures\BaseStructure.cs" />
+    <Compile Include="Structures\StructureFactory.cs" />
+    <Compile Include="Structures\StructureAlias.cs" />
+    <Compile Include="Structures\StructureClass.cs" />
+    <Compile Include="Structures\StructureEngineData.cs" />
+    <Compile Include="Structures\StructureEnumerate.cs" />
+    <Compile Include="Structures\StructureEnumerateReference.cs" />
+    <Compile Include="Structures\StructureList.cs" />
+    <Compile Include="Structures\StructureObjectArray.cs" />
+    <Compile Include="Structures\StructureOffset.cs" />
+    <Compile Include="Structures\StructureProperty.cs" />
+    <Compile Include="Structures\StructureReference.cs" />
+    <Compile Include="Structures\StructureUnitFloat.cs" />
+    <Compile Include="Structures\StructureUnknownOSType.cs" />
     <Compile Include="Extension.cs" />
     <Compile Include="GlobalLayerMask.cs" />
     <Compile Include="IImageSource.cs" />

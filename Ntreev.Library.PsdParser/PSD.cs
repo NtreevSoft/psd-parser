@@ -62,11 +62,6 @@ namespace Ntreev.Library.PsdParser
             get { return this.layers; }
         }
 
-        public LinkedLayer[] LinkedLayers
-        {
-            get { return this.linkedLayers; }
-        }
-
         public int Width
         {
             get { return this.fileHeader.Width; }
@@ -149,11 +144,7 @@ namespace Ntreev.Library.PsdParser
 
         private void ReadLayers(PSDReader reader)
         {
-            if (reader.Version == 2)
-            {
-                int qewr = 0;
-            }
-            int length = (int)reader.ReadLength();
+            long length = reader.ReadLength();
             long end = reader.Position + length;
 
             this.layers = LayerInfo.ReadLayers(reader, this, this.fileHeader.Depth);
@@ -162,16 +153,15 @@ namespace Ntreev.Library.PsdParser
             List<string> keys = new List<string>(new string[]{"LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD",});
             List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
 
-            string oldKey = string.Empty;
+            List<string> kkk = new List<string>();
 
-            
-            
             while (reader.Position < end)
             {
                 string signature = reader.ReadAscii(4);
                 string key = reader.ReadAscii(4);
                 if (signature != "8BIM" && signature != "8B64")
                     throw new Exception();
+                kkk.Add(key);
 
                 long ssss = reader.Position;
 
@@ -195,22 +185,23 @@ namespace Ntreev.Library.PsdParser
                     case "lnk2":
                     case "lnk3":
                         {
-                            linkedLayers.Add(new LinkedLayer(reader));
+                            long e = reader.Position + l;
+                            while (reader.Position < e)
+                            {
+                                //long p1 = reader.Position;
+                                linkedLayers.Add(new LinkedLayer(reader));
+                                //long l2 = (reader.Position - p1) % 4;
+                                //reader.ReadBytes((int)l2);
+                            }
                         }
                         break;
                     case "Patt":
                         {
-                            //var ddddddd = reader.ReadInt32();
+
                         }
                         break;
                     case "Txt2":
                         {
-                            //l = (l + 0 - 1) / 0 * 0;
-                            //reader.readp
-
-                            //reader.ReadBytes("DocumentResources".Length + 3);
-                            //var qwer = reader.ReadAscii(1000);
-                            //new Ntreev.Library.PsdParser.Decoders.DecoderEngineData(reader, 0);
                             l += 2;
                         }
                         break;
@@ -218,7 +209,6 @@ namespace Ntreev.Library.PsdParser
                 reader.Position = p + l;
                 if (l % 2 != 0)
                     reader.Position++;
-                oldKey = key;
             }
             this.linkedLayers = linkedLayers.ToArray();
 
@@ -231,7 +221,12 @@ namespace Ntreev.Library.PsdParser
             {
                 if (item.PlacedID != Guid.Empty)
                 {
-                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID).FirstOrDefault();
+                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.PSD != null).FirstOrDefault();
+                    if (item.LinkedLayer == null)
+                    {
+                        
+                        int qewr = 0;
+                    }
                 }
 
                 this.SetLinkedLayer(item.Childs);
@@ -240,10 +235,6 @@ namespace Ntreev.Library.PsdParser
 
         private void ReadImageData(PSDReader reader)
         {
-            if (reader.Position >= reader.Length)
-            {
-                int qwer = 0;
-            }
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
 
             ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha, };

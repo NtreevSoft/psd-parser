@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderEnumerate : Properties
+    class StructureEnumerate : Properties
     {
-        public DecoderEnumerate(PSDReader reader)
+        public StructureEnumerate(PSDReader reader)
         {
             this.Add("Type", reader.ReadStringOrKey());
             this.Add("EnumName", reader.ReadStringOrKey());

@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderEngineData : Properties
+    class StructureEngineData : Properties
     {
-        public DecoderEngineData(PSDReader reader)
+        public StructureEngineData(PSDReader reader)
         {
             int count = reader.ReadInt32();
 
@@ -20,7 +20,7 @@ namespace Ntreev.Library.PsdParser.Decoders
             this.ReadProperties(reader, 0, this);
         }
 
-        public DecoderEngineData(PSDReader reader, int index)
+        public StructureEngineData(PSDReader reader, int index)
         {
             this.ReadProperties(reader, 0, this);
         }

@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderOffset : Properties
+    class StructureProperty : Properties
     {
-        public DecoderOffset(PSDReader reader)
+        public StructureProperty(PSDReader reader)
         {
             this.Add("Name", reader.ReadUnicodeString2());
             this.Add("ClassID", reader.ReadStringOrKey());
-            this.Add("Offset", reader.ReadInt32());
+            this.Add("KeyID", reader.ReadStringOrKey());
         }
     }
 }

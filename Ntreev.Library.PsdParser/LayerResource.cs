@@ -64,13 +64,7 @@ namespace Ntreev.Library.PsdParser
         {
             string str = reader.ReadAscii(4);
             string str2 = reader.ReadAscii(4);
-            
-            if(reader.Version == 2)
-            {
-                int qwer = 0;
 
-        }
-                
             int num = reader.ReadInt32();
             if (str != "8BIM")
             {
@@ -130,12 +124,10 @@ namespace Ntreev.Library.PsdParser
                     break;
                 case "SoLd":
                     {
-                        if (index == 129)
-                        {
-                            int qwer = 0;
-                        }
                         Properties props = new Properties();
-                        props.Add("ID", reader.ReadInt32());
+                        string id = reader.ReadAscii(4);
+                        if (id != "soLD")
+                            throw new Exception();
                         props.Add("Version", reader.ReadInt32());
                         props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
@@ -154,7 +146,9 @@ namespace Ntreev.Library.PsdParser
                 case "PlLd":
                     {
                         Properties props = new Properties();
-                        props.Add("Type", reader.ReadInt32());
+                        string id = reader.ReadAscii(4);
+                        if (id != "plcL")
+                            throw new Exception();
                         props.Add("Version", reader.ReadInt32());
                         props.Add("UniqueID", reader.ReadPascalString(1));
                         props.Add("PageNumbers", reader.ReadInt32());
@@ -212,14 +206,14 @@ namespace Ntreev.Library.PsdParser
                 default:
                     if ((((str2 != "SoCo") && (str2 != "PtFl")) && ((str2 != "GdFl") && (str2 != "lrFX"))) && ((str2 != "lfx2") && (str2 != "tySh")))
                     {
-           
+
                     }
                     break;
             }
 
             if (reader.Position > position + num)
             {
-               throw new Exception();
+                throw new Exception();
             }
 
             reader.Position = position + num;

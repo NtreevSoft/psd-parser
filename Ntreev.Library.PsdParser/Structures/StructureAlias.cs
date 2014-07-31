@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderAlias : Properties
+    class StructureAlias : Properties
     {
-        public DecoderAlias(PSDReader reader)
+        public StructureAlias(PSDReader reader)
         {
             int length = reader.ReadInt32();
             this.Add("Alias", reader.ReadAscii(length));

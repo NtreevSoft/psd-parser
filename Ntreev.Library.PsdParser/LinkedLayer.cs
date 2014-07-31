@@ -10,7 +10,8 @@ namespace Ntreev.Library.PsdParser
     {
         private readonly Guid id;
         private readonly string fileName;
-        private readonly PSD psb;
+        private PSD psb;
+        private DescriptorStructure descriptor;
 
         internal LinkedLayer(PSDReader reader)
         {
@@ -25,11 +26,46 @@ namespace Ntreev.Library.PsdParser
             this.id = new Guid(reader.ReadPascalString(1));
             this.fileName = reader.ReadUnicodeString2();
 
-            int fileType = reader.ReadInt32();
-            int fileCreator = reader.ReadInt32();
-            this.psb = this.ReadPSB(reader);
+            string fileType = reader.ReadAscii(4);
+            string fileCreator = reader.ReadAscii(4);
+
+            this.ReadPSB(reader);
+            //if ((fileType == "8BPB" && fileCreator == "8BIM") || Path.GetExtension(this.fileName) == ".psb")
+            //{
+            //    this.psb = ;
+            //}
+            //else
+            //{
+            //    this.ReadOther(reader);
+            //}
 
             reader.Position = position + length;
+            if (reader.Position % 2 != 0)
+                reader.Position++;
+            else
+                reader.ReadBytes((int)(length % 4));
+        }
+
+        private void ReadOther(PSDReader reader)
+        {
+            long length = reader.ReadInt64();
+            long position = reader.Position;
+
+            bool fod = reader.ReadBoolean();
+            if (fod == true)
+            {
+                this.descriptor = new DescriptorStructure(reader);
+            }
+
+            byte[] bytes = reader.ReadBytes((int)length);
+
+            //using (MemoryStream ms = new MemoryStream(bytes))
+            //{
+            //    System.Drawing.Bitmap b = new System.Drawing.Bitmap(ms);
+            //    b.Save("d:\\test.png", System.Drawing.Imaging.ImageFormat.Png);
+            //}
+            
+            //CompressionType compressionType = (CompressionType)reader.ReadInt16();
         }
 
         public PSD PSD
@@ -47,7 +83,7 @@ namespace Ntreev.Library.PsdParser
             get { return this.fileName; }
         }
 
-        private PSD ReadPSB(PSDReader reader)
+        private void ReadPSB(PSDReader reader)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
@@ -55,19 +91,34 @@ namespace Ntreev.Library.PsdParser
             bool fod = reader.ReadBoolean();
             if (fod == true)
             {
-                DescriptorStructure desc = new DescriptorStructure(reader);
+                this.descriptor = new DescriptorStructure(reader);
             }
 
             byte[] bytes = reader.ReadBytes((int)length);
 
-            PSD psb = new PSD();
             using (MemoryStream stream = new MemoryStream(bytes))
             {
-                psb.Read(stream);
+                if (this.IsPsd(bytes) == true)
+                {
+                    PSD psb = new PSD();
+                    psb.Read(stream);
+                    this.psb = psb;
+                }
+                else
+                {
+                    
+                }
+                reader.Position = position + length;
             }
+        }
 
-            reader.Position = position + length;
-            return psb;
+        private bool IsPsd(byte[] bytes)
+        {
+             using (MemoryStream stream = new MemoryStream(bytes))
+             using (PSDReader reader = new PSDReader(stream))
+             {
+                 return reader.ReadAscii(4) == "8BPS";
+             }
         }
     }
 }

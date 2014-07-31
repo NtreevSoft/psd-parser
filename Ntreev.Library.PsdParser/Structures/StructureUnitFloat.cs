@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser.Decoders
+namespace Ntreev.Library.PsdParser.Structures
 {
-    class DecoderUnitFloat : Properties
+    class StructureUnitFloat : Properties
     {
         private const string ANGLE = "#Ang";
         private const string DENSITY = "#Rsl";
@@ -15,7 +15,7 @@ namespace Ntreev.Library.PsdParser.Decoders
         private const string PERCENT = "#Prc";
         private const string PIXELS = "#Pxl";
 
-        public DecoderUnitFloat(PSDReader reader)
+        public StructureUnitFloat(PSDReader reader)
         {
             this.Add("Key", reader.ReadAscii(4));
             this.Add("Value", reader.ReadDouble());
