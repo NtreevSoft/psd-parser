@@ -52,6 +52,7 @@ namespace Ntreev.Library.PsdParser
 
         public string ReadUnicodeString()
         {
+            return ReadUnicodeString2();
             int num = 4;
             int num2 = this.ReadInt32();
             string str = "";
@@ -92,7 +93,13 @@ namespace Ntreev.Library.PsdParser
                 bytes[index] = bytes[index + 1];
                 bytes[index + 1] = b;
             }
-            return Encoding.Unicode.GetString(bytes, 0, (length - 1) * 2);
+
+            if (bytes[bytes.Length - 1] == 0 && bytes[bytes.Length - 2] == 0)
+            {
+                length--;
+            }
+
+            return Encoding.Unicode.GetString(bytes, 0, length * 2);
         }
 
         public string ReadStringOrKey()

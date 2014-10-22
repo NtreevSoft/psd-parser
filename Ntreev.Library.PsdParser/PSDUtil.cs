@@ -155,7 +155,7 @@ namespace Ntreev.Library.PsdParser
 
         public static BlendMode ToBlendMode(string text)
         {
-            switch (text)
+            switch (text.Trim())
             {
                 case "pass":
                     return BlendMode.PassThrough;

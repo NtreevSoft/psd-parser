@@ -11,11 +11,14 @@ namespace Ntreev.Library.PsdParser
         private ColorModeData colorModeData;
         private DisplayInfo displayInfo;
         private FileHeader fileHeader;
+        private GridAndGuidesInfo gridAndGuidesInfo;
         private Layer[] layers;
         private ResolutionInfo resolutionInfo;
         private Channel[] channels;
         private LinkedLayer[] linkedLayers;
+        private SliceInfo[] slices = new SliceInfo[] { };
         private GlobalLayerMask globalLayerMask;
+        private Properties props = new Properties();
 
         public void Read(string filename)
         {
@@ -57,6 +60,16 @@ namespace Ntreev.Library.PsdParser
             get { return this.resolutionInfo; }
         }
 
+        public GridInfo GridInfo
+        {
+            get { return this.gridAndGuidesInfo.GridInfo; }
+        }
+
+        public GuidesInfo GuidesInfo
+        {
+            get { return this.gridAndGuidesInfo.GuidesInfo; }
+        }
+
         public Layer[] Layers
         {
             get { return this.layers; }
@@ -65,6 +78,11 @@ namespace Ntreev.Library.PsdParser
         public LinkedLayer[] LinkedLayers
         {
             get { return this.linkedLayers; }
+        }
+
+        public SliceInfo[] Slices
+        {
+            get { return this.slices; }
         }
 
         public int Width
@@ -125,12 +143,37 @@ namespace Ntreev.Library.PsdParser
                 {
                     switch (imageResourceID)
                     {
+                        case 0x0408:
+                            this.gridAndGuidesInfo = new GridAndGuidesInfo(reader);
+                            break;
                         case 0x3ed:
                             this.resolutionInfo = new ResolutionInfo(reader);
                             break;
-
                         case 0x3ef:
                             this.displayInfo = new DisplayInfo(reader);
+                            break;
+                        case 0x041a:
+                            {
+                                long ppp = reader.Position;
+                                var version = reader.ReadInt32();
+                                var r1 = reader.ReadInt32();
+                                var r2 = reader.ReadInt32();
+                                var r3 = reader.ReadInt32();
+                                var r4 = reader.ReadInt32();
+                                string text = reader.ReadUnicodeString();
+                                var count = reader.ReadInt32();
+
+                                List<SliceInfo> slices = new List<SliceInfo>(count);
+                                for (int i = 0; i < count; i++)
+                                {
+                                    slices.Add(new SliceInfo(reader));
+                                }
+
+                                this.slices = slices.ToArray();
+
+                                int descVer = reader.ReadInt32();
+                                this.props.Add(string.Format("0x{0:x4}", imageResourceID), new DescriptorStructure(reader));
+                            }
                             break;
 
                         default:
@@ -207,13 +250,34 @@ namespace Ntreev.Library.PsdParser
                         break;
                     case "Txt2":
                         {
-                            l += 2;
+                            //reader.Position = p + l;
+
+                            //byte b = reader.ReadByte();
+                            //byte b2 = reader.ReadByte();
+                            //byte b3 = reader.ReadByte();
+                            //l += (l % 4);
+                            //if (l % 4 == 2)
+                            //    l += 2;
                         }
                         break;
                 }
+
                 reader.Position = p + l;
-                if (l % 2 != 0)
+                if (reader.Position % 2 != 0)
                     reader.Position++;
+
+                reader.Position += ((reader.Position - p) % 4);
+
+                //reader.Position = p + l;
+                ////if (l % 4 == 2)
+                ////{
+                ////    reader.Position = l % 4;
+                ////}
+                ////else 
+                //    if(reader.Position % 2 != 0)
+                //{
+                //    reader.Position++;
+                //}
             }
             this.linkedLayers = linkedLayers.ToArray();
 

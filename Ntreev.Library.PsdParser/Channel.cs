@@ -11,6 +11,7 @@ namespace Ntreev.Library.PsdParser
         private int height;
         private int width;
         private int[] rlePackLengths;
+        private float opacity = 1.0f;
 
         internal Channel(ChannelType type, int width, int height)
         {
@@ -88,6 +89,12 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
+        internal float Opacity
+        {
+            get { return this.opacity; }
+            set { this.opacity = value; }
+        }
+
         private void ReadData(PSDReader reader, int bps, CompressionType compressionType, int[] rlePackLengths)
         {
             int length = PSDUtil.DepthToPitch(bps, this.width);
@@ -107,7 +114,7 @@ namespace Ntreev.Library.PsdParser
                         PSDUtil.decodeRLE(buffer, dst, rlePackLengths[i], length);
                         for (int j = 0; j < length; j++)
                         {
-                            this.data[(i * length) + j] = dst[j];
+                            this.data[(i * length) + j] = (byte)(dst[j] * this.opacity);
                         }
                     }
                     break;

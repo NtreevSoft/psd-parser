@@ -64,6 +64,11 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
+    <Compile Include="GridAndGuidesInfo.cs" />
+    <Compile Include="GridInfo.cs" />
+    <Compile Include="GuidesInfo.cs" />
+    <Compile Include="InvalidFormatException.cs" />
+    <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureFactory.cs" />
     <Compile Include="Structures\StructureAlias.cs" />

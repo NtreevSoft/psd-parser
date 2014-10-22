@@ -29,6 +29,9 @@ namespace Ntreev.Library.PsdParser
             string fileType = reader.ReadAscii(4);
             string fileCreator = reader.ReadAscii(4);
 
+            long p = reader.Position - position;
+
+            //long p = reader.Position;
             this.ReadPSB(reader);
             //if ((fileType == "8BPB" && fileCreator == "8BIM") || Path.GetExtension(this.fileName) == ".psb")
             //{
@@ -42,8 +45,8 @@ namespace Ntreev.Library.PsdParser
             reader.Position = position + length;
             if (reader.Position % 2 != 0)
                 reader.Position++;
-            else
-                reader.ReadBytes((int)(length % 4));
+
+            reader.Position += ((reader.Position - position) % 4);
         }
 
         private void ReadOther(PSDReader reader)
@@ -88,6 +91,11 @@ namespace Ntreev.Library.PsdParser
             long length = reader.ReadInt64();
             long position = reader.Position;
 
+            if (length % 4 != 0)
+            {
+                int weqr = 0;
+            }
+
             bool fod = reader.ReadBoolean();
             if (fod == true)
             {
@@ -108,7 +116,7 @@ namespace Ntreev.Library.PsdParser
                 {
                     
                 }
-                reader.Position = position + length;
+                //reader.Position = position + length;
             }
         }
 

@@ -202,6 +202,13 @@ namespace Ntreev.Library.PsdParser
                         this.drop = true;
                     }
                     break;
+                case "iOpa":
+                    {
+                        Properties props = new Properties();
+                        props.Add("Opacity", reader.ReadByte());
+                        this.Add(str2, props);
+                    }
+                    break;
 
                 default:
                     if ((((str2 != "SoCo") && (str2 != "PtFl")) && ((str2 != "GdFl") && (str2 != "lrFX"))) && ((str2 != "lfx2") && (str2 != "tySh")))

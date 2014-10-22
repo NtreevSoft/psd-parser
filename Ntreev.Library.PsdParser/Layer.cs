@@ -103,11 +103,21 @@ namespace Ntreev.Library.PsdParser
                 this.placedID2 = new Guid(resource.GetProperty("SoLd.Descriptor.placed") as string);
             if (resource.ContainsProperty("PlLd.UniqueID") == true)
                 this.placedID3 = new Guid(resource.GetProperty("PlLd.UniqueID") as string);
-
+            if (resource.ContainsProperty("iOpa") == true)
+            {
+                byte opa = (byte)resource.GetProperty("iOpa.Opacity");
+                var alphaChannel = this.Channels.Where(item => item.Type == ChannelType.Alpha).FirstOrDefault();
+                if (alphaChannel != null)
+                {
+                    alphaChannel.Opacity = opa / 255.0f;
+                }
+            }
 
             this.props.Add("ID", this.id);
             this.props.Add("Name", this.name);
             this.props.Add("SectionType", this.sectionType);
+            this.props.Add("BlendMode", this.blendMode);
+            this.props.Add("Opacity", this.opacity);
             this.props.Add("Left", this.left);
             this.props.Add("Top", this.top);
             this.props.Add("Right", this.right);
