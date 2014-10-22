@@ -1,0 +1,54 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Ntreev.Library.PsdParser
+{
+    sealed class GridAndGuidesInfo
+    {
+        private readonly GridInfo gridInfo = new GridInfo();
+        private readonly GuidesInfo guidesInfo = new GuidesInfo();
+
+        internal GridAndGuidesInfo(PSDReader reader)
+        {
+            int version = reader.ReadInt32();
+            
+            if (version != 1)
+                throw new InvalidFormatException();
+
+
+            this.gridInfo.Horizontal = reader.ReadInt32();
+            this.gridInfo.Vertical = reader.ReadInt32();
+
+            int guideCount = reader.ReadInt32();
+
+            List<int> hg = new List<int>();
+            List<int> vg = new List<int>();
+
+            for (int i = 0; i < guideCount; i++)
+            {
+                int n = reader.ReadInt32();
+                byte t = reader.ReadByte();
+
+                if (t == 0)
+                    vg.Add(n);
+                else
+                    hg.Add(n);
+            }
+
+            this.guidesInfo.Horizontals = hg.ToArray();
+            this.guidesInfo.Verticals = vg.ToArray();
+        }
+
+        public GridInfo GridInfo
+        {
+            get { return this.gridInfo; }
+        }
+
+        public GuidesInfo GuidesInfo
+        {
+            get { return this.guidesInfo; }
+        }
+    }
+}

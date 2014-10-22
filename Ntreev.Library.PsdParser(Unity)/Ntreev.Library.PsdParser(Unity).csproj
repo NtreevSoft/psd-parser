@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Ntreev.Library.PsdParser</RootNamespace>
+    <AssemblyName>PsdParser</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Ntreev.Library.PsdParser\BlendMode.cs">
+      <Link>BlendMode.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Channel.cs">
+      <Link>Channel.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ChannelRLE.cs">
+      <Link>ChannelRLE.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ChannelType.cs">
+      <Link>ChannelType.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ColorMode.cs">
+      <Link>ColorMode.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ColorModeData.cs">
+      <Link>ColorModeData.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ColorSpace.cs">
+      <Link>ColorSpace.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\CommonStateInfo.cs">
+      <Link>CommonStateInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\CompressionType.cs">
+      <Link>CompressionType.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\DescriptorStructure.cs">
+      <Link>DescriptorStructure.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\DisplayInfo.cs">
+      <Link>DisplayInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Extension.cs">
+      <Link>Extension.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\FileHeader.cs">
+      <Link>FileHeader.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\GlobalLayerMask.cs">
+      <Link>GlobalLayerMask.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\GridAndGuidesInfo.cs">
+      <Link>GridAndGuidesInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\GridInfo.cs">
+      <Link>GridInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\GuidesInfo.cs">
+      <Link>GuidesInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\IImageSource.cs">
+      <Link>IImageSource.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\InvalidFormatException.cs">
+      <Link>InvalidFormatException.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\IProperties.cs">
+      <Link>IProperties.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\IPropertiesExtension.cs">
+      <Link>IPropertiesExtension.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Layer.cs">
+      <Link>Layer.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LayerBlendingRanges.cs">
+      <Link>LayerBlendingRanges.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LayerFlags.cs">
+      <Link>LayerFlags.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LayerInfo.cs">
+      <Link>LayerInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LayerMask.cs">
+      <Link>LayerMask.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LayerResource.cs">
+      <Link>LayerResource.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\LinkedLayer.cs">
+      <Link>LinkedLayer.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Properties.cs">
+      <Link>Properties.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\PSD.cs">
+      <Link>PSD.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\PSDReader.cs">
+      <Link>PSDReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\PSDTypeToolObject.cs">
+      <Link>PSDTypeToolObject.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\PSDUtil.cs">
+      <Link>PSDUtil.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\ResolutionInfo.cs">
+      <Link>ResolutionInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\SectionType.cs">
+      <Link>SectionType.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\SliceInfo.cs">
+      <Link>SliceInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\BaseStructure.cs">
+      <Link>Structures\BaseStructure.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureAlias.cs">
+      <Link>Structures\StructureAlias.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureClass.cs">
+      <Link>Structures\StructureClass.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureEngineData.cs">
+      <Link>Structures\StructureEngineData.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureEnumerate.cs">
+      <Link>Structures\StructureEnumerate.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureEnumerateReference.cs">
+      <Link>Structures\StructureEnumerateReference.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureFactory.cs">
+      <Link>Structures\StructureFactory.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureList.cs">
+      <Link>Structures\StructureList.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureObjectArray.cs">
+      <Link>Structures\StructureObjectArray.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureOffset.cs">
+      <Link>Structures\StructureOffset.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureProperty.cs">
+      <Link>Structures\StructureProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureReference.cs">
+      <Link>Structures\StructureReference.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureUnitFloat.cs">
+      <Link>Structures\StructureUnitFloat.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\Structures\StructureUnknownOSType.cs">
+      <Link>Structures\StructureUnknownOSType.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\TypeToolInfo.cs">
+      <Link>TypeToolInfo.cs</Link>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
