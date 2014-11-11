@@ -5,11 +5,11 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApplication1", "ConsoleApplication1\ConsoleApplication1.csproj", "{D9BF3589-7D20-4279-A23F-BFF6042A7352}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.PsdParser", "Ntreev.Library.PsdParser\Ntreev.Library.PsdParser.csproj", "{2A3BAD6E-CEB1-432B-87E2-0581E36067E7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Psd", "Ntreev.Library.Psd\Ntreev.Library.Psd.csproj", "{2A3BAD6E-CEB1-432B-87E2-0581E36067E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.PsdViewer", "Ntreev.Library.PsdViewer\Ntreev.Library.PsdViewer.csproj", "{EEB86F6C-6EBA-4892-BC87-282DC667EC10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.PsdParser(Unity)", "Ntreev.Library.PsdParser(Unity)\Ntreev.Library.PsdParser(Unity).csproj", "{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Psd(Unity)", "Ntreev.Library.Psd(Unity)\Ntreev.Library.Psd(Unity).csproj", "{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

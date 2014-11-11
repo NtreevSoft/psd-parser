@@ -135,9 +135,9 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Ntreev.Library.PsdParser\Ntreev.Library.PsdParser.csproj">
+    <ProjectReference Include="..\Ntreev.Library.Psd\Ntreev.Library.Psd.csproj">
       <Project>{2a3bad6e-ceb1-432b-87e2-0581e36067e7}</Project>
-      <Name>Ntreev.Library.PsdParser</Name>
+      <Name>Ntreev.Library.Psd</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
