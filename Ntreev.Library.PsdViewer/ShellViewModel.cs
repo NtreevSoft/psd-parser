@@ -40,10 +40,10 @@ namespace Ntreev.Library.PsdViewer
 
         private void Refresh(string filename)
         {
-            Psd psd = new Psd();
-            psd.Read(filename);
+            PsdDocument document = new PsdDocument();
+            document.Read(filename);
             this.itemsSource = new List<TreeViewItemViewModel>();
-            this.itemsSource.Add(new PSDItemViewModel(psd));
+            this.itemsSource.Add(new PSDItemViewModel(document));
             this.NotifyOfPropertyChange(() => this.ItemsSource);
         }
     }

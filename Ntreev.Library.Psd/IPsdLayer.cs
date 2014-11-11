@@ -21,7 +21,7 @@ namespace Ntreev.Library.Psd
 
         IProperties Properties { get; }
 
-        PsdDocument PSD { get; }
+        PsdDocument Document { get; }
 
         int Left { get; }
 

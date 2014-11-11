@@ -363,7 +363,7 @@ namespace Ntreev.Library.Psd
             get { return false; }
         }
 
-        PsdDocument IPsdLayer.PSD
+        PsdDocument IPsdLayer.Document
         {
             get { return this; }
         }

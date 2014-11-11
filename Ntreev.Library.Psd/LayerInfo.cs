@@ -6,7 +6,7 @@ namespace Ntreev.Library.Psd
 {
     sealed class LayerInfo
     {
-        public static PsdLayer[] ReadLayers(PSDReader reader, PsdDocument psd, int bpp)
+        public static PsdLayer[] ReadLayers(PSDReader reader, PsdDocument document, int bpp)
         {
             int length = reader.ReadLength();
             long start = reader.Position;
@@ -23,7 +23,7 @@ namespace Ntreev.Library.Psd
             PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new PsdLayer(reader, psd, bpp, i);
+                layers[i] = new PsdLayer(reader, document, bpp, i);
             }
 
             foreach (var item in layers)

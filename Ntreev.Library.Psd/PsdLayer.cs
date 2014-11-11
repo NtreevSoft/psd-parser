@@ -24,11 +24,11 @@ namespace Ntreev.Library.Psd
         private Guid placedID;
         private int depth;
         private int index;
-        private PsdDocument psd;
+        private PsdDocument document;
 
-        public PsdLayer(PSDReader reader, PsdDocument psd, int bpp, int index)
+        public PsdLayer(PSDReader reader, PsdDocument document, int bpp, int index)
         {
-            this.psd = psd;
+            this.document = document;
             this.index = index;
             this.depth = bpp;
             this.top = reader.ReadInt32();
@@ -220,9 +220,9 @@ namespace Ntreev.Library.Psd
             get { return this.placedID; }
         }
 
-        public PsdDocument PSD
+        public PsdDocument Document
         {
-            get { return this.psd; }
+            get { return this.document; }
         }
 
         public LinkedLayer LinkedLayer

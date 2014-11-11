@@ -9,13 +9,13 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 {
     class PSDItemViewModel : TreeViewItemViewModel
     {
-        private readonly Psd psd;
+        private readonly PsdDocument document;
 
-        public PSDItemViewModel(Psd psd)
+        public PSDItemViewModel(PsdDocument document)
             : base(null)
         {
-            this.psd = psd;
-            foreach (var item in psd.Childs)
+            this.document = document;
+            foreach (var item in document.Childs)
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }

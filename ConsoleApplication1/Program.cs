@@ -11,8 +11,8 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            PsdDocument psd = new PsdDocument();
-            psd.Read(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\sprite_test.psd");
+            PsdDocument document = new PsdDocument();
+            document.Read(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\sprite_test.psd");
             //psd.loadHeader(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\game login process_140716.psd");
             
             //psd.loadData();
