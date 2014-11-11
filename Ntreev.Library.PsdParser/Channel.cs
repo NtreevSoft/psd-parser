@@ -63,10 +63,8 @@ namespace Ntreev.Library.PsdParser
                 case CompressionType.RLE:
                     this.ReadData(reader, bpp, compressionType, this.rlePackLengths);
                     return;
+
                 default:
-                    {
-                        int qwre = 0;
-                    }
                     break;
             }
         }

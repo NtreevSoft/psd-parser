@@ -7,7 +7,7 @@
                  Width="500" x:Name="uc1">
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands >
-            <Button x:Name="Setting" Content="settings" cal:Message.Attach="Setting" />
+            <Button x:Name="Setting" Content="OpenFile" cal:Message.Attach="OpenFile" />
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <Grid>

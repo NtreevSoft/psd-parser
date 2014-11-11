@@ -22,16 +22,6 @@ namespace Ntreev.Library.PsdParser
             this.Add("Warp", new DescriptorStructure(reader));
             this.Add("Bounds", reader.ReadDoubles(2));
         }
-
-        //public PSDRect area
-        //{
-        //    get
-        //    {
-        //        PSDRect rect;
-        //        double[] transforms = this["Transforms"] as double[];
-        //        return new PSDRect { left = rect.right = (int)transforms[4], top = rect.bottom = (int)transforms[5] };
-        //    }
-        //}
     }
 }
 

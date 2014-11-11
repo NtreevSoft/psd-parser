@@ -11,7 +11,6 @@ namespace Ntreev.Library.PsdParser
         {
             int size = reader.ReadInt32();
 
-
             reader.Position += size;
         }
     }

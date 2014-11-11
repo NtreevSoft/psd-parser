@@ -16,11 +16,7 @@ namespace Ntreev.Library.PsdParser
         Channel[] Channels { get; }
 
         float Opacity { get; }
-    }
 
-    public static class dddd
-    {
-
-        //public static byte[] GetData
+        bool HasImage { get; }
     }
 }

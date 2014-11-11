@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class Layer : IImageSource
+    sealed class Layer : IPsdLayer
     {
         private int left, top, right, bottom;
         private int id;
@@ -19,16 +19,14 @@ namespace Ntreev.Library.PsdParser
         private int filter;
         private Properties props = new Properties();
         private List<Layer> childs = new List<Layer>();
-        private Layer[] childArray;
+        private List<IPsdLayer> childArray;
         private Layer parent;
         private Guid placedID;
         private int depth;
         private int index;
         private PSD psd;
-        private Guid placedID2;
-        private Guid placedID3;
 
-        internal Layer(PSDReader reader, PSD psd, int bpp, int index)
+        public Layer(PSDReader reader, PSD psd, int bpp, int index)
         {
             this.psd = psd;
             this.index = index;
@@ -99,10 +97,6 @@ namespace Ntreev.Library.PsdParser
                 this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
             if (resource.ContainsProperty("SoLd.Descriptor.Idnt") == true)
                 this.placedID = new Guid(resource.GetProperty("SoLd.Descriptor.Idnt") as string);
-            if (resource.ContainsProperty("SoLd.Descriptor.placed") == true)
-                this.placedID2 = new Guid(resource.GetProperty("SoLd.Descriptor.placed") as string);
-            if (resource.ContainsProperty("PlLd.UniqueID") == true)
-                this.placedID3 = new Guid(resource.GetProperty("PlLd.UniqueID") as string);
             if (resource.ContainsProperty("iOpa") == true)
             {
                 byte opa = (byte)resource.GetProperty("iOpa.Opacity");
@@ -125,6 +119,7 @@ namespace Ntreev.Library.PsdParser
             this.props.Add("Width", this.Width);
             this.props.Add("Height", this.Height);
             this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
+            this.props.Add("Clipping", this.clipping);
         }
 
         public Channel[] Channels { get; internal set; }
@@ -192,6 +187,11 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
+        public bool IsClipping
+        {
+            get { return this.clipping; }
+        }
+
         public BlendMode BlendMode
         {
             get { return this.blendMode; }
@@ -202,16 +202,11 @@ namespace Ntreev.Library.PsdParser
             get { return this.parent; }
         }
 
-        public Layer[] Childs
+        public IEnumerable<Layer> Childs
         {
             get
             {
-                if (this.childArray == null)
-                {
-                    this.childArray = this.childs.ToArray();
-                }
-
-                return this.childArray;
+                return this.childs;
             }
         }
 
@@ -225,16 +220,6 @@ namespace Ntreev.Library.PsdParser
             get { return this.placedID; }
         }
 
-        public Guid PlacedID2
-        {
-            get { return this.placedID2; }
-        }
-
-        public Guid PlacedID3
-        {
-            get { return this.placedID3; }
-        }
-
         public PSD PSD
         {
             get { return this.psd; }
@@ -246,7 +231,19 @@ namespace Ntreev.Library.PsdParser
             internal set;
         }
 
-        internal void LoadChannels(PSDReader reader, int bpp)
+        public bool HasImage
+        {
+            get
+            {
+                if (this.sectionType != SectionType.Normal)
+                    return false;
+                if (this.Width == 0 || this.Height == 0)
+                    return false;
+                return true;
+            }
+        }
+
+        public void LoadChannels(PSDReader reader, int bpp)
         {
             foreach (var item in this.Channels)
             {
@@ -256,7 +253,47 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        internal static Layer[] Initialize(Layer parent, Layer[] layers)
+        public void ComputeBounds()
+        {
+            if (this.sectionType != SectionType.Opend && this.sectionType != SectionType.Closed)
+                return;
+
+            int left = int.MaxValue;
+            int top = int.MaxValue;
+            int right = int.MinValue;
+            int bottom = int.MinValue;
+
+            bool isSet = false;
+
+            foreach (var item in this.Descendants())
+            {
+                if (item == this || item.HasImage == false)
+                    continue;
+
+                left = Math.Min(item.Left, left);
+                top = Math.Min(item.Top, top);
+                right = Math.Max(item.Right, right);
+                bottom = Math.Max(item.Bottom, bottom);
+                isSet = true;
+            }
+
+            if (isSet == false)
+                return;
+
+            this.left = left;
+            this.top = top;
+            this.right = right;
+            this.bottom = bottom;
+
+            this.props["Left"] = this.left;
+            this.props["Top"] = this.top;
+            this.props["Right"] = this.right;
+            this.props["Bottom"] = this.bottom;
+            this.props["Width"] = this.Width;
+            this.props["Height"] = this.Height;
+        }
+
+        public static Layer[] Initialize(Layer parent, Layer[] layers)
         {
             Stack<Layer> stack = new Stack<Layer>();
             List<Layer> rootLayers = new List<Layer>();
@@ -288,6 +325,41 @@ namespace Ntreev.Library.PsdParser
 
             return rootLayers.ToArray();
         }
+
+        #region IPsdLayer
+
+        IEnumerable<IPsdLayer> IPsdLayer.Childs
+        {
+            get 
+            {
+                if (this.childArray == null)
+                {
+                    this.childArray = new List<IPsdLayer>(this.childs.Count);
+                    foreach (var item in this.childs)
+                    {
+                        this.childArray.Add(item);
+                    }
+                }
+                return this.childArray; 
+            }
+        }
+
+        IPsdLayer IPsdLayer.Parent
+        {
+            get { throw new NotImplementedException(); }
+        }
+
+        IPsdLayer IPsdLayer.LinkedLayer
+        {
+            get
+            {
+                if (this.LinkedLayer == null)
+                    return null;
+                return this.LinkedLayer.PSD;
+            }
+        }
+
+        #endregion
     }
 }
 

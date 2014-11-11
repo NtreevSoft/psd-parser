@@ -24,5 +24,33 @@ namespace Ntreev.Library.PsdParser
             }
             return buffer;
         }
+
+        public static IEnumerable<IPsdLayer> Descendants(this IPsdLayer layer)
+        {
+            yield return layer;
+
+            foreach (var item in layer.Childs)
+            {
+                yield return item;
+                foreach (var child in item.Childs)
+                {
+                    yield return child;
+                }
+            }
+        }
+
+        internal static IEnumerable<Layer> Descendants(this Layer layer)
+        {
+            yield return layer;
+
+            foreach (var item in layer.Childs)
+            {
+                yield return item;
+                foreach (var child in item.Childs)
+                {
+                    yield return child;
+                }
+            }
+        }
     }
 }

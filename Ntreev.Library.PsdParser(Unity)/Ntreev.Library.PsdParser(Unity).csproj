@@ -103,6 +103,9 @@
     <Compile Include="..\Ntreev.Library.PsdParser\IPropertiesExtension.cs">
       <Link>IPropertiesExtension.cs</Link>
     </Compile>
+    <Compile Include="..\Ntreev.Library.PsdParser\IPsdLayer.cs">
+      <Link>IPsdLayer.cs</Link>
+    </Compile>
     <Compile Include="..\Ntreev.Library.PsdParser\Layer.cs">
       <Link>Layer.cs</Link>
     </Compile>

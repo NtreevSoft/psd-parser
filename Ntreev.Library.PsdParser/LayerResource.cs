@@ -227,7 +227,7 @@ namespace Ntreev.Library.PsdParser
 
             if (this.ContainsKey(str2) == false)
             {
-                this.Add(str2, "empty");
+                this.Add(str2, "Unparsed");
             }
         }
     }

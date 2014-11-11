@@ -12,9 +12,9 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 {
     class LayerItemViewModel : TreeViewItemViewModel
     {
-        private readonly Layer layer;
+        private readonly IPsdLayer layer;
 
-        public LayerItemViewModel(Layer layer, PSDItemViewModel parent)
+        public LayerItemViewModel(IPsdLayer layer, PSDItemViewModel parent)
             : base(parent)
         {
             this.layer = layer;
@@ -22,6 +22,11 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             foreach (var item in layer.Childs)
             {
                 this.Children.Add(new LayerItemViewModel(item, parent));
+            }
+
+            if(layer.LinkedLayer != null)
+            {
+                this.Children.Add(new LayerItemViewModel(layer.LinkedLayer, parent));
             }
 
             //var bmp = this.layer.GetBitmap();

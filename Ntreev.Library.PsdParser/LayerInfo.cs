@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
@@ -33,6 +34,14 @@ namespace Ntreev.Library.PsdParser
             reader.Position = start + length;
 
             return Layer.Initialize(null, layers);
+        }
+
+        public static void ComputeBounds(Layer[] layers)
+        {
+            foreach (var item in layers.SelectMany(item => item.Descendants()).Reverse())
+            {
+                item.ComputeBounds();
+            }
         }
     }
 }

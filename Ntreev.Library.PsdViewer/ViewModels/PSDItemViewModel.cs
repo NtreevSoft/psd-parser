@@ -15,7 +15,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             : base(null)
         {
             this.psd = psd;
-            foreach (var item in psd.Layers)
+            foreach (var item in psd.Childs)
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }

@@ -19,7 +19,8 @@
     <UpgradeBackupLocation>
     </UpgradeBackupLocation>
     <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkProfile>Unity Subset v3.5</TargetFrameworkProfile>
+    <TargetFrameworkProfile>
+    </TargetFrameworkProfile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
@@ -68,6 +69,7 @@
     <Compile Include="GridInfo.cs" />
     <Compile Include="GuidesInfo.cs" />
     <Compile Include="InvalidFormatException.cs" />
+    <Compile Include="IPsdLayer.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureFactory.cs" />

@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class LinkedLayer
+    sealed class LinkedLayer
     {
         private readonly Guid id;
         private readonly string fileName;
@@ -108,7 +108,7 @@ namespace Ntreev.Library.PsdParser
             {
                 if (this.IsPsd(bytes) == true)
                 {
-                    PSD psb = new PSD();
+                    PSD psb = new PSD(this.fileName);
                     psb.Read(stream);
                     this.psb = psb;
                 }

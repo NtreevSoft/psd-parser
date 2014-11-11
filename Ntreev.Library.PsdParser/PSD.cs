@@ -6,8 +6,9 @@ using System.Linq;
 
 namespace Ntreev.Library.PsdParser
 {
-    public sealed class PSD : IImageSource
+    public sealed class PSD : IPsdLayer
     {
+        private string name;
         private ColorModeData colorModeData;
         private DisplayInfo displayInfo;
         private FileHeader fileHeader;
@@ -19,6 +20,17 @@ namespace Ntreev.Library.PsdParser
         private SliceInfo[] slices = new SliceInfo[] { };
         private GlobalLayerMask globalLayerMask;
         private Properties props = new Properties();
+
+        public PSD()
+            : this("Root")
+        {
+            
+        }
+
+        public PSD(string name)
+        {
+            this.name = name;
+        }
 
         public void Read(string filename)
         {
@@ -68,16 +80,6 @@ namespace Ntreev.Library.PsdParser
         public GuidesInfo GuidesInfo
         {
             get { return this.gridAndGuidesInfo.GuidesInfo; }
-        }
-
-        public Layer[] Layers
-        {
-            get { return this.layers; }
-        }
-
-        public LinkedLayer[] LinkedLayers
-        {
-            get { return this.linkedLayers; }
         }
 
         public SliceInfo[] Slices
@@ -196,6 +198,7 @@ namespace Ntreev.Library.PsdParser
             long end = reader.Position + length;
 
             this.layers = LayerInfo.ReadLayers(reader, this, this.fileHeader.Depth);
+            LayerInfo.ComputeBounds(this.layers);
             this.globalLayerMask = new GlobalLayerMask(reader);
 
             List<string> keys = new List<string>(new string[]{"LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD",});
@@ -284,18 +287,13 @@ namespace Ntreev.Library.PsdParser
             this.SetLinkedLayer(this.layers);
         }
 
-        private void SetLinkedLayer(Layer[] layers)
+        private void SetLinkedLayer(IEnumerable<Layer> layers)
         {
             foreach (var item in layers)
             {
                 if (item.PlacedID != Guid.Empty)
                 {
                     item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.PSD != null).FirstOrDefault();
-                    if (item.LinkedLayer == null)
-                    {
-                        
-                        int qewr = 0;
-                    }
                 }
 
                 this.SetLinkedLayer(item.Childs);
@@ -328,10 +326,79 @@ namespace Ntreev.Library.PsdParser
             this.channels = channels.OrderBy(item => item.Type).ToArray();
         }
 
-        float IImageSource.Opacity
+        public BlendMode BlendMode
+        {
+            get { return BlendMode.Normal; }
+        }
+
+        public IEnumerable<IPsdLayer> Childs
+        {
+            get { return this.layers; }
+        }
+
+        public string Name
+        {
+            get { return this.name; }
+        }
+
+        public float Opacity
         {
             get { return 1.0f; }
-        }    
+        }
+
+        public IProperties Properties
+        {
+            get { return this.props; }
+        }
+
+        #region IPsdLayer
+
+        IPsdLayer IPsdLayer.Parent
+        {
+            get { return null; }
+        }
+
+        bool IPsdLayer.IsClipping
+        {
+            get { return false; }
+        }
+
+        PSD IPsdLayer.PSD
+        {
+            get { return this; }
+        }
+
+        IPsdLayer IPsdLayer.LinkedLayer
+        {
+            get { return null; }
+        }
+
+        int IPsdLayer.Left
+        {
+            get { return 0; }
+        }
+
+        int IPsdLayer.Top
+        {
+            get { return 0; }
+        }
+
+        int IPsdLayer.Right
+        {
+            get { return this.Width; }
+        }
+
+        int IPsdLayer.Bottom
+        {
+            get { return this.Height; }
+        }
+
+        bool IImageSource.HasImage
+        {
+            get { return true; }
+        }
+
+        #endregion
     }
 }
 
