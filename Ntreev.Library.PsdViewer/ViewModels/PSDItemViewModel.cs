@@ -1,4 +1,4 @@
-﻿using Ntreev.Library.PsdParser;
+﻿using Ntreev.Library.Psd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,9 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 {
     class PSDItemViewModel : TreeViewItemViewModel
     {
-        private readonly PSD psd;
+        private readonly Psd psd;
 
-        public PSDItemViewModel(PSD psd)
+        public PSDItemViewModel(Psd psd)
             : base(null)
         {
             this.psd = psd;

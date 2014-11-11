@@ -1,4 +1,4 @@
-﻿using Ntreev.Library.PsdParser;
+﻿using Ntreev.Library.Psd;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ namespace ConsoleApplication1
     {
         static void Main(string[] args)
         {
-            PSD psd = new PSD();
+            PsdDocument psd = new PsdDocument();
             psd.Read(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\sprite_test.psd");
             //psd.loadHeader(@"D:\Users\s2quake\Documents\New Unity Project 4\Assets\game login process_140716.psd");
             

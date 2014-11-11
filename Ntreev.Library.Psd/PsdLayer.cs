@@ -4,9 +4,9 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
-    sealed class Layer : IPsdLayer
+    sealed class PsdLayer : IPsdLayer
     {
         private int left, top, right, bottom;
         private int id;
@@ -18,15 +18,15 @@ namespace Ntreev.Library.PsdParser
         private LayerFlags flags;
         private int filter;
         private Properties props = new Properties();
-        private List<Layer> childs = new List<Layer>();
+        private List<PsdLayer> childs = new List<PsdLayer>();
         private List<IPsdLayer> childArray;
-        private Layer parent;
+        private PsdLayer parent;
         private Guid placedID;
         private int depth;
         private int index;
-        private PSD psd;
+        private PsdDocument psd;
 
-        public Layer(PSDReader reader, PSD psd, int bpp, int index)
+        public PsdLayer(PSDReader reader, PsdDocument psd, int bpp, int index)
         {
             this.psd = psd;
             this.index = index;
@@ -197,12 +197,12 @@ namespace Ntreev.Library.PsdParser
             get { return this.blendMode; }
         }
 
-        public Layer Parent
+        public PsdLayer Parent
         {
             get { return this.parent; }
         }
 
-        public IEnumerable<Layer> Childs
+        public IEnumerable<PsdLayer> Childs
         {
             get
             {
@@ -220,7 +220,7 @@ namespace Ntreev.Library.PsdParser
             get { return this.placedID; }
         }
 
-        public PSD PSD
+        public PsdDocument PSD
         {
             get { return this.psd; }
         }
@@ -293,10 +293,10 @@ namespace Ntreev.Library.PsdParser
             this.props["Height"] = this.Height;
         }
 
-        public static Layer[] Initialize(Layer parent, Layer[] layers)
+        public static PsdLayer[] Initialize(PsdLayer parent, PsdLayer[] layers)
         {
-            Stack<Layer> stack = new Stack<Layer>();
-            List<Layer> rootLayers = new List<Layer>();
+            Stack<PsdLayer> stack = new Stack<PsdLayer>();
+            List<PsdLayer> rootLayers = new List<PsdLayer>();
 
             foreach (var item in layers.Reverse())
             {

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     sealed class LayerResource : Properties
     {

@@ -7,7 +7,7 @@
     <ProjectGuid>{2A3BAD6E-CEB1-432B-87E2-0581E36067E7}</ProjectGuid>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>PsdParser</AssemblyName>
+    <AssemblyName>Ntreev.Library.Psd</AssemblyName>
     <DefaultClientScript>JScript</DefaultClientScript>
     <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
@@ -47,7 +47,7 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup>
-    <RootNamespace>Ntreev.Library.PsdParser</RootNamespace>
+    <RootNamespace>Ntreev.Library.Psd</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release_Unity|AnyCPU'">
     <OutputPath>bin\Release_Unity\</OutputPath>
@@ -104,7 +104,7 @@
     <Compile Include="PSDReader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSD.cs">
+    <Compile Include="PsdDocument.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="BlendMode.cs" />
@@ -120,7 +120,7 @@
     <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Layer.cs">
+    <Compile Include="PsdLayer.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LayerInfo.cs">

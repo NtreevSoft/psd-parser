@@ -1,4 +1,4 @@
-using Ntreev.Library.PsdParser;
+using Ntreev.Library.Psd;
 using Ntreev.Library.PsdViewer.ViewModels;
 using System.Collections;
 using System.Collections.Generic;
@@ -40,7 +40,7 @@ namespace Ntreev.Library.PsdViewer
 
         private void Refresh(string filename)
         {
-            PSD psd = new PSD();
+            Psd psd = new Psd();
             psd.Read(filename);
             this.itemsSource = new List<TreeViewItemViewModel>();
             this.itemsSource.Add(new PSDItemViewModel(psd));

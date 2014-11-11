@@ -4,16 +4,16 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
-    public sealed class PSD : IPsdLayer
+    public sealed class PsdDocument : IPsdLayer
     {
         private string name;
         private ColorModeData colorModeData;
         private DisplayInfo displayInfo;
         private FileHeader fileHeader;
         private GridAndGuidesInfo gridAndGuidesInfo;
-        private Layer[] layers;
+        private PsdLayer[] layers;
         private ResolutionInfo resolutionInfo;
         private Channel[] channels;
         private LinkedLayer[] linkedLayers;
@@ -21,13 +21,13 @@ namespace Ntreev.Library.PsdParser
         private GlobalLayerMask globalLayerMask;
         private Properties props = new Properties();
 
-        public PSD()
+        public PsdDocument()
             : this("Root")
         {
             
         }
 
-        public PSD(string name)
+        public PsdDocument(string name)
         {
             this.name = name;
         }
@@ -287,7 +287,7 @@ namespace Ntreev.Library.PsdParser
             this.SetLinkedLayer(this.layers);
         }
 
-        private void SetLinkedLayer(IEnumerable<Layer> layers)
+        private void SetLinkedLayer(IEnumerable<PsdLayer> layers)
         {
             foreach (var item in layers)
             {
@@ -363,7 +363,7 @@ namespace Ntreev.Library.PsdParser
             get { return false; }
         }
 
-        PSD IPsdLayer.PSD
+        PsdDocument IPsdLayer.PSD
         {
             get { return this; }
         }

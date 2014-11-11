@@ -4,13 +4,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     sealed class LinkedLayer
     {
         private readonly Guid id;
         private readonly string fileName;
-        private PSD psb;
+        private PsdDocument psb;
         private DescriptorStructure descriptor;
 
         internal LinkedLayer(PSDReader reader)
@@ -71,7 +71,7 @@ namespace Ntreev.Library.PsdParser
             //CompressionType compressionType = (CompressionType)reader.ReadInt16();
         }
 
-        public PSD PSD
+        public PsdDocument PSD
         {
             get { return this.psb; }
         }
@@ -108,7 +108,7 @@ namespace Ntreev.Library.PsdParser
             {
                 if (this.IsPsd(bytes) == true)
                 {
-                    PSD psb = new PSD(this.fileName);
+                    PsdDocument psb = new PsdDocument(this.fileName);
                     psb.Read(stream);
                     this.psb = psb;
                 }

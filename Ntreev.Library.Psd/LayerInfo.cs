@@ -2,28 +2,28 @@
 using System.IO;
 using System.Linq;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     sealed class LayerInfo
     {
-        public static Layer[] ReadLayers(PSDReader reader, PSD psd, int bpp)
+        public static PsdLayer[] ReadLayers(PSDReader reader, PsdDocument psd, int bpp)
         {
             int length = reader.ReadLength();
             long start = reader.Position;
             int layerCount = reader.ReadInt16();
             if (layerCount == 0)
             {
-                return new Layer[] { };
+                return new PsdLayer[] { };
             }
 
             if (layerCount < 0)
             {
                 layerCount = -layerCount;
             }
-            Layer[] layers = new Layer[layerCount];
+            PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new Layer(reader, psd, bpp, i);
+                layers[i] = new PsdLayer(reader, psd, bpp, i);
             }
 
             foreach (var item in layers)
@@ -33,10 +33,10 @@ namespace Ntreev.Library.PsdParser
 
             reader.Position = start + length;
 
-            return Layer.Initialize(null, layers);
+            return PsdLayer.Initialize(null, layers);
         }
 
-        public static void ComputeBounds(Layer[] layers)
+        public static void ComputeBounds(PsdLayer[] layers)
         {
             foreach (var item in layers.SelectMany(item => item.Descendants()).Reverse())
             {

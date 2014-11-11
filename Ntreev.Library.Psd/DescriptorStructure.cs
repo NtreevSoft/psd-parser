@@ -1,10 +1,10 @@
-﻿using Ntreev.Library.PsdParser.Structures;
+﻿using Ntreev.Library.Psd.Structures;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     sealed class DescriptorStructure : Properties
     {

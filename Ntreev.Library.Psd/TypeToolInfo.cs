@@ -6,7 +6,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     sealed class TypeToolInfo : Properties
     {

@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     class PSDReader : IDisposable
     {

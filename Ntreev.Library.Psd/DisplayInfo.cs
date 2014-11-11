@@ -1,7 +1,7 @@
 ﻿using System;
 using System.IO;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     public sealed class DisplayInfo
     {

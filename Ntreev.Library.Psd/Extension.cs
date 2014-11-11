@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     public static class Extension
     {
@@ -39,7 +39,7 @@ namespace Ntreev.Library.PsdParser
             }
         }
 
-        internal static IEnumerable<Layer> Descendants(this Layer layer)
+        internal static IEnumerable<PsdLayer> Descendants(this PsdLayer layer)
         {
             yield return layer;
 

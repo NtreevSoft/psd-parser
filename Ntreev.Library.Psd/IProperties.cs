@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     public interface IProperties : IEnumerable<KeyValuePair<string, object>>
     {

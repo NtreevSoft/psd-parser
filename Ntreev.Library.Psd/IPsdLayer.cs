@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.PsdParser
+namespace Ntreev.Library.Psd
 {
     public interface IPsdLayer : IImageSource
     {
@@ -21,7 +21,7 @@ namespace Ntreev.Library.PsdParser
 
         IProperties Properties { get; }
 
-        PSD PSD { get; }
+        PsdDocument PSD { get; }
 
         int Left { get; }
 
