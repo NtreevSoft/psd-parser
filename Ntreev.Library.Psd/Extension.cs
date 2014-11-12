@@ -31,8 +31,7 @@ namespace Ntreev.Library.Psd
 
             foreach (var item in layer.Childs)
             {
-                yield return item;
-                foreach (var child in item.Childs)
+                foreach (var child in item.Descendants())
                 {
                     yield return child;
                 }
@@ -45,8 +44,7 @@ namespace Ntreev.Library.Psd
 
             foreach (var item in layer.Childs)
             {
-                yield return item;
-                foreach (var child in item.Childs)
+                foreach (var child in item.Descendants())
                 {
                     yield return child;
                 }

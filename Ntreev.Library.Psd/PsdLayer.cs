@@ -270,10 +270,29 @@ namespace Ntreev.Library.Psd
                 if (item == this || item.HasImage == false)
                     continue;
 
-                left = Math.Min(item.Left, left);
-                top = Math.Min(item.Top, top);
-                right = Math.Max(item.Right, right);
-                bottom = Math.Max(item.Bottom, bottom);
+                // 일반 레이어인데 비어 있을때
+                if (item.sectionType == SectionType.Normal && item.HasImage == false)
+                {
+                    double[] transforms = (double[])item.Properties["PlLd.Transformation"];
+                    double[] xx = new double[] { transforms[0], transforms[2], transforms[4], transforms[6], };
+                    double[] yy = new double[] { transforms[1], transforms[3], transforms[5], transforms[7], };
+
+                    int l = (int)Math.Ceiling(xx.Min());
+                    int r = (int)Math.Ceiling(xx.Max());
+                    int t = (int)Math.Ceiling(yy.Min());
+                    int b = (int)Math.Ceiling(yy.Max());
+                    left = Math.Min(l, left);
+                    top = Math.Min(t, top);
+                    right = Math.Max(r, right);
+                    bottom = Math.Max(b, bottom);
+                }
+                else
+                {
+                    left = Math.Min(item.Left, left);
+                    top = Math.Min(item.Top, top);
+                    right = Math.Max(item.Right, right);
+                    bottom = Math.Max(item.Bottom, bottom);
+                }
                 isSet = true;
             }
 
@@ -346,7 +365,7 @@ namespace Ntreev.Library.Psd
 
         IPsdLayer IPsdLayer.Parent
         {
-            get { throw new NotImplementedException(); }
+            get { return this.parent; }
         }
 
         IPsdLayer IPsdLayer.LinkedLayer
