@@ -38,7 +38,7 @@ namespace Ntreev.Library.Psd
 
         public static void ComputeBounds(PsdLayer[] layers)
         {
-            foreach (var item in layers.SelectMany(item => item.Descendants()).Reverse())
+            foreach (var item in layers.SelectMany(item => item.All()).Reverse())
             {
                 item.ComputeBounds();
             }

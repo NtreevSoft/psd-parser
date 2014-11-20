@@ -265,7 +265,7 @@ namespace Ntreev.Library.Psd
 
             bool isSet = false;
 
-            foreach (var item in this.Descendants())
+            foreach (var item in this.All())
             {
                 if (item == this || item.HasImage == false)
                     continue;

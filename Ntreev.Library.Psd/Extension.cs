@@ -27,10 +27,18 @@ namespace Ntreev.Library.Psd
 
         public static IEnumerable<IPsdLayer> Descendants(this IPsdLayer layer)
         {
-            yield return layer;
+            return Descendants(layer, item => true);
+        }
 
+        public static IEnumerable<IPsdLayer> Descendants(this IPsdLayer layer, Func<IPsdLayer, bool> filter)
+        {
             foreach (var item in layer.Childs)
             {
+                if (filter(item) == false)
+                    continue;
+
+                yield return item;
+
                 foreach (var child in item.Descendants())
                 {
                     yield return child;
@@ -38,13 +46,13 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal static IEnumerable<PsdLayer> Descendants(this PsdLayer layer)
+        internal static IEnumerable<PsdLayer> All(this PsdLayer layer)
         {
             yield return layer;
 
             foreach (var item in layer.Childs)
             {
-                foreach (var child in item.Descendants())
+                foreach (var child in item.All())
                 {
                     yield return child;
                 }
