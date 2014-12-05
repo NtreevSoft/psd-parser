@@ -21,7 +21,7 @@ namespace Ntreev.Library.Psd
             string type = reader.ReadAscii(4);
             int version = reader.ReadInt32();
 
-            if (type != "liFD" || version != 2)
+            if (type != "liFD" || version < 2)
                 throw new Exception("Invalid PSD file");
             this.id = new Guid(reader.ReadPascalString(1));
             this.fileName = reader.ReadUnicodeString2();

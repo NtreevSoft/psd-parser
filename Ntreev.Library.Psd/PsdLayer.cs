@@ -378,6 +378,11 @@ namespace Ntreev.Library.Psd
             }
         }
 
+        IChannel[] IImageSource.Channels
+        {
+            get { return this.Channels; }
+        }
+
         #endregion
     }
 }

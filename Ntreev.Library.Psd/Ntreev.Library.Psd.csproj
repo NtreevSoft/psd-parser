@@ -60,7 +60,6 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="ChannelRLE.cs" />
     <Compile Include="ChannelType.cs" />
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
@@ -68,6 +67,7 @@
     <Compile Include="GridAndGuidesInfo.cs" />
     <Compile Include="GridInfo.cs" />
     <Compile Include="GuidesInfo.cs" />
+    <Compile Include="IChannel.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
     <Compile Include="SliceInfo.cs" />
@@ -100,7 +100,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DescriptorStructure.cs" />
-    <Compile Include="CommonStateInfo.cs" />
     <Compile Include="PSDReader.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -130,9 +129,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ResolutionInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PSDTypeToolObject.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeToolInfo.cs">

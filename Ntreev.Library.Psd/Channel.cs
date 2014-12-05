@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class Channel
+    sealed class Channel : IChannel
     {
         private byte[] data;
         private readonly ChannelType type;
@@ -109,7 +109,7 @@ namespace Ntreev.Library.Psd
                         byte[] buffer = new byte[rlePackLengths[i]];
                         byte[] dst = new byte[length];
                         reader.Read(buffer, 0, rlePackLengths[i]);
-                        PSDUtil.decodeRLE(buffer, dst, rlePackLengths[i], length);
+                        PSDUtil.DecodeRLE(buffer, dst, rlePackLengths[i], length);
                         for (int j = 0; j < length; j++)
                         {
                             this.data[(i * length) + j] = (byte)(dst[j] * this.opacity);

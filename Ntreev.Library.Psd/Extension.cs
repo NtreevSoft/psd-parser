@@ -9,7 +9,7 @@ namespace Ntreev.Library.Psd
     {
         public static byte[] MergeChannels(this IImageSource imageSource)
         {
-            Channel[] channels = imageSource.Channels;
+            IChannel[] channels = imageSource.Channels;
             int length = channels.Length;
             int num2 = channels[0].Data.Length;
 

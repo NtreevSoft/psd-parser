@@ -15,7 +15,7 @@ namespace Ntreev.Library.PsdViewer
 
         public ShellViewModel()
         {
-            this.Refresh(@"C:\Users\S2QUAKE\Desktop\321.psd");
+            this.Refresh(@"C:\Users\S2QUAKE\Desktop\TopMenuView.psd");
 
         }
 

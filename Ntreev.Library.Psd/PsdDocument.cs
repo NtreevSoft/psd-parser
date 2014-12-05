@@ -102,9 +102,19 @@ namespace Ntreev.Library.Psd
             get { return this.fileHeader.Depth; }
         }
 
-        public Channel[] Channels
+        public IEnumerable<IPsdLayer> Childs
         {
-            get { return this.channels; }
+            get { return this.layers; }
+        }
+
+        public string Name
+        {
+            get { return this.name; }
+        }
+
+        public IProperties Properties
+        {
+            get { return this.props; }
         }
 
         public GlobalLayerMask GlobalLayerMask
@@ -239,10 +249,7 @@ namespace Ntreev.Library.Psd
                             long e = reader.Position + l;
                             while (reader.Position < e)
                             {
-                                //long p1 = reader.Position;
                                 linkedLayers.Add(new LinkedLayer(reader));
-                                //long l2 = (reader.Position - p1) % 4;
-                                //reader.ReadBytes((int)l2);
                             }
                         }
                         break;
@@ -253,14 +260,7 @@ namespace Ntreev.Library.Psd
                         break;
                     case "Txt2":
                         {
-                            //reader.Position = p + l;
-
-                            //byte b = reader.ReadByte();
-                            //byte b2 = reader.ReadByte();
-                            //byte b3 = reader.ReadByte();
-                            //l += (l % 4);
-                            //if (l % 4 == 2)
-                            //    l += 2;
+                            
                         }
                         break;
                 }
@@ -270,17 +270,6 @@ namespace Ntreev.Library.Psd
                     reader.Position++;
 
                 reader.Position += ((reader.Position - p) % 4);
-
-                //reader.Position = p + l;
-                ////if (l % 4 == 2)
-                ////{
-                ////    reader.Position = l % 4;
-                ////}
-                ////else 
-                //    if(reader.Position % 2 != 0)
-                //{
-                //    reader.Position++;
-                //}
             }
             this.linkedLayers = linkedLayers.ToArray();
 
@@ -326,31 +315,6 @@ namespace Ntreev.Library.Psd
             this.channels = channels.OrderBy(item => item.Type).ToArray();
         }
 
-        public BlendMode BlendMode
-        {
-            get { return BlendMode.Normal; }
-        }
-
-        public IEnumerable<IPsdLayer> Childs
-        {
-            get { return this.layers; }
-        }
-
-        public string Name
-        {
-            get { return this.name; }
-        }
-
-        public float Opacity
-        {
-            get { return 1.0f; }
-        }
-
-        public IProperties Properties
-        {
-            get { return this.props; }
-        }
-
         #region IPsdLayer
 
         IPsdLayer IPsdLayer.Parent
@@ -393,9 +357,24 @@ namespace Ntreev.Library.Psd
             get { return this.Height; }
         }
 
+        BlendMode IPsdLayer.BlendMode
+        {
+            get { return BlendMode.Normal; }
+        }
+
         bool IImageSource.HasImage
         {
             get { return true; }
+        }
+
+        IChannel[] IImageSource.Channels
+        {
+            get { return this.channels; }
+        }
+
+        float IImageSource.Opacity
+        {
+            get { return 1.0f; }
         }
 
         #endregion

@@ -46,9 +46,6 @@
     <Compile Include="..\Ntreev.Library.Psd\Channel.cs">
       <Link>Channel.cs</Link>
     </Compile>
-    <Compile Include="..\Ntreev.Library.Psd\ChannelRLE.cs">
-      <Link>ChannelRLE.cs</Link>
-    </Compile>
     <Compile Include="..\Ntreev.Library.Psd\ChannelType.cs">
       <Link>ChannelType.cs</Link>
     </Compile>
@@ -60,9 +57,6 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\ColorSpace.cs">
       <Link>ColorSpace.cs</Link>
-    </Compile>
-    <Compile Include="..\Ntreev.Library.Psd\CommonStateInfo.cs">
-      <Link>CommonStateInfo.cs</Link>
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\CompressionType.cs">
       <Link>CompressionType.cs</Link>
@@ -90,6 +84,9 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\GuidesInfo.cs">
       <Link>GuidesInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\IChannel.cs">
+      <Link>IChannel.cs</Link>
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\IImageSource.cs">
       <Link>IImageSource.cs</Link>
@@ -135,9 +132,6 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\PSDReader.cs">
       <Link>PSDReader.cs</Link>
-    </Compile>
-    <Compile Include="..\Ntreev.Library.Psd\PSDTypeToolObject.cs">
-      <Link>PSDTypeToolObject.cs</Link>
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\PSDUtil.cs">
       <Link>PSDUtil.cs</Link>
