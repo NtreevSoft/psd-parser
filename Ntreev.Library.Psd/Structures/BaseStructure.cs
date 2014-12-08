@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Structures
 {
-    class BaseStructure
+    class BaseStructure : Properties
     {
-        public List<object> items = new List<object>();
+        private List<object> items = new List<object>();
 
         public BaseStructure(PSDReader reader, string key)
         {
@@ -25,6 +25,7 @@ namespace Ntreev.Library.Psd.Structures
                     }
                 }
             }
+            this.Add("Items", this.items.ToArray());
         }
     }
 }

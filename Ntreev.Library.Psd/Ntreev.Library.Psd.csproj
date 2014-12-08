@@ -68,8 +68,12 @@
     <Compile Include="GridInfo.cs" />
     <Compile Include="GuidesInfo.cs" />
     <Compile Include="IChannel.cs" />
+    <Compile Include="ILinkedLayer.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
+    <Compile Include="LinkedLayer2.cs" />
+    <Compile Include="PathResolver.cs" />
+    <Compile Include="PsdResolver.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureFactory.cs" />
@@ -137,6 +141,7 @@
     <Compile Include="PSDUtil.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="UnitType.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

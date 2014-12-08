@@ -36,13 +36,18 @@ namespace Ntreev.Library.Psd
         {
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                this.Read(stream);
+                this.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
             }
         }
 
         public void Read(Stream stream)
         {
-            using (PSDReader reader = new PSDReader(stream))
+            this.Read(stream, null);
+        }
+
+        public void Read(Stream stream, PsdResolver resolver)
+        {
+            using (PSDReader reader = new PSDReader(stream, resolver))
             {
                 this.ReadFileHeader(reader);
                 this.ReadColorModeData(reader);
@@ -191,6 +196,7 @@ namespace Ntreev.Library.Psd
                         default:
                             {
                                 reader.Position += resourceSize;
+                                this.props.Add(imageResourceID.ToString(), null);
                                 break;
                             }
                     }
@@ -211,7 +217,7 @@ namespace Ntreev.Library.Psd
             LayerInfo.ComputeBounds(this.layers);
             this.globalLayerMask = new GlobalLayerMask(reader);
 
-            List<string> keys = new List<string>(new string[]{"LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD",});
+            List<string> keys = new List<string>(new string[] { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", });
             List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
 
             List<string> kkk = new List<string>();
@@ -242,6 +248,15 @@ namespace Ntreev.Library.Psd
 
                 switch (key)
                 {
+                    case "lnkE":
+                        {
+                            long e = reader.Position + l;
+                            while (reader.Position < e)
+                            {
+                                linkedLayers.Add(new LinkedLayer2(reader));
+                            }
+                        }
+                        break;
                     case "lnkD":
                     case "lnk2":
                     case "lnk3":
@@ -251,16 +266,6 @@ namespace Ntreev.Library.Psd
                             {
                                 linkedLayers.Add(new LinkedLayer(reader));
                             }
-                        }
-                        break;
-                    case "Patt":
-                        {
-
-                        }
-                        break;
-                    case "Txt2":
-                        {
-                            
                         }
                         break;
                 }
@@ -282,7 +287,7 @@ namespace Ntreev.Library.Psd
             {
                 if (item.PlacedID != Guid.Empty)
                 {
-                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.PSD != null).FirstOrDefault();
+                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.Document != null).FirstOrDefault();
                 }
 
                 this.SetLinkedLayer(item.Childs);
@@ -332,7 +337,7 @@ namespace Ntreev.Library.Psd
             get { return this; }
         }
 
-        IPsdLayer IPsdLayer.LinkedLayer
+        ILinkedLayer IPsdLayer.LinkedLayer
         {
             get { return null; }
         }

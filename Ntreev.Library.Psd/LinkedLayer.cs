@@ -6,41 +6,29 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class LinkedLayer
+    class LinkedLayer : ILinkedLayer
     {
         private readonly Guid id;
         private readonly string fileName;
-        private PsdDocument psb;
+        private PsdDocument document;
         private DescriptorStructure descriptor;
 
-        internal LinkedLayer(PSDReader reader)
+        public LinkedLayer(PSDReader reader)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
 
-            string type = reader.ReadAscii(4);
+            string type = reader.ReadKey();
             int version = reader.ReadInt32();
 
-            if (type != "liFD" || version < 2)
-                throw new Exception("Invalid PSD file");
+            this.Validate(type, version);
             this.id = new Guid(reader.ReadPascalString(1));
             this.fileName = reader.ReadUnicodeString2();
 
-            string fileType = reader.ReadAscii(4);
-            string fileCreator = reader.ReadAscii(4);
+            string fileType = reader.ReadKey();
+            string fileCreator = reader.ReadKey();
 
-            long p = reader.Position - position;
-
-            //long p = reader.Position;
-            this.ReadPSB(reader);
-            //if ((fileType == "8BPB" && fileCreator == "8BIM") || Path.GetExtension(this.fileName) == ".psb")
-            //{
-            //    this.psb = ;
-            //}
-            //else
-            //{
-            //    this.ReadOther(reader);
-            //}
+            this.ReadDocument(reader);
 
             reader.Position = position + length;
             if (reader.Position % 2 != 0)
@@ -49,31 +37,9 @@ namespace Ntreev.Library.Psd
             reader.Position += ((reader.Position - position) % 4);
         }
 
-        private void ReadOther(PSDReader reader)
+        public PsdDocument Document
         {
-            long length = reader.ReadInt64();
-            long position = reader.Position;
-
-            bool fod = reader.ReadBoolean();
-            if (fod == true)
-            {
-                this.descriptor = new DescriptorStructure(reader);
-            }
-
-            byte[] bytes = reader.ReadBytes((int)length);
-
-            //using (MemoryStream ms = new MemoryStream(bytes))
-            //{
-            //    System.Drawing.Bitmap b = new System.Drawing.Bitmap(ms);
-            //    b.Save("d:\\test.png", System.Drawing.Imaging.ImageFormat.Png);
-            //}
-            
-            //CompressionType compressionType = (CompressionType)reader.ReadInt16();
-        }
-
-        public PsdDocument PSD
-        {
-            get { return this.psb; }
+            get { return this.document; }
         }
 
         public Guid ID
@@ -86,47 +52,72 @@ namespace Ntreev.Library.Psd
             get { return this.fileName; }
         }
 
-        private void ReadPSB(PSDReader reader)
+        public IProperties Properties
+        {
+            get { return this.descriptor; }
+        }
+
+        public virtual bool IsEmbedded
+        {
+            get { return false; }
+        }
+
+        protected virtual void Validate(string type, int version)
+        {
+            if (type != "liFD" || version < 2)
+                throw new Exception("Invalid PSD file");
+        }
+
+        protected virtual string Path
+        {
+            get { return string.Empty; }
+        }
+
+        private void ReadDocument(PSDReader reader)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
 
-            if (length % 4 != 0)
-            {
-                int weqr = 0;
-            }
-
             bool fod = reader.ReadBoolean();
             if (fod == true)
             {
+                var version = reader.ReadInt32();
                 this.descriptor = new DescriptorStructure(reader);
             }
 
-            byte[] bytes = reader.ReadBytes((int)length);
-
-            using (MemoryStream stream = new MemoryStream(bytes))
+            if (length > 0)
             {
-                if (this.IsPsd(bytes) == true)
+                byte[] bytes = reader.ReadBytes((int)length);
+
+                using (MemoryStream stream = new MemoryStream(bytes))
                 {
-                    PsdDocument psb = new PsdDocument(this.fileName);
-                    psb.Read(stream);
-                    this.psb = psb;
+                    if (this.IsDocument(bytes) == true)
+                    {
+                        PsdDocument psb = new PsdDocument(this.fileName);
+                        psb.Read(stream);
+                        this.document = psb;
+                    }
+                    else
+                    {
+                        //throw new NotSupportedException();
+                    }
                 }
-                else
-                {
-                    
-                }
-                //reader.Position = position + length;
+            }
+            else
+            {
+                this.document = reader.Resolver.GetDocument(this.fileName);
             }
         }
 
-        private bool IsPsd(byte[] bytes)
+        private bool IsDocument(byte[] bytes)
         {
-             using (MemoryStream stream = new MemoryStream(bytes))
-             using (PSDReader reader = new PSDReader(stream))
-             {
-                 return reader.ReadAscii(4) == "8BPS";
-             }
+            using (MemoryStream stream = new MemoryStream(bytes))
+            using (PSDReader reader = new PSDReader(stream, null))
+            {
+                string key = reader.ReadKey();
+                Console.WriteLine(key);
+                return key == "8BPS";
+            }
         }
     }
 }

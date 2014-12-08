@@ -91,6 +91,9 @@
     <Compile Include="..\Ntreev.Library.Psd\IImageSource.cs">
       <Link>IImageSource.cs</Link>
     </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\ILinkedLayer.cs">
+      <Link>ILinkedLayer.cs</Link>
+    </Compile>
     <Compile Include="..\Ntreev.Library.Psd\InvalidFormatException.cs">
       <Link>InvalidFormatException.cs</Link>
     </Compile>
@@ -121,6 +124,12 @@
     <Compile Include="..\Ntreev.Library.Psd\LinkedLayer.cs">
       <Link>LinkedLayer.cs</Link>
     </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\LinkedLayer2.cs">
+      <Link>LinkedLayer2.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\PathResolver.cs">
+      <Link>PathResolver.cs</Link>
+    </Compile>
     <Compile Include="..\Ntreev.Library.Psd\Properties.cs">
       <Link>Properties.cs</Link>
     </Compile>
@@ -132,6 +141,9 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\PSDReader.cs">
       <Link>PSDReader.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\PsdResolver.cs">
+      <Link>PsdResolver.cs</Link>
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\PSDUtil.cs">
       <Link>PSDUtil.cs</Link>
@@ -189,6 +201,9 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\TypeToolInfo.cs">
       <Link>TypeToolInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\UnitType.cs">
+      <Link>UnitType.cs</Link>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

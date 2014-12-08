@@ -26,7 +26,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
             if(layer.LinkedLayer != null)
             {
-                this.Children.Add(new LayerItemViewModel(layer.LinkedLayer, parent));
+                this.Children.Add(new LinkedLayerItemViewModel(layer.LinkedLayer, parent));
             }
 
             //var bmp = this.layer.GetBitmap();

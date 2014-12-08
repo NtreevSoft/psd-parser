@@ -13,7 +13,7 @@ namespace Ntreev.Library.Psd
 
         bool IsClipping { get; }
 
-        IPsdLayer LinkedLayer { get; }
+        ILinkedLayer LinkedLayer { get; }
 
         string Name { get; }
 

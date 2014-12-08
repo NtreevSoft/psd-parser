@@ -7,17 +7,41 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureUnitFloat : Properties
     {
-        private const string ANGLE = "#Ang";
-        private const string DENSITY = "#Rsl";
-        private const string DISTANCE = "#Rlt";
-        
-        private const string NONE = "#Nne";
-        private const string PERCENT = "#Prc";
-        private const string PIXELS = "#Pxl";
-
         public StructureUnitFloat(PSDReader reader)
         {
-            this.Add("Key", reader.ReadAscii(4));
+            string key = reader.ReadKey();
+            UnitType unitType = UnitType.None;
+
+            switch (key)
+            {
+                case "#Ang":
+                    unitType = UnitType.Angle;
+                    break;
+                case "#Rsl":
+                    unitType = UnitType.Density;
+                    break;
+                case "#Rlt":
+                    unitType = UnitType.Distance;
+                    break;
+                case "#Nne":
+                    unitType = UnitType.None;
+                    break;
+                case "#Prc":
+                    unitType = UnitType.Percent;
+                    break;
+                case "#Pxl":
+                    unitType = UnitType.Pixels;
+                    break;
+                case "#Pnt":
+                    unitType = UnitType.Points;
+                    break;
+                case "#Mlm":
+                    unitType = UnitType.Millimeters;
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+            this.Add("Type", unitType);
             this.Add("Value", reader.ReadDouble());
         }
     }

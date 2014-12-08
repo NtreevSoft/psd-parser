@@ -97,6 +97,8 @@ namespace Ntreev.Library.Psd
                 this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
             if (resource.ContainsProperty("SoLd.Descriptor.Idnt") == true)
                 this.placedID = new Guid(resource.GetProperty("SoLd.Descriptor.Idnt") as string);
+            else if (resource.ContainsProperty("SoLE.Descriptor.Idnt") == true)
+                this.placedID = new Guid(resource.GetProperty("SoLE.Descriptor.Idnt") as string);
             if (resource.ContainsProperty("iOpa") == true)
             {
                 byte opa = (byte)resource.GetProperty("iOpa.Opacity");
@@ -228,7 +230,7 @@ namespace Ntreev.Library.Psd
         public LinkedLayer LinkedLayer
         {
             get;
-            internal set;
+            set;
         }
 
         public bool HasImage
@@ -368,14 +370,9 @@ namespace Ntreev.Library.Psd
             get { return this.parent; }
         }
 
-        IPsdLayer IPsdLayer.LinkedLayer
+        ILinkedLayer IPsdLayer.LinkedLayer
         {
-            get
-            {
-                if (this.LinkedLayer == null)
-                    return null;
-                return this.LinkedLayer.PSD;
-            }
+            get { return this.LinkedLayer; }
         }
 
         IChannel[] IImageSource.Channels

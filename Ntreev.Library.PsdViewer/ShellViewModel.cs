@@ -7,6 +7,8 @@ using System.Windows;
 using System.Windows.Media.Imaging;
 using System.Linq;
 using Microsoft.Win32;
+using System.Text;
+using System;
 namespace Ntreev.Library.PsdViewer
 {
     public class ShellViewModel : Caliburn.Micro.PropertyChangedBase, IShell
@@ -15,8 +17,24 @@ namespace Ntreev.Library.PsdViewer
 
         public ShellViewModel()
         {
-            this.Refresh(@"C:\Users\S2QUAKE\Desktop\TopMenuView.psd");
+            System.Security.Cryptography.SHA1 md5 = System.Security.Cryptography.SHA1.Create();
+            //System.Security.Cryptography.MD5 md5 = System.Security.Cryptography.MD5.Create();
+            using (FileStream sr = File.OpenRead(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\TeamsView.psd"))
+            {
+                byte[] data = md5.ComputeHash(sr);
 
+                StringBuilder sb = new StringBuilder();
+
+                for (int i = 0; i < data.Length; i++)
+                {
+                    sb.Append(data[i].ToString("x2"));
+                }
+                string id = sb.ToString();
+            }
+
+            //this.Refresh(@"C:\Users\S2QUAKE\Desktop\TopMenuView.psd");
+            //this.Refresh(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\Icons.psd");
+            this.Refresh(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\TeamManagementView.psd");
         }
 
         public IEnumerable ItemsSource

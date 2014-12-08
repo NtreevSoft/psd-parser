@@ -80,6 +80,7 @@
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
     <Compile Include="ShellViewModel.cs" />
+    <Compile Include="ViewModels\LinkedLayerItemViewModel.cs" />
     <Compile Include="ViewModels\LayerItemViewModel.cs" />
     <Compile Include="ViewModels\PropertiesItemViewModel.cs" />
     <Compile Include="ViewModels\PSDItemViewModel.cs" />

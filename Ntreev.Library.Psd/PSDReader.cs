@@ -7,15 +7,18 @@ namespace Ntreev.Library.Psd
     class PSDReader : IDisposable
     {
         private readonly BinaryReader reader;
+        private readonly PsdResolver resolver;
+
         private int version = 1;
 
-        public PSDReader(BinaryReader reader)
+        public PSDReader(BinaryReader reader, PsdResolver resolver)
         {
             this.reader = reader;
+            this.resolver = resolver;
         }
 
-        public PSDReader(Stream stream)
-            : this(new InternalBinaryReader(stream))
+        public PSDReader(Stream stream, PsdResolver resolver)
+            : this(new InternalBinaryReader(stream), resolver)
         {
 
         }
@@ -23,6 +26,11 @@ namespace Ntreev.Library.Psd
         public void Dispose()
         {
             this.reader.Close();
+        }
+
+        public string ReadKey()
+        {
+            return this.ReadAscii(4);
         }
 
         public string ReadAscii(int length)
@@ -199,6 +207,11 @@ namespace Ntreev.Library.Psd
         {
             get { return this.version; }
             set { this.version = value; }
+        }
+
+        public PsdResolver Resolver
+        {
+            get { return this.resolver; }
         }
 
         internal BinaryReader InternalReader

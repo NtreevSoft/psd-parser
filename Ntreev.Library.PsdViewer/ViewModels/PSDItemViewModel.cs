@@ -19,6 +19,18 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }
+
+            //foreach (var item in document.Properties)
+            //{
+            //    if (item.Value is IProperties == true)
+            //    {
+            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value as IProperties, this));
+            //    }
+            //    else
+            //    {
+            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value, this));
+            //    }
+            //}
         }
 
         public override string Text
