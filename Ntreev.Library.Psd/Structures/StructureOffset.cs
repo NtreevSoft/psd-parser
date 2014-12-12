@@ -9,8 +9,8 @@ namespace Ntreev.Library.Psd.Structures
     {
         public StructureOffset(PSDReader reader)
         {
-            this.Add("Name", reader.ReadUnicodeString2());
-            this.Add("ClassID", reader.ReadStringOrKey());
+            this.Add("Name", reader.ReadString());
+            this.Add("ClassID", reader.ReadKey());
             this.Add("Offset", reader.ReadInt32());
         }
     }

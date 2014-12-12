@@ -28,7 +28,7 @@ namespace Ntreev.Library.Psd
             this.reader.Close();
         }
 
-        public string ReadKey()
+        public string ReadType()
         {
             return this.ReadAscii(4);
         }
@@ -58,38 +58,9 @@ namespace Ntreev.Library.Psd
             return str;
         }
 
-        public string ReadUnicodeString()
+        public string ReadString()
         {
-            return ReadUnicodeString2();
-            int num = 4;
-            int num2 = this.ReadInt32();
-            string str = "";
-            if (num2 == 0)
-            {
-                Stream baseStream = this.reader.BaseStream;
-                baseStream.Position += num - 1;
-                return str;
-            }
-            byte[] bytes = this.reader.ReadBytes(num2 * 2);
-            for (int i = 0; i < num2; i++)
-            {
-                int index = i * 2;
-                byte num5 = bytes[index];
-                bytes[index] = bytes[index + 1];
-                bytes[index + 1] = num5;
-            }
-            str = Encoding.Unicode.GetString(bytes);
-            //for (int j = num2 + 1; (j % num) != 0; j++)
-            //{
-            //    Stream stream2 = this.reader.BaseStream;
-            //    stream2.Position += 1L;
-            //}
-            return str;
-        }
-
-        public string ReadUnicodeString2()
-        {
-            int length = this.ReadInt32();
+             int length = this.ReadInt32();
             if (length == 0)
                 return string.Empty;
 
@@ -110,7 +81,7 @@ namespace Ntreev.Library.Psd
             return Encoding.Unicode.GetString(bytes, 0, length * 2);
         }
 
-        public string ReadStringOrKey()
+        public string ReadKey()
         {
             int length = this.ReadInt32();
             length = (length > 0) ? length : 4;
@@ -125,6 +96,11 @@ namespace Ntreev.Library.Psd
         public byte ReadByte()
         {
             return this.reader.ReadByte();
+        }
+
+        public char ReadChar()
+        {
+            return (char)this.ReadByte();
         }
 
         public byte[] ReadBytes(int count)
@@ -187,6 +163,21 @@ namespace Ntreev.Library.Psd
             if (this.version == 1)
                 return this.ReadInt32();
             return (int)this.ReadInt64();
+        }
+
+        public void Skip(char c)
+        {
+            char ddd = this.ReadChar();
+            if(ddd != c)
+                throw new NotSupportedException();
+        }
+
+        public void Skip(char c, int count)
+        {
+            for (int i = 0; i < count; i++)
+            {
+                this.Skip(c);
+            }
         }
 
         public long Position

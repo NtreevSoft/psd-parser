@@ -76,7 +76,7 @@
     <Compile Include="PsdResolver.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
-    <Compile Include="Structures\StructureFactory.cs" />
+    <Compile Include="Structures\StructureReader.cs" />
     <Compile Include="Structures\StructureAlias.cs" />
     <Compile Include="Structures\StructureClass.cs" />
     <Compile Include="Structures\StructureEngineData.cs" />

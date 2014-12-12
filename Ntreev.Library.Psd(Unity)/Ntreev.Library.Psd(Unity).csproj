@@ -175,9 +175,6 @@
     <Compile Include="..\Ntreev.Library.Psd\Structures\StructureEnumerateReference.cs">
       <Link>Structures\StructureEnumerateReference.cs</Link>
     </Compile>
-    <Compile Include="..\Ntreev.Library.Psd\Structures\StructureFactory.cs">
-      <Link>Structures\StructureFactory.cs</Link>
-    </Compile>
     <Compile Include="..\Ntreev.Library.Psd\Structures\StructureList.cs">
       <Link>Structures\StructureList.cs</Link>
     </Compile>
@@ -189,6 +186,9 @@
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\Structures\StructureProperty.cs">
       <Link>Structures\StructureProperty.cs</Link>
+    </Compile>
+    <Compile Include="..\Ntreev.Library.Psd\Structures\StructureReader.cs">
+      <Link>Structures\StructureReader.cs</Link>
     </Compile>
     <Compile Include="..\Ntreev.Library.Psd\Structures\StructureReference.cs">
       <Link>Structures\StructureReference.cs</Link>

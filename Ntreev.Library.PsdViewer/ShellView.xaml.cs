@@ -19,5 +19,10 @@ namespace Ntreev.Library.PsdViewer
             int qwer = 0;
 
         }
+
+        private void OpenFile_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
+        {
+            Caliburn.Micro.Bind.SetModel(sender as System.Windows.DependencyObject, e.NewValue);
+        }
     }
 }

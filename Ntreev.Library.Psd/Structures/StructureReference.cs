@@ -7,8 +7,8 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureReference : BaseStructure
     {
-        public StructureReference(PSDReader reader, string key)
-            : base(reader, key)
+        public StructureReference(PSDReader reader)
+            : base(reader)
         {
         }
     }

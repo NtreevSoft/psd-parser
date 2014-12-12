@@ -7,25 +7,17 @@ namespace Ntreev.Library.Psd.Structures
 {
     class BaseStructure : Properties
     {
-        private List<object> items = new List<object>();
-
-        public BaseStructure(PSDReader reader, string key)
+        public BaseStructure(PSDReader reader)
         {
-            int num = reader.ReadInt32();
-            while (num-- > 0)
+            List<object> items = new List<object>();
+            int count = reader.ReadInt32();
+            for (int i = 0; i < count; i++)
             {
                 string osType = reader.ReadAscii(4);
-                StructureFactory.DecodeFunc func = StructureFactory.GetDecoder(osType);
-                if (func != null)
-                {
-                    object item = func(reader, key);
-                    if (item != null)
-                    {
-                        this.items.Add(item);
-                    }
-                }
+                object value = StructureReader.Read(osType, reader);
+                items.Add(value);
             }
-            this.Add("Items", this.items.ToArray());
+            this.Add("Items", items.ToArray());
         }
     }
 }

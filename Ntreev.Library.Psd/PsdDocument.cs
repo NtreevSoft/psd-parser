@@ -177,7 +177,7 @@ namespace Ntreev.Library.Psd
                                 var r2 = reader.ReadInt32();
                                 var r3 = reader.ReadInt32();
                                 var r4 = reader.ReadInt32();
-                                string text = reader.ReadUnicodeString();
+                                string text = reader.ReadString();
                                 var count = reader.ReadInt32();
 
                                 List<SliceInfo> slices = new List<SliceInfo>(count);

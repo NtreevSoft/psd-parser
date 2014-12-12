@@ -9,9 +9,11 @@ namespace Ntreev.Library.Psd
 {
     sealed class TypeToolInfo : Properties
     {
-        internal TypeToolInfo(PSDReader reader)
+        private int version;
+
+        public TypeToolInfo(PSDReader reader)
         {
-            this.Add("Version", reader.ReadInt16());
+            this.version = (int)reader.ReadInt16();
             this.Add("Transforms", reader.ReadDoubles(6));
             this.Add("TextVersion", reader.ReadInt16());
             this.Add("TextDescVersion", reader.ReadInt32());

@@ -7,9 +7,10 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureList : BaseStructure
     {
-        public StructureList(PSDReader reader, string key)
-            : base(reader, key)
+        public StructureList(PSDReader reader)
+            : base(reader)
         {
+
         }
     }
 }

@@ -18,15 +18,15 @@ namespace Ntreev.Library.Psd
             long length = reader.ReadInt64();
             long position = reader.Position;
 
-            string type = reader.ReadKey();
+            string type = reader.ReadType();
             int version = reader.ReadInt32();
 
             this.Validate(type, version);
             this.id = new Guid(reader.ReadPascalString(1));
-            this.fileName = reader.ReadUnicodeString2();
+            this.fileName = reader.ReadString();
 
-            string fileType = reader.ReadKey();
-            string fileCreator = reader.ReadKey();
+            string fileType = reader.ReadType();
+            string fileCreator = reader.ReadType();
 
             this.ReadDocument(reader);
 
@@ -94,7 +94,7 @@ namespace Ntreev.Library.Psd
                     if (this.IsDocument(bytes) == true)
                     {
                         PsdDocument psb = new PsdDocument(this.fileName);
-                        psb.Read(stream);
+                        psb.Read(stream, reader.Resolver);
                         this.document = psb;
                     }
                     else
@@ -114,7 +114,7 @@ namespace Ntreev.Library.Psd
             using (MemoryStream stream = new MemoryStream(bytes))
             using (PSDReader reader = new PSDReader(stream, null))
             {
-                string key = reader.ReadKey();
+                string key = reader.ReadType();
                 Console.WriteLine(key);
                 return key == "8BPS";
             }

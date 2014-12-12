@@ -14,6 +14,7 @@ namespace Ntreev.Library.PsdViewer
     public class ShellViewModel : Caliburn.Micro.PropertyChangedBase, IShell
     {
         private List<TreeViewItemViewModel> itemsSource;
+        private string filename;
 
         public ShellViewModel()
         {
@@ -34,7 +35,7 @@ namespace Ntreev.Library.PsdViewer
 
             //this.Refresh(@"C:\Users\S2QUAKE\Desktop\TopMenuView.psd");
             //this.Refresh(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\Icons.psd");
-            this.Refresh(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\TeamManagementView.psd");
+            //this.Refresh(@"C:\Users\S2QUAKE\Documents\NPF\GUIResources\TeamManagementView.psd");
         }
 
         public IEnumerable ItemsSource
@@ -52,17 +53,32 @@ namespace Ntreev.Library.PsdViewer
 
             if (dlg.ShowDialog() == true)
             {
-                this.Refresh(dlg.FileName);
+                this.RefreshFile(dlg.FileName);
             }
         }
 
-        private void Refresh(string filename)
+        public void RefreshFile()
+        {
+            this.RefreshFile(this.filename);
+        }
+
+        public bool CanRefresh
+        {
+            get
+            {
+                return File.Exists(this.filename);
+            }
+        }
+
+        private void RefreshFile(string filename)
         {
             PsdDocument document = new PsdDocument();
             document.Read(filename);
+            this.filename = filename;
             this.itemsSource = new List<TreeViewItemViewModel>();
             this.itemsSource.Add(new PSDItemViewModel(document));
             this.NotifyOfPropertyChange(() => this.ItemsSource);
+            this.NotifyOfPropertyChange(() => this.CanRefresh);
         }
     }
 

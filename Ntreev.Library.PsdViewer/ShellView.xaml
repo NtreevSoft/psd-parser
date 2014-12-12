@@ -4,10 +4,15 @@
                  xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro" 
                  xmlns:cal="http://www.caliburnproject.org"
                  xmlns:ctrl="clr-namespace:Ntreev.Library.PsdViewer.Controls"
+                 xmlns:conv="clr-namespace:Ntreev.Library.PsdViewer.Converters"
                  Width="500" x:Name="uc1">
+    <mah:MetroWindow.Resources>
+        <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
+    </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands >
-            <Button x:Name="Setting" Content="OpenFile" cal:Message.Attach="OpenFile" />
+            <Button x:Name="OpenFile" Content="OpenFile" cal:Message.Attach="OpenFile" />
+            <Button Content="Refresh" cal:Message.Attach="RefreshFile" Visibility="{Binding CanRefresh, Converter={StaticResource booleanToVisibilityConverter}}"/>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>
     <Grid>

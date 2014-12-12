@@ -72,6 +72,7 @@
     <Compile Include="Controls\TreeListView.xaml.cs">
       <DependentUpon>TreeListView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\LevelToIndentConverter.cs" />
     <Compile Include="Converters\TreeViewItemToImageConverter.cs" />
     <Compile Include="IShell.cs" />

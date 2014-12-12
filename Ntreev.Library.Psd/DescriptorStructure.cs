@@ -10,23 +10,22 @@ namespace Ntreev.Library.Psd
     {
         public DescriptorStructure(PSDReader reader)
         {
-            this.Add("Name", reader.ReadUnicodeString2());
-            this.Add("ClassID", reader.ReadStringOrKey());
+            this.Add("Name", reader.ReadString());
+            this.Add("ClassID", reader.ReadKey());
 
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                string key = reader.ReadStringOrKey();
-                string osType = reader.ReadAscii(4);
-                StructureFactory.DecodeFunc func = StructureFactory.GetDecoder(osType);
-                if (func != null)
+                string key = reader.ReadKey();
+                string osType = reader.ReadType();
+                if (key == "EngineData")
                 {
-                    object value = func(reader, key);
-                    this.Add(key.Trim(), value);
+                    this.Add(key.Trim(), new StructureEngineData(reader));
                 }
                 else
                 {
-                    throw new NotSupportedException();
+                    object value = StructureReader.Read(osType, reader);
+                    this.Add(key.Trim(), value);
                 }
             }
         }

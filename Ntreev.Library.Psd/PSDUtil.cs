@@ -164,6 +164,31 @@ namespace Ntreev.Library.Psd
             return BlendMode.Normal;
         }
 
+        public static UnitType ToUnitType(string text)
+        {
+            switch (text)
+            {
+                case "#Ang":
+                    return UnitType.Angle;
+                case "#Rsl":
+                    return UnitType.Density;
+                case "#Rlt":
+                    return UnitType.Distance;
+                case "#Nne":
+                    return UnitType.None;
+                case "#Prc":
+                    return UnitType.Percent;
+                case "#Pxl":
+                    return UnitType.Pixels;
+                case "#Pnt":
+                    return UnitType.Points;
+                case "#Mlm":
+                    return UnitType.Millimeters;
+                default:
+                    throw new NotSupportedException();
+            }
+        }
+
         public static int DepthToPitch(int depth, int width)
         {
             switch (depth)

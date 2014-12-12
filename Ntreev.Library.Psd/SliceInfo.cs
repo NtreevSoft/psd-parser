@@ -33,7 +33,7 @@ namespace Ntreev.Library.Psd
             {
                 int asso = reader.ReadInt32();
             }
-            this.name = reader.ReadUnicodeString2();
+            this.name = reader.ReadString();
             int type = reader.ReadInt32();
 
             this.left = reader.ReadInt32();
@@ -41,14 +41,14 @@ namespace Ntreev.Library.Psd
             this.right = reader.ReadInt32();
             this.bottom = reader.ReadInt32();
 
-            this.url = reader.ReadUnicodeString2();
-            this.target = reader.ReadUnicodeString2();
-            this.message = reader.ReadUnicodeString2();
-            this.altTag  = reader.ReadUnicodeString2();
+            this.url = reader.ReadString();
+            this.target = reader.ReadString();
+            this.message = reader.ReadString();
+            this.altTag  = reader.ReadString();
 
             bool b = reader.ReadBoolean();
 
-            string cellText = reader.ReadUnicodeString2();
+            string cellText = reader.ReadString();
 
             this.horzAlign = reader.ReadInt32();
             this.vertAlign = reader.ReadInt32();

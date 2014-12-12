@@ -9,8 +9,8 @@ namespace Ntreev.Library.Psd.Structures
     {
         public StructureEnumerate(PSDReader reader)
         {
-            this.Add("Type", reader.ReadStringOrKey());
-            this.Add("EnumName", reader.ReadStringOrKey());
+            this.Add("Type", reader.ReadKey());
+            this.Add("EnumName", reader.ReadKey());
         }
     }
 }

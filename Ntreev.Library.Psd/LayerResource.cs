@@ -131,7 +131,7 @@ namespace Ntreev.Library.Psd
                 case "luni":
                     {
                         Properties props = new Properties();
-                        props.Add("Name", reader.ReadUnicodeString());
+                        props.Add("Name", reader.ReadString());
                         this.Add(str2, props);
                     }
                     break;
