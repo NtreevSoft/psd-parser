@@ -5,7 +5,7 @@
                  xmlns:cal="http://www.caliburnproject.org"
                  xmlns:ctrl="clr-namespace:Ntreev.Library.PsdViewer.Controls"
                  xmlns:conv="clr-namespace:Ntreev.Library.PsdViewer.Converters"
-                 Width="500" x:Name="uc1">
+                 Width="500" x:Name="uc1" Title="{Binding Title}" TitleCaps="False">
     <mah:MetroWindow.Resources>
         <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
     </mah:MetroWindow.Resources>

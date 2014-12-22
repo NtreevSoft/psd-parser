@@ -12,6 +12,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
     {
         private readonly string name;
         private object value;
+        private string type;
 
         public PropertiesItemViewModel(string name, IProperties properties, TreeViewItemViewModel parent)
             : base(parent)
@@ -51,6 +52,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         {
             this.name = name;
             this.value = value;
+            this.type = value.GetType().Name;
         }
 
         public override string Text
@@ -64,6 +66,11 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         public object Value
         {
             get { return this.value; }
+        }
+
+        public string Type
+        {
+            get { return this.type; }
         }
     }
 }

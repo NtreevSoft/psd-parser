@@ -10,7 +10,6 @@ namespace Ntreev.Library.Psd
     {
         private string name;
         private ColorModeData colorModeData;
-        private DisplayInfo displayInfo;
         private FileHeader fileHeader;
         private GridAndGuidesInfo gridAndGuidesInfo;
         private PsdLayer[] layers;
@@ -65,11 +64,6 @@ namespace Ntreev.Library.Psd
         public ColorModeData ColorModeData
         {
             get { return this.colorModeData; }
-        }
-
-        public DisplayInfo DisplayInfo
-        {
-            get { return this.displayInfo; }
         }
 
         public ResolutionInfo ResolutionInfo
@@ -166,9 +160,6 @@ namespace Ntreev.Library.Psd
                         case 0x3ed:
                             this.resolutionInfo = new ResolutionInfo(reader);
                             break;
-                        case 0x3ef:
-                            this.displayInfo = new DisplayInfo(reader);
-                            break;
                         case 0x041a:
                             {
                                 long ppp = reader.Position;
@@ -220,15 +211,12 @@ namespace Ntreev.Library.Psd
             List<string> keys = new List<string>(new string[] { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", });
             List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
 
-            List<string> kkk = new List<string>();
-
             while (reader.Position < end)
             {
-                string signature = reader.ReadAscii(4);
-                string key = reader.ReadAscii(4);
+                string signature = reader.ReadType();
+                string key = reader.ReadType();
                 if (signature != "8BIM" && signature != "8B64")
                     throw new Exception();
-                kkk.Add(key);
 
                 long ssss = reader.Position;
 

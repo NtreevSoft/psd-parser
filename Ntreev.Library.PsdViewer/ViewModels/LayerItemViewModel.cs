@@ -14,7 +14,6 @@ namespace Ntreev.Library.PsdViewer.ViewModels
     class LayerItemViewModel : TreeViewItemViewModel
     {
         private readonly IPsdLayer layer;
-        static int i = 0;
 
         public LayerItemViewModel(IPsdLayer layer, PSDItemViewModel parent)
             : base(parent)

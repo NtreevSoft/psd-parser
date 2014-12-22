@@ -75,6 +75,13 @@
 
         <GridViewColumnCollection x:Key="gvcc">
             <GridViewColumn Header="이름" CellTemplate="{StaticResource CellTemplate_Name}" Width="325"/>
+            <GridViewColumn Header="타입" Width="100" >
+                <GridViewColumn.CellTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Type, TargetNullValue=''}" HorizontalAlignment="Right" />
+                    </DataTemplate>
+                </GridViewColumn.CellTemplate>
+            </GridViewColumn>
             <GridViewColumn Header="값" Width="150" >
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>

@@ -70,6 +70,18 @@ namespace Ntreev.Library.PsdViewer
             }
         }
 
+
+        public string Title
+        {
+            get
+            {
+                string title = "PsdViewer";
+                if (string.IsNullOrEmpty(this.filename) == true)
+                    return title;
+                return string.Format("{0} - {1}", title, Path.GetFileName(this.filename));
+            }
+        }
+
         private void RefreshFile(string filename)
         {
             PsdDocument document = new PsdDocument();
@@ -79,6 +91,7 @@ namespace Ntreev.Library.PsdViewer
             this.itemsSource.Add(new PSDItemViewModel(document));
             this.NotifyOfPropertyChange(() => this.ItemsSource);
             this.NotifyOfPropertyChange(() => this.CanRefresh);
+            this.NotifyOfPropertyChange(() => this.Title);
         }
     }
 

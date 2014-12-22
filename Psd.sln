@@ -31,7 +31,6 @@ Global
 		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release_Unity|Any CPU.ActiveCfg = Release|Any CPU
 		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release_Unity|Any CPU.Build.0 = Release|Any CPU
 		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

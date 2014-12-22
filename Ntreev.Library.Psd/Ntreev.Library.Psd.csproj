@@ -117,9 +117,6 @@
     <Compile Include="ColorModeData.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="DisplayInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
