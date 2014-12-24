@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd.Structures
 {
     class BaseStructure : Properties
     {
-        public BaseStructure(PSDReader reader)
+        public BaseStructure(PsdReader reader)
         {
             List<object> items = new List<object>();
             int count = reader.ReadInt32();

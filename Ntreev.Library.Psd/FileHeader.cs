@@ -4,61 +4,36 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class FileHeader
+    public abstract class FileHeader
     {
-        private readonly string signature;
-        private readonly short version;
-        private readonly byte[] reserved;
-        private readonly short bpp;
-        private readonly int channels;
-        private readonly ColorMode colorMode;
-        private readonly int height;
-        private readonly int width;
-
-        internal FileHeader(PSDReader reader)
+        public abstract int Depth
         {
-            this.signature = reader.ReadAscii(4);
-            this.version = reader.ReadInt16();
-            this.reserved = reader.ReadBytes(6);
-            if ((this.signature != "8BPS") || (this.version != 1 && this.version != 2))
-            {
-                throw new Exception("Invalid PSD file");
-            }
-            this.channels = reader.ReadInt16();
-            this.height = reader.ReadInt32();
-            this.width = reader.ReadInt32();
-            this.bpp = reader.ReadInt16();
-            this.colorMode = (ColorMode)reader.ReadInt16();
+            get;
         }
 
-        public int Depth
+        public abstract int NumberOfChannels
         {
-            get { return this.bpp; }
+            get;
         }
 
-        public int NumberOfChannels
+        public abstract ColorMode ColorMode
         {
-            get { return this.channels; }
+            get;
         }
 
-        public ColorMode ColorMode
+        public abstract int Height
         {
-            get { return this.colorMode; }
+            get;
         }
 
-        public int Height
+        public abstract int Width
         {
-            get { return this.height; }
+            get;
         }
 
-        public int Width
+        public abstract int Version
         {
-            get { return this.width; }
-        }
-
-        public int Version
-        {
-            get { return this.version; }
+            get;
         }
     }
 }

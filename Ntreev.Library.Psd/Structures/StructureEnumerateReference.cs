@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureEnumerateReference : Properties
     {
-        public StructureEnumerateReference(PSDReader reader)
+        public StructureEnumerateReference(PsdReader reader)
         {
             this.Add("Name", reader.ReadString());
             this.Add("ClassID", reader.ReadKey());

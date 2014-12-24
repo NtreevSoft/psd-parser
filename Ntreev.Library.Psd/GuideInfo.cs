@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class GuidesInfo
+    public struct GuideInfo
     {
         public int[] Horizontals
         {
             get;
-            internal set;
+            set;
         }
 
         public int[] Verticals
         {
             get;
-            internal set;
+            set;
         }
     }
 }

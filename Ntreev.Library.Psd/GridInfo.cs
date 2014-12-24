@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class GridInfo
+    public struct GridInfo
     {
         public int Horizontal
         {
             get;
-            internal set;
+            set;
         }
 
         public int Vertical
         {
             get;
-            internal set;
+            set;
         }
     }
 }

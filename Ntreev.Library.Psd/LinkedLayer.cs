@@ -13,7 +13,7 @@ namespace Ntreev.Library.Psd
         private PsdDocument document;
         private DescriptorStructure descriptor;
 
-        public LinkedLayer(PSDReader reader)
+        public LinkedLayer(PsdReader reader)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
@@ -65,7 +65,7 @@ namespace Ntreev.Library.Psd
         protected virtual void Validate(string type, int version)
         {
             if (type != "liFD" || version < 2)
-                throw new Exception("Invalid PSD file");
+                throw new InvalidFormatException();
         }
 
         protected virtual string Path
@@ -73,7 +73,7 @@ namespace Ntreev.Library.Psd
             get { return string.Empty; }
         }
 
-        private void ReadDocument(PSDReader reader)
+        private void ReadDocument(PsdReader reader)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
@@ -112,7 +112,7 @@ namespace Ntreev.Library.Psd
         private bool IsDocument(byte[] bytes)
         {
             using (MemoryStream stream = new MemoryStream(bytes))
-            using (PSDReader reader = new PSDReader(stream, null))
+            using (PsdReader reader = new PsdReader(stream, null))
             {
                 string key = reader.ReadType();
                 Console.WriteLine(key);

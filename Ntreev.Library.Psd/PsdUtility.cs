@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class PSDUtil
+    sealed class PsdUtility
     {
         public static byte[] DecodeRLE(byte[] source)
         {

@@ -12,7 +12,7 @@ namespace Ntreev.Library.Psd
         private byte color;
         private byte flag;
 
-        public LayerMask(PSDReader reader)
+        public LayerMask(PsdReader reader)
         {
             this.size = reader.ReadInt32();
             long position = reader.Position;

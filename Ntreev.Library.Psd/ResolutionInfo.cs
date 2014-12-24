@@ -12,7 +12,7 @@ namespace Ntreev.Library.Psd
         private readonly int verticalResUnit;
         private readonly int widthUnit;
 
-        internal ResolutionInfo(PSDReader reader)
+        internal ResolutionInfo(PsdReader reader)
         {
             this.horizontalRes = reader.ReadInt16();
             this.horizontalResUnit = reader.ReadInt32();

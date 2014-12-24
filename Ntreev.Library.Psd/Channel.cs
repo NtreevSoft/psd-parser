@@ -13,7 +13,7 @@ namespace Ntreev.Library.Psd
         private int[] rlePackLengths;
         private float opacity = 1.0f;
 
-        internal Channel(ChannelType type, int width, int height)
+        public Channel(ChannelType type, int width, int height)
         {
             this.type = type;
             this.width = width;
@@ -30,7 +30,7 @@ namespace Ntreev.Library.Psd
             get { return this.type; }
         }
 
-        internal void LoadHeader(PSDReader reader, CompressionType compressionType)
+        public void LoadHeader(PsdReader reader, CompressionType compressionType)
         {
             if (compressionType != CompressionType.RLE)
                 return;
@@ -52,7 +52,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal void Load(PSDReader reader, int bpp, CompressionType compressionType)
+        public void Load(PsdReader reader, int bpp, CompressionType compressionType)
         {
             switch (compressionType)
             {
@@ -69,7 +69,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal int Width
+        public int Width
         {
             get { return this.width; }
             set
@@ -78,7 +78,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal int Height
+        public int Height
         {
             get { return this.height; }
             set
@@ -87,15 +87,15 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal float Opacity
+        public float Opacity
         {
             get { return this.opacity; }
             set { this.opacity = value; }
         }
 
-        private void ReadData(PSDReader reader, int bps, CompressionType compressionType, int[] rlePackLengths)
+        private void ReadData(PsdReader reader, int bps, CompressionType compressionType, int[] rlePackLengths)
         {
-            int length = PSDUtil.DepthToPitch(bps, this.width);
+            int length = PsdUtility.DepthToPitch(bps, this.width);
             this.data = new byte[length * this.height];
             switch (compressionType)
             {
@@ -109,7 +109,7 @@ namespace Ntreev.Library.Psd
                         byte[] buffer = new byte[rlePackLengths[i]];
                         byte[] dst = new byte[length];
                         reader.Read(buffer, 0, rlePackLengths[i]);
-                        PSDUtil.DecodeRLE(buffer, dst, rlePackLengths[i], length);
+                        PsdUtility.DecodeRLE(buffer, dst, rlePackLengths[i], length);
                         for (int j = 0; j < length; j++)
                         {
                             this.data[(i * length) + j] = (byte)(dst[j] * this.opacity);

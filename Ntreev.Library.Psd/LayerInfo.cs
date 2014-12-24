@@ -6,7 +6,7 @@ namespace Ntreev.Library.Psd
 {
     sealed class LayerInfo
     {
-        public static PsdLayer[] ReadLayers(PSDReader reader, PsdDocument document, int bpp)
+        public static PsdLayer[] ReadLayers(PsdReader reader, PsdDocument document, int bpp)
         {
             int length = reader.ReadLength();
             long start = reader.Position;

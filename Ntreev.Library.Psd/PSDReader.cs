@@ -4,20 +4,20 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    class PSDReader : IDisposable
+    class PsdReader : IDisposable
     {
         private readonly BinaryReader reader;
         private readonly PsdResolver resolver;
 
         private int version = 1;
 
-        public PSDReader(BinaryReader reader, PsdResolver resolver)
+        public PsdReader(BinaryReader reader, PsdResolver resolver)
         {
             this.reader = reader;
             this.resolver = resolver;
         }
 
-        public PSDReader(Stream stream, PsdResolver resolver)
+        public PsdReader(Stream stream, PsdResolver resolver)
             : this(new InternalBinaryReader(stream), resolver)
         {
 
@@ -205,11 +205,6 @@ namespace Ntreev.Library.Psd
             get { return this.resolver; }
         }
 
-        internal BinaryReader InternalReader
-        {
-            get { return this.reader; }
-        }
-
         private bool ReverseValue(bool value)
         {
             byte[] bytes = BitConverter.GetBytes(value);
@@ -276,5 +271,3 @@ namespace Ntreev.Library.Psd
         }
     }
 }
-
-

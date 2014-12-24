@@ -6,9 +6,9 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    class LinkedLayer2 : LinkedLayer
+    class EmbeddedLayer : LinkedLayer
     {
-        public LinkedLayer2(PSDReader reader)
+        public EmbeddedLayer(PsdReader reader)
             : base(reader)
         {
 
@@ -17,7 +17,7 @@ namespace Ntreev.Library.Psd
         protected override void Validate(string type, int version)
         {
             if (type != "liFE" || version < 5)
-                throw new Exception("Invalid PSD file");
+                throw new InvalidFormatException();
         }
 
         public override bool IsEmbedded

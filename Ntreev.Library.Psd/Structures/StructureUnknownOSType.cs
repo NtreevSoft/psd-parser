@@ -7,12 +7,9 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureUnknownOSType : Properties
     {
-        private readonly string value;
-
         public StructureUnknownOSType(string value)
         {
-            this.value = value;
-            this.Add("Value", this.value);
+            this.Add("Value", value);
         }
     }
 }

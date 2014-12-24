@@ -24,7 +24,7 @@ namespace Ntreev.Library.Psd
         private readonly byte green;
         private readonly byte blue;
         
-        internal SliceInfo(PSDReader reader)
+        internal SliceInfo(PsdReader reader)
         {
             int id = reader.ReadInt32();
             int groupID = reader.ReadInt32();
@@ -57,6 +57,36 @@ namespace Ntreev.Library.Psd
             this.red = reader.ReadByte();
             this.green = reader.ReadByte();
             this.blue = reader.ReadByte();
+        }
+
+        public SliceInfo(IProperties properties)
+        {
+            if(properties.Contains("Nm") == true)
+                this.name = properties["Nm"] as string;
+
+            this.left = (int)properties["bounds.Left"];
+            this.top = (int)properties["bounds.Top"];
+            this.right = (int)properties["bounds.Rght"];
+            this.bottom = (int)properties["bounds.Btom"];
+
+            this.url = properties["url"] as string;
+            this.target = properties["null"] as string;
+            this.message = properties["Msge"] as string;
+            this.altTag = properties["altTag"] as string;
+            //this.horzAlign;
+            //this.vertAlign;
+            //this.alpha;
+            //this.red;
+            //this.green;
+            //this.blue;
+
+            if (properties.Contains("bgColor") == true)
+            {
+                this.alpha = (byte)(int)properties["bgColor.alpha"];
+                this.red = (byte)(int)properties["bgColor.Rd"];
+                this.green = (byte)(int)properties["bgColor.Grn"];
+                this.blue = (byte)(int)properties["bgColor.Bl"];
+            }
         }
 
         public int Left

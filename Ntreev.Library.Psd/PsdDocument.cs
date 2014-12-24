@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ntreev.Library.Psd.Readers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -46,10 +47,10 @@ namespace Ntreev.Library.Psd
 
         public void Read(Stream stream, PsdResolver resolver)
         {
-            using (PSDReader reader = new PSDReader(stream, resolver))
+            using (PsdReader reader = new PsdReader(stream, resolver))
             {
-                this.ReadFileHeader(reader);
-                this.ReadColorModeData(reader);
+                this.fileHeader = new FileHeaderReader(reader);
+                this.colorModeData = new ColorModeDataReader(reader);
                 this.ReadImageResources(reader);
                 this.ReadLayers(reader);
                 this.ReadImageData(reader);
@@ -76,7 +77,7 @@ namespace Ntreev.Library.Psd
             get { return this.gridAndGuidesInfo.GridInfo; }
         }
 
-        public GuidesInfo GuidesInfo
+        public GuideInfo GuideInfo
         {
             get { return this.gridAndGuidesInfo.GuidesInfo; }
         }
@@ -121,14 +122,14 @@ namespace Ntreev.Library.Psd
             get { return this.globalLayerMask; }
         }
 
-        private void ReadColorModeData(PSDReader reader)
+        private void ReadColorModeData(PsdReader reader)
         {
-            this.colorModeData = new ColorModeData(reader);
+            this.colorModeData = new ColorModeDataReader(reader);
         }
 
-        private void ReadFileHeader(PSDReader reader)
+        private void ReadFileHeader(PsdReader reader)
         {
-            this.fileHeader = new FileHeader(reader);
+            this.fileHeader = new FileHeaderReader(reader);
             reader.Version = this.fileHeader.Version;
             if (this.fileHeader.Depth != 8)
             {
@@ -136,7 +137,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        private void ReadImageResources(PSDReader reader)
+        private void ReadImageResources(PsdReader reader)
         {
             int size = reader.ReadInt32();
             long position = reader.Position;
@@ -164,23 +165,40 @@ namespace Ntreev.Library.Psd
                             {
                                 long ppp = reader.Position;
                                 var version = reader.ReadInt32();
-                                var r1 = reader.ReadInt32();
-                                var r2 = reader.ReadInt32();
-                                var r3 = reader.ReadInt32();
-                                var r4 = reader.ReadInt32();
-                                string text = reader.ReadString();
-                                var count = reader.ReadInt32();
-
-                                List<SliceInfo> slices = new List<SliceInfo>(count);
-                                for (int i = 0; i < count; i++)
+                                if (version == 6)
                                 {
-                                    slices.Add(new SliceInfo(reader));
+                                    var r1 = reader.ReadInt32();
+                                    var r2 = reader.ReadInt32();
+                                    var r3 = reader.ReadInt32();
+                                    var r4 = reader.ReadInt32();
+                                    string text = reader.ReadString();
+                                    var count = reader.ReadInt32();
+
+                                    List<SliceInfo> slices = new List<SliceInfo>(count);
+                                    for (int i = 0; i < count; i++)
+                                    {
+                                        slices.Add(new SliceInfo(reader));
+                                    }
+
+                                    this.slices = slices.ToArray();
+
+                                    int descVer = reader.ReadInt32();
+                                    this.props.Add(imageResourceID.ToString(), new DescriptorStructure(reader));
                                 }
+                                else
+                                {
+                                    int descVer = reader.ReadInt32();
+                                    var v = new DescriptorStructure(reader) as IProperties;
+                                    this.props.Add(imageResourceID.ToString(), v);
 
-                                this.slices = slices.ToArray();
-
-                                int descVer = reader.ReadInt32();
-                                this.props.Add(string.Format("0x{0:x4}", imageResourceID), new DescriptorStructure(reader));
+                                    var items = v["slices.Items[0]"] as object[];
+                                    List<SliceInfo> slices = new List<SliceInfo>(items.Length);
+                                    foreach (var item in items)
+                                    {
+                                        slices.Add(new SliceInfo(item as IProperties));
+                                    }
+                                    this.slices = slices.ToArray();
+                                }
                             }
                             break;
 
@@ -199,7 +217,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        private void ReadLayers(PSDReader reader)
+        private void ReadLayers(PsdReader reader)
         {
             long length = reader.ReadLength();
             long end = reader.Position + length;
@@ -216,7 +234,7 @@ namespace Ntreev.Library.Psd
                 string signature = reader.ReadType();
                 string key = reader.ReadType();
                 if (signature != "8BIM" && signature != "8B64")
-                    throw new Exception();
+                    throw new InvalidFormatException();
 
                 long ssss = reader.Position;
 
@@ -241,7 +259,7 @@ namespace Ntreev.Library.Psd
                             long e = reader.Position + l;
                             while (reader.Position < e)
                             {
-                                linkedLayers.Add(new LinkedLayer2(reader));
+                                linkedLayers.Add(new EmbeddedLayer(reader));
                             }
                         }
                         break;
@@ -282,7 +300,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        private void ReadImageData(PSDReader reader)
+        private void ReadImageData(PsdReader reader)
         {
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
 

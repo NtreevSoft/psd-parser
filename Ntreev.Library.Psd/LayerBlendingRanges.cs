@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd
 {
     class LayerBlendingRanges
     {
-        public LayerBlendingRanges(PSDReader reader)
+        public LayerBlendingRanges(PsdReader reader)
         {
             int size = reader.ReadInt32();
 

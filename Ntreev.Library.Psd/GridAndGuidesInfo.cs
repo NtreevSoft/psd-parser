@@ -8,9 +8,9 @@ namespace Ntreev.Library.Psd
     sealed class GridAndGuidesInfo
     {
         private readonly GridInfo gridInfo = new GridInfo();
-        private readonly GuidesInfo guidesInfo = new GuidesInfo();
+        private readonly GuideInfo guidesInfo = new GuideInfo();
 
-        internal GridAndGuidesInfo(PSDReader reader)
+        internal GridAndGuidesInfo(PsdReader reader)
         {
             int version = reader.ReadInt32();
             
@@ -46,7 +46,7 @@ namespace Ntreev.Library.Psd
             get { return this.gridInfo; }
         }
 
-        public GuidesInfo GuidesInfo
+        public GuideInfo GuidesInfo
         {
             get { return this.guidesInfo; }
         }

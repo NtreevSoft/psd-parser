@@ -3,24 +3,11 @@ using System.IO;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class ColorModeData
+    public abstract class ColorModeData
     {
-        private int size;
-        private byte[] data;
-
-        internal ColorModeData(PSDReader reader)
+        public abstract byte[] Data
         {
-            this.size = reader.ReadInt32();
-            if (this.size > 0)
-            {
-                this.data = new byte[this.size];
-                this.data = reader.ReadBytes(this.size);
-            }
-        }
-
-        public byte[] Data
-        {
-            get { return this.data; }
+            get;
         }
     }
 }

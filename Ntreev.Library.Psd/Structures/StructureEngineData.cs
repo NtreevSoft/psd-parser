@@ -8,23 +8,14 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureEngineData : Properties
     {
-        public StructureEngineData(PSDReader reader)
+        public StructureEngineData(PsdReader reader)
         {
             int length = reader.ReadInt32();
-
-            //string ddd = string.Empty;
-            //for (int i = 0; i < length; i++)
-            //{
-            //    char d = reader.ReadChar();
-            //    if (d != '\0')
-            //        ddd += d;
-            //}
-            
             reader.Skip('\n', 2);
             this.ReadProperties(reader, 0, this);
         }
 
-        private void ReadProperties(PSDReader reader, int level, Properties props)
+        private void ReadProperties(PsdReader reader, int level, Properties props)
         {
             reader.Skip('\t', level);
             char c = reader.ReadChar();
@@ -83,7 +74,7 @@ namespace Ntreev.Library.Psd.Structures
             }
         }
 
-        private object ReadValue(PSDReader reader, int level)
+        private object ReadValue(PsdReader reader, int level)
         {
             char c = reader.ReadChar();
             if (c == ']')

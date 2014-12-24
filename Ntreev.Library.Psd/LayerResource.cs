@@ -6,7 +6,7 @@ namespace Ntreev.Library.Psd
 {
     sealed class LayerResource : Properties
     {
-        internal void Load(PSDReader reader, int index)
+        internal void Load(PsdReader reader, int index)
         {
             string str = reader.ReadAscii(4);
             string str2 = reader.ReadAscii(4);
@@ -56,7 +56,7 @@ namespace Ntreev.Library.Psd
                         Properties props = new Properties();
                         string id = reader.ReadAscii(4);
                         if (id != "soLD")
-                            throw new Exception();
+                            throw new InvalidFormatException();
                         props.Add("Version", reader.ReadInt32());
                         props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
@@ -68,7 +68,7 @@ namespace Ntreev.Library.Psd
                         Properties props = new Properties();
                         string id = reader.ReadAscii(4);
                         if (id != "soLD")
-                            throw new Exception();
+                            throw new InvalidFormatException();
                         props.Add("Version", reader.ReadInt32());
                         props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
@@ -89,7 +89,7 @@ namespace Ntreev.Library.Psd
                         Properties props = new Properties();
                         string id = reader.ReadAscii(4);
                         if (id != "plcL")
-                            throw new Exception();
+                            throw new InvalidFormatException();
                         props.Add("Version", reader.ReadInt32());
                         props.Add("UniqueID", reader.ReadPascalString(1));
                         props.Add("PageNumbers", reader.ReadInt32());
@@ -179,7 +179,7 @@ namespace Ntreev.Library.Psd
 
             if (reader.Position > position + num)
             {
-                throw new Exception();
+                throw new InvalidFormatException();
             }
 
             reader.Position = position + num;

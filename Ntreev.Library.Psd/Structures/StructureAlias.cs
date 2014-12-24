@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureAlias : Properties
     {
-        public StructureAlias(PSDReader reader)
+        public StructureAlias(PsdReader reader)
         {
             int length = reader.ReadInt32();
             this.Add("Alias", reader.ReadAscii(length));

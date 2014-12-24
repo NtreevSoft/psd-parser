@@ -11,7 +11,7 @@ namespace Ntreev.Library.Psd
     {
         private int version;
 
-        public TypeToolInfo(PSDReader reader)
+        public TypeToolInfo(PsdReader reader)
         {
             this.version = (int)reader.ReadInt16();
             this.Add("Transforms", reader.ReadDoubles(6));

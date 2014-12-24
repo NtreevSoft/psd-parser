@@ -8,7 +8,7 @@ namespace Ntreev.Library.Psd
 {
     public sealed class GlobalLayerMask
     {
-        internal GlobalLayerMask(PSDReader reader)
+        internal GlobalLayerMask(PsdReader reader)
         {
             int length = reader.ReadInt32();
             long position = reader.Position;

@@ -16,5 +16,10 @@ namespace Ntreev.Library.Psd
         {
             get;
         }
+
+        Guid ID
+        {
+            get;
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Ntreev.Library.Psd
 {
     sealed class DescriptorStructure : Properties
     {
-        public DescriptorStructure(PSDReader reader)
+        public DescriptorStructure(PsdReader reader)
         {
             this.Add("Name", reader.ReadString());
             this.Add("ClassID", reader.ReadKey());

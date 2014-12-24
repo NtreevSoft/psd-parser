@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureObjectArray : Properties
     {
-        public StructureObjectArray(PSDReader reader)
+        public StructureObjectArray(PsdReader reader)
         {
             int version = reader.ReadInt32();
             this.Add("Name", reader.ReadString());
@@ -24,7 +24,7 @@ namespace Ntreev.Library.Psd.Structures
                 props.Add("EnumName", reader.ReadType());
 
 
-                props.Add("Type2", PSDUtil.ToUnitType(reader.ReadType()));
+                props.Add("Type2", PsdUtility.ToUnitType(reader.ReadType()));
                 int d4 = reader.ReadInt32();
                 props.Add("Values", reader.ReadDoubles(d4));
 

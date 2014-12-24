@@ -26,7 +26,7 @@ namespace Ntreev.Library.Psd
         private int index;
         private PsdDocument document;
 
-        public PsdLayer(PSDReader reader, PsdDocument document, int bpp, int index)
+        public PsdLayer(PsdReader reader, PsdDocument document, int bpp, int index)
         {
             this.document = document;
             this.index = index;
@@ -59,7 +59,7 @@ namespace Ntreev.Library.Psd
                 throw new SystemException(string.Format("Wrong signature {0}", str));
             }
             //reader.ReadInt32();
-            this.blendMode = PSDUtil.ToBlendMode(reader.ReadAscii(4));
+            this.blendMode = PsdUtility.ToBlendMode(reader.ReadAscii(4));
             this.opacity = reader.ReadByte();
             this.clipping = reader.ReadBoolean();
             this.flags = (LayerFlags)reader.ReadByte(); // Flags
@@ -245,7 +245,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        public void LoadChannels(PSDReader reader, int bpp)
+        public void LoadChannels(PsdReader reader, int bpp)
         {
             foreach (var item in this.Channels)
             {

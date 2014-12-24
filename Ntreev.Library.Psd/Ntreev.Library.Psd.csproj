@@ -66,14 +66,17 @@
     <Compile Include="CompressionType.cs" />
     <Compile Include="GridAndGuidesInfo.cs" />
     <Compile Include="GridInfo.cs" />
-    <Compile Include="GuidesInfo.cs" />
+    <Compile Include="GuideInfo.cs" />
     <Compile Include="IChannel.cs" />
     <Compile Include="ILinkedLayer.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
-    <Compile Include="LinkedLayer2.cs" />
+    <Compile Include="EmbeddedLayer.cs" />
     <Compile Include="PathResolver.cs" />
     <Compile Include="PsdResolver.cs" />
+    <Compile Include="Readers\ColorModeDataReader.cs" />
+    <Compile Include="Readers\FileHeaderReader.cs" />
+    <Compile Include="Readers\ImageResourceReader.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureReader.cs" />
@@ -104,7 +107,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DescriptorStructure.cs" />
-    <Compile Include="PSDReader.cs">
+    <Compile Include="PsdReader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PsdDocument.cs">
@@ -135,7 +138,7 @@
     <Compile Include="TypeToolInfo.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="PSDUtil.cs">
+    <Compile Include="PsdUtility.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UnitType.cs" />
@@ -143,6 +146,7 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />
