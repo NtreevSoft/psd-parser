@@ -24,7 +24,7 @@ namespace Ntreev.Library.Psd
         public PsdDocument()
             : this("Root")
         {
-            
+
         }
 
         public PsdDocument(string name)
@@ -163,35 +163,47 @@ namespace Ntreev.Library.Psd
                             break;
                         case 0x041a:
                             {
-                                long ppp = reader.Position;
                                 var version = reader.ReadInt32();
                                 if (version == 6)
                                 {
-                                    var r1 = reader.ReadInt32();
-                                    var r2 = reader.ReadInt32();
-                                    var r3 = reader.ReadInt32();
-                                    var r4 = reader.ReadInt32();
-                                    string text = reader.ReadString();
-                                    var count = reader.ReadInt32();
-
-                                    List<SliceInfo> slices = new List<SliceInfo>(count);
-                                    for (int i = 0; i < count; i++)
                                     {
-                                        slices.Add(new SliceInfo(reader));
+                                        var r1 = reader.ReadInt32();
+                                        var r2 = reader.ReadInt32();
+                                        var r3 = reader.ReadInt32();
+                                        var r4 = reader.ReadInt32();
+                                        string text = reader.ReadString();
+                                        var count = reader.ReadInt32();
+
+                                        List<SliceInfo> slices = new List<SliceInfo>(count);
+                                        for (int i = 0; i < count; i++)
+                                        {
+                                            slices.Add(new SliceInfo(reader));
+                                        }
+
+                                        //this.slices = slices.ToArray();
                                     }
 
-                                    this.slices = slices.ToArray();
+                                    {
+                                        int descVer = reader.ReadInt32();
+                                        var descriptor = new DescriptorStructure(reader) as IProperties;
+                                        this.props.Add(imageResourceID.ToString(), descriptor);
 
-                                    int descVer = reader.ReadInt32();
-                                    this.props.Add(imageResourceID.ToString(), new DescriptorStructure(reader));
+                                        var items = descriptor["slices.Items[0]"] as object[];
+                                        List<SliceInfo> slices = new List<SliceInfo>(items.Length);
+                                        foreach (var item in items)
+                                        {
+                                            slices.Add(new SliceInfo(item as IProperties));
+                                        }
+                                        this.slices = slices.ToArray();
+                                    }
                                 }
                                 else
                                 {
                                     int descVer = reader.ReadInt32();
-                                    var v = new DescriptorStructure(reader) as IProperties;
-                                    this.props.Add(imageResourceID.ToString(), v);
+                                    var descriptor = new DescriptorStructure(reader) as IProperties;
+                                    this.props.Add(imageResourceID.ToString(), descriptor);
 
-                                    var items = v["slices.Items[0]"] as object[];
+                                    var items = descriptor["slices.Items[0]"] as object[];
                                     List<SliceInfo> slices = new List<SliceInfo>(items.Length);
                                     foreach (var item in items)
                                     {
@@ -226,7 +238,7 @@ namespace Ntreev.Library.Psd
             LayerInfo.ComputeBounds(this.layers);
             this.globalLayerMask = new GlobalLayerMask(reader);
 
-            List<string> keys = new List<string>(new string[] { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", });
+            List<string> keys = new List<string>(new string[] { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", "extd", });
             List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
 
             while (reader.Position < end)
@@ -307,7 +319,7 @@ namespace Ntreev.Library.Psd
             ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha, };
             Channel[] channels = new Channel[this.fileHeader.NumberOfChannels];
 
-            for(int i=0; i <channels.Length ; i++)
+            for (int i = 0; i < channels.Length; i++)
             {
                 channels[i] = new Channel(types[i], this.Width, this.Height);
             }

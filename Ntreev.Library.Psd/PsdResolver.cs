@@ -7,6 +7,6 @@ namespace Ntreev.Library.Psd
 {
     public abstract class PsdResolver
     {
-        public abstract PsdDocument GetDocument(string relativePath);
+        public abstract PsdDocument GetDocument(string path);
     }
 }

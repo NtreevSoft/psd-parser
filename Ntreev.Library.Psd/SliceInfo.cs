@@ -7,6 +7,8 @@ namespace Ntreev.Library.Psd
 {
     public sealed class SliceInfo
     {
+        private readonly int id;
+        private readonly int groupID;
         private readonly string name;
         private readonly int left;
         private readonly int top;
@@ -26,8 +28,8 @@ namespace Ntreev.Library.Psd
         
         internal SliceInfo(PsdReader reader)
         {
-            int id = reader.ReadInt32();
-            int groupID = reader.ReadInt32();
+            this.id = reader.ReadInt32();
+            this.groupID = reader.ReadInt32();
             int origin = reader.ReadInt32();
             if (origin == 1)
             {
@@ -61,6 +63,8 @@ namespace Ntreev.Library.Psd
 
         public SliceInfo(IProperties properties)
         {
+            this.id = (int)properties["sliceID"];
+            this.groupID = (int)properties["groupID"];
             if(properties.Contains("Nm") == true)
                 this.name = properties["Nm"] as string;
 
@@ -75,10 +79,6 @@ namespace Ntreev.Library.Psd
             this.altTag = properties["altTag"] as string;
             //this.horzAlign;
             //this.vertAlign;
-            //this.alpha;
-            //this.red;
-            //this.green;
-            //this.blue;
 
             if (properties.Contains("bgColor") == true)
             {
@@ -87,6 +87,16 @@ namespace Ntreev.Library.Psd
                 this.green = (byte)(int)properties["bgColor.Grn"];
                 this.blue = (byte)(int)properties["bgColor.Bl"];
             }
+        }
+
+        public int ID
+        {
+            get { return this.id; }
+        }
+
+        public int GroupID
+        {
+            get { return this.groupID; }
         }
 
         public int Left

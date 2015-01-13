@@ -21,6 +21,11 @@ namespace Ntreev.Library.Psd
             string type = reader.ReadType();
             int version = reader.ReadInt32();
 
+            if (type == "liFE")
+            {
+                int qwer = 0;
+            }
+
             this.Validate(type, version);
             this.id = new Guid(reader.ReadPascalString(1));
             this.fileName = reader.ReadString();
@@ -105,7 +110,18 @@ namespace Ntreev.Library.Psd
             }
             else
             {
-                this.document = reader.Resolver.GetDocument(this.fileName);
+                int version = reader.ReadInt32();
+                IProperties desc = new DescriptorStructure(reader);
+                if (desc.Contains("relPath") == true)
+                {
+                    string relativePath = desc["relPath"] as string;
+                    this.document = reader.Resolver.GetDocument(relativePath);
+                }
+                else
+                {
+                    string fullPath = desc["fullPath"] as string;
+                    this.document = reader.Resolver.GetDocument(fullPath);
+                }
             }
         }
 
@@ -115,7 +131,6 @@ namespace Ntreev.Library.Psd
             using (PsdReader reader = new PsdReader(stream, null))
             {
                 string key = reader.ReadType();
-                Console.WriteLine(key);
                 return key == "8BPS";
             }
         }

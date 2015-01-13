@@ -273,7 +273,7 @@ namespace Ntreev.Library.Psd
                     continue;
 
                 // 일반 레이어인데 비어 있을때
-                if (item.sectionType == SectionType.Normal && item.HasImage == false)
+                if (item.Properties.Contains("PlLd.Transformation"))
                 {
                     double[] transforms = (double[])item.Properties["PlLd.Transformation"];
                     double[] xx = new double[] { transforms[0], transforms[2], transforms[4], transforms[6], };

@@ -15,13 +15,24 @@ namespace Ntreev.Library.Psd
             this.directory = directory;
         }
 
-        public override PsdDocument GetDocument(string relativePath)
+        public override PsdDocument GetDocument(string path)
         {
-            string filename = System.IO.Path.Combine(this.directory, relativePath);
-            PsdDocument document = new PsdDocument(relativePath);
+            Uri uri = new Uri(path, UriKind.RelativeOrAbsolute);
+
+            string filename = string.Empty;
+            if (uri.IsAbsoluteUri == true)
+            {
+                filename = uri.LocalPath;
+            }
+            else
+            {
+                filename = System.IO.Path.Combine(this.directory, path);
+            }
+
+            PsdDocument document = new PsdDocument(filename);
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                document.Read(stream, this);
+                document.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
             }
             
             return document;

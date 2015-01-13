@@ -18,7 +18,7 @@ namespace Ntreev.Library.PsdViewer
 
         public ShellViewModel()
         {
-           
+ 
         }
 
         public IEnumerable ItemsSource
@@ -53,7 +53,6 @@ namespace Ntreev.Library.PsdViewer
             }
         }
 
-
         public string Title
         {
             get
@@ -77,5 +76,4 @@ namespace Ntreev.Library.PsdViewer
             this.NotifyOfPropertyChange(() => this.Title);
         }
     }
-
 }
