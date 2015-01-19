@@ -77,6 +77,7 @@
     <Compile Include="Readers\ColorModeDataReader.cs" />
     <Compile Include="Readers\FileHeaderReader.cs" />
     <Compile Include="Readers\ImageResourceReader.cs" />
+    <Compile Include="Readers\VersionInfoReader.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureReader.cs" />
@@ -142,6 +143,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UnitType.cs" />
+    <Compile Include="VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

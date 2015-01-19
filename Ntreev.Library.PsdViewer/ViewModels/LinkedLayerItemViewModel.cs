@@ -32,7 +32,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             {
                 PngBitmapEncoder d = new PngBitmapEncoder();
                 d.Frames.Add(BitmapFrame.Create(bmp));
-                string n = Regex.Replace(this.linkedLayer.Document.Name, "[\\\\/:*?\"<>|]", "_");
+                string n = Regex.Replace(this.linkedLayer.FileName, "[\\\\/:*?\"<>|]", "_");
                 using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
                 {
                     d.Save(stream);
@@ -45,7 +45,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         {
             get
             {
-                return string.Format("LinkedLayer({0})", this.linkedLayer.Document.Name);
+                return string.Format("LinkedLayer({0})", this.linkedLayer.FileName);
             }
         }
     }

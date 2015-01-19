@@ -9,7 +9,6 @@ namespace Ntreev.Library.Psd
 {
     public sealed class PsdDocument : IPsdLayer
     {
-        private string name;
         private ColorModeData colorModeData;
         private FileHeader fileHeader;
         private GridAndGuidesInfo gridAndGuidesInfo;
@@ -19,17 +18,12 @@ namespace Ntreev.Library.Psd
         private LinkedLayer[] linkedLayers;
         private SliceInfo[] slices = new SliceInfo[] { };
         private GlobalLayerMask globalLayerMask;
+        private VersionInfo versionInfo;
         private Properties props = new Properties();
 
         public PsdDocument()
-            : this("Root")
         {
 
-        }
-
-        public PsdDocument(string name)
-        {
-            this.name = name;
         }
 
         public void Read(string filename)
@@ -87,6 +81,11 @@ namespace Ntreev.Library.Psd
             get { return this.slices; }
         }
 
+        public VersionInfo VersionInfo
+        {
+            get { return this.versionInfo; }
+        }
+
         public int Width
         {
             get { return this.fileHeader.Width; }
@@ -107,11 +106,6 @@ namespace Ntreev.Library.Psd
             get { return this.layers; }
         }
 
-        public string Name
-        {
-            get { return this.name; }
-        }
-
         public IProperties Properties
         {
             get { return this.props; }
@@ -120,6 +114,16 @@ namespace Ntreev.Library.Psd
         public GlobalLayerMask GlobalLayerMask
         {
             get { return this.globalLayerMask; }
+        }
+
+        public bool HasImage
+        {
+            get 
+            {
+                if (this.versionInfo == null)
+                    return false;
+                return this.versionInfo.HasCompatibilityImage;
+            }
         }
 
         private void ReadColorModeData(PsdReader reader)
@@ -155,6 +159,29 @@ namespace Ntreev.Library.Psd
                 {
                     switch (imageResourceID)
                     {
+                        case 0x0421:
+                            {
+                                this.versionInfo = new VersionInfoReader(reader);
+                            }
+                            break;
+                        //case 0x040C:
+                        //    {
+                        //        int qwerqwer = 0;
+                        //        var format = reader.ReadInt32();
+                        //        var w = reader.ReadInt32();
+                        //        var h = reader.ReadInt32();
+                        //        var wb = reader.ReadInt32();
+                        //        var ts = reader.ReadInt32();
+                        //        var sac = reader.ReadInt32();
+                        //        var bpp = reader.ReadInt16();
+                        //        var nop = reader.ReadInt16();
+                        //    }
+                        //    break;
+                        //case 0x0409:
+                        //    {
+                        //        int wqer = 0;
+                        //    }
+                        //    break;
                         case 0x0408:
                             this.gridAndGuidesInfo = new GridAndGuidesInfo(reader);
                             break;
@@ -229,6 +256,8 @@ namespace Ntreev.Library.Psd
             }
         }
 
+        List<string> kkk = new List<string>();
+
         private void ReadLayers(PsdReader reader)
         {
             long length = reader.ReadLength();
@@ -248,6 +277,7 @@ namespace Ntreev.Library.Psd
                 if (signature != "8BIM" && signature != "8B64")
                     throw new InvalidFormatException();
 
+                kkk.Add(key);
                 long ssss = reader.Position;
 
                 long l = 0;
@@ -335,6 +365,21 @@ namespace Ntreev.Library.Psd
                 channels[i].Load(reader, this.fileHeader.Depth, compressionType);
             }
 
+            if (channels.Length == 4)
+            {
+                for (int i = 0; i < channels[3].Data.Length; i++)
+                {
+                    float a = channels[3].Data[i] / 255.0f;
+
+                    for (int j = 0; j < 3; j++)
+                    {
+                        float r = channels[j].Data[i] / 255.0f;
+                        float r1 = (((a + r) - 1f) * 1f) / a;
+                        channels[j].Data[i] = (byte)(r1 * 255.0f);
+                    }
+                }
+            }
+
             this.channels = channels.OrderBy(item => item.Type).ToArray();
         }
 
@@ -360,6 +405,11 @@ namespace Ntreev.Library.Psd
             get { return null; }
         }
 
+        string IPsdLayer.Name
+        {
+            get { return "Root"; }
+        }
+
         int IPsdLayer.Left
         {
             get { return 0; }
@@ -383,11 +433,6 @@ namespace Ntreev.Library.Psd
         BlendMode IPsdLayer.BlendMode
         {
             get { return BlendMode.Normal; }
-        }
-
-        bool IImageSource.HasImage
-        {
-            get { return true; }
         }
 
         IChannel[] IImageSource.Channels

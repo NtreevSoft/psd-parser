@@ -9,7 +9,7 @@ namespace Ntreev.Library.Psd.Readers
     {
         private byte[] data;
 
-        internal ColorModeDataReader(PsdReader reader)
+        public ColorModeDataReader(PsdReader reader)
         {
             int size = reader.ReadInt32();
             if (size > 0)

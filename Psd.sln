@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Psd", "Ntree
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.PsdViewer", "Ntreev.Library.PsdViewer\Ntreev.Library.PsdViewer.csproj", "{EEB86F6C-6EBA-4892-BC87-282DC667EC10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Psd(Unity)", "Ntreev.Library.Psd(Unity)\Ntreev.Library.Psd(Unity).csproj", "{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,10 +25,6 @@ Global
 		{EEB86F6C-6EBA-4892-BC87-282DC667EC10}.Release_Unity|Any CPU.ActiveCfg = Release|Any CPU
 		{EEB86F6C-6EBA-4892-BC87-282DC667EC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EEB86F6C-6EBA-4892-BC87-282DC667EC10}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release_Unity|Any CPU.ActiveCfg = Release|Any CPU
-		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release_Unity|Any CPU.Build.0 = Release|Any CPU
-		{6CAA45AD-D8EC-40E7-8DF0-88227F7624E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

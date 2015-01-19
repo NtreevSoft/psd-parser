@@ -33,7 +33,7 @@ namespace Ntreev.Library.Psd
             string fileType = reader.ReadType();
             string fileCreator = reader.ReadType();
 
-            this.ReadDocument(reader);
+            this.ReadDocument(reader, ref this.fileName);
 
             reader.Position = position + length;
             if (reader.Position % 2 != 0)
@@ -78,7 +78,7 @@ namespace Ntreev.Library.Psd
             get { return string.Empty; }
         }
 
-        private void ReadDocument(PsdReader reader)
+        private void ReadDocument(PsdReader reader, ref string fileName)
         {
             long length = reader.ReadInt64();
             long position = reader.Position;
@@ -98,7 +98,7 @@ namespace Ntreev.Library.Psd
                 {
                     if (this.IsDocument(bytes) == true)
                     {
-                        PsdDocument psb = new PsdDocument(this.fileName);
+                        PsdDocument psb = new PsdDocument();
                         psb.Read(stream, reader.Resolver);
                         this.document = psb;
                     }
@@ -115,11 +115,13 @@ namespace Ntreev.Library.Psd
                 if (desc.Contains("relPath") == true)
                 {
                     string relativePath = desc["relPath"] as string;
+                    fileName = relativePath;
                     this.document = reader.Resolver.GetDocument(relativePath);
                 }
                 else
                 {
                     string fullPath = desc["fullPath"] as string;
+                    fileName = fullPath;
                     this.document = reader.Resolver.GetDocument(fullPath);
                 }
             }

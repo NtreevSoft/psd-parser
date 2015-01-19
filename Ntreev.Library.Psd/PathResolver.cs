@@ -29,7 +29,7 @@ namespace Ntreev.Library.Psd
                 filename = System.IO.Path.Combine(this.directory, path);
             }
 
-            PsdDocument document = new PsdDocument(filename);
+            PsdDocument document = new PsdDocument();
             using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 document.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));

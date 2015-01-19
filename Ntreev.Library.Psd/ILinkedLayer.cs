@@ -21,5 +21,10 @@ namespace Ntreev.Library.Psd
         {
             get;
         }
+
+        string FileName
+        {
+            get;
+        }
     }
 }
