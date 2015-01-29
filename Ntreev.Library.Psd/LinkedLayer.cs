@@ -120,9 +120,7 @@ namespace Ntreev.Library.Psd
                 }
                 else
                 {
-                    string fullPath = desc["fullPath"] as string;
-                    fileName = fullPath;
-                    this.document = reader.Resolver.GetDocument(fullPath);
+                    this.document = reader.Resolver.GetDocument(fileName);
                 }
             }
         }

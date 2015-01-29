@@ -27,6 +27,8 @@ namespace Ntreev.Library.Psd
             else
             {
                 filename = System.IO.Path.Combine(this.directory, path);
+                if (File.Exists(filename) == false)
+                    throw new FileNotFoundException(string.Format("{0} 을(를) 찾을 수 없습니다.", filename), filename);
             }
 
             PsdDocument document = new PsdDocument();
