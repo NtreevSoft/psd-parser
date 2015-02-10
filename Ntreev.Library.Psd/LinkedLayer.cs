@@ -118,6 +118,12 @@ namespace Ntreev.Library.Psd
                     fileName = relativePath;
                     this.document = reader.Resolver.GetDocument(relativePath);
                 }
+                else if (desc.Contains("fullPath") == true)
+                {
+                    string fullPath = desc["fullPath"] as string;
+                    fileName = fullPath;
+                    this.document = reader.Resolver.GetDocument(fileName);
+                }
                 else
                 {
                     this.document = reader.Resolver.GetDocument(fileName);
