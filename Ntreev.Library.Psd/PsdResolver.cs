@@ -8,5 +8,10 @@ namespace Ntreev.Library.Psd
     public abstract class PsdResolver
     {
         public abstract PsdDocument GetDocument(string path);
+
+        public virtual string GetPath(string path)
+        {
+            return path;
+        }
     }
 }

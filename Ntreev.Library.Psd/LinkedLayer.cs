@@ -115,7 +115,7 @@ namespace Ntreev.Library.Psd
                 if (desc.Contains("relPath") == true)
                 {
                     string relativePath = desc["relPath"] as string;
-                    fileName = relativePath;
+                    fileName = reader.Resolver.GetPath(relativePath);
                     this.document = reader.Resolver.GetDocument(relativePath);
                 }
                 else if (desc.Contains("fullPath") == true)
