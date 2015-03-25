@@ -17,6 +17,11 @@ namespace Ntreev.Library.Psd
             get;
         }
 
+        bool HasDocument
+        {
+            get;
+        }
+
         Guid ID
         {
             get;

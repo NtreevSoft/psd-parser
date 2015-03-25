@@ -8,6 +8,9 @@ namespace Ntreev.Library.Psd
 {
     class EmbeddedLayer : LinkedLayer
     {
+        private PsdDocument document;
+        private string fileName;
+
         public EmbeddedLayer(PsdReader reader)
             : base(reader)
         {
@@ -23,6 +26,51 @@ namespace Ntreev.Library.Psd
         public override bool IsEmbedded
         {
             get { return true; }
+        }
+
+        public override PsdDocument Document
+        {
+            get 
+            {
+                if (this.document == null)
+                {
+                    this.document = new PsdDocument();
+                    this.document.Read(this.fileName);
+                }
+                return this.document; 
+            }
+        }
+
+        public override string FileName
+        {
+            get { return this.fileName; }
+        }
+
+        public override bool HasDocument
+        {
+            get { return true; }
+        }
+
+        protected override void OnDocumentRead(PsdReader reader, long length)
+        {
+            IProperties desc = new DescriptorStructure(reader);
+            if (desc.Contains("fullPath") == true)
+            {
+                Uri uri = new Uri(desc["fullPath"] as string);
+                this.fileName = uri.LocalPath;
+            }
+            else if (desc.Contains("relPath") == true)
+            {
+                string relativePath = desc["relPath"] as string;
+                this.fileName = reader.Resolver.GetPath(relativePath);
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+            if (File.Exists(this.fileName) == false)
+                throw new FileNotFoundException("찾을 수 없습니다.", this.fileName);
         }
     }
 }

@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class Channel : IChannel
+    class Channel : IChannel
     {
         private byte[] data;
         private readonly ChannelType type;
@@ -12,12 +12,14 @@ namespace Ntreev.Library.Psd
         private int width;
         private int[] rlePackLengths;
         private float opacity = 1.0f;
+        private long size;
 
-        public Channel(ChannelType type, int width, int height)
+        public Channel(ChannelType type, int width, int height, long size)
         {
             this.type = type;
             this.width = width;
             this.height = height;
+            this.size = size;
         }
 
         public byte[] Data
@@ -91,6 +93,11 @@ namespace Ntreev.Library.Psd
         {
             get { return this.opacity; }
             set { this.opacity = value; }
+        }
+
+        public long Size
+        {
+            get { return this.size; }
         }
 
         private void ReadData(PsdReader reader, int bps, CompressionType compressionType, int[] rlePackLengths)

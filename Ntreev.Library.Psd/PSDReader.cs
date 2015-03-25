@@ -8,19 +8,15 @@ namespace Ntreev.Library.Psd
     {
         private readonly BinaryReader reader;
         private readonly PsdResolver resolver;
+        private readonly Stream stream;
 
         private int version = 1;
 
-        public PsdReader(BinaryReader reader, PsdResolver resolver)
-        {
-            this.reader = reader;
-            this.resolver = resolver;
-        }
-
         public PsdReader(Stream stream, PsdResolver resolver)
-            : this(new InternalBinaryReader(stream), resolver)
         {
-
+            this.stream = stream;
+            this.reader = new InternalBinaryReader(stream);
+            this.resolver = resolver;
         }
 
         public void Dispose()
@@ -203,6 +199,11 @@ namespace Ntreev.Library.Psd
         public PsdResolver Resolver
         {
             get { return this.resolver; }
+        }
+
+        public Stream Stream
+        {
+            get { return this.stream; }
         }
 
         private bool ReverseValue(bool value)

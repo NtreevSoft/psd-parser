@@ -27,17 +27,17 @@ namespace Ntreev.Library.PsdViewer.ViewModels
                 this.Children.Add(new LayerItemViewModel(item, parent));
             }
 
-            var bmp = this.linkedLayer.Document.GetBitmap();
-            if (bmp != null)
-            {
-                PngBitmapEncoder d = new PngBitmapEncoder();
-                d.Frames.Add(BitmapFrame.Create(bmp));
-                string n = Regex.Replace(this.linkedLayer.FileName, "[\\\\/:*?\"<>|]", "_");
-                using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
-                {
-                    d.Save(stream);
-                }
-            }
+            //var bmp = this.linkedLayer.Document.GetBitmap();
+            //if (bmp != null)
+            //{
+            //    PngBitmapEncoder d = new PngBitmapEncoder();
+            //    d.Frames.Add(BitmapFrame.Create(bmp));
+            //    string n = Regex.Replace(this.linkedLayer.FileName, "[\\\\/:*?\"<>|]", "_");
+            //    using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
+            //    {
+            //        d.Save(stream);
+            //    }
+            //}
 
         }
 

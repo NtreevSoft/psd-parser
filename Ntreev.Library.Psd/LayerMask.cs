@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class LayerMask
+    class LayerMask
     {
         private int left, top, right, bottom;
         private long size;
@@ -19,11 +19,6 @@ namespace Ntreev.Library.Psd
             if (this.size == 0)
             {
                 return;
-            }
-
-            if (this.size > 20)
-            {
-                int qwer = 0;
             }
 
             this.top = reader.ReadInt32();

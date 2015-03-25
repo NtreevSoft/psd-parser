@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd
 {
-    public sealed class PsdDocument : IPsdLayer
+    public class PsdDocument : IPsdLayer, IDisposable
     {
         private ColorModeData colorModeData;
         private FileHeader fileHeader;
@@ -20,6 +20,8 @@ namespace Ntreev.Library.Psd
         private GlobalLayerMask globalLayerMask;
         private VersionInfo versionInfo;
         private Properties props = new Properties();
+        private PsdReader reader;
+        private long imagePosition;
 
         public PsdDocument()
         {
@@ -28,10 +30,9 @@ namespace Ntreev.Library.Psd
 
         public void Read(string filename)
         {
-            using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                this.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
-            }
+            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
+            this.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
+            
         }
 
         public void Read(Stream stream)
@@ -41,14 +42,22 @@ namespace Ntreev.Library.Psd
 
         public void Read(Stream stream, PsdResolver resolver)
         {
-            using (PsdReader reader = new PsdReader(stream, resolver))
-            {
-                this.fileHeader = new FileHeaderReader(reader);
-                this.colorModeData = new ColorModeDataReader(reader);
-                this.ReadImageResources(reader);
-                this.ReadLayers(reader);
-                this.ReadImageData(reader);
-            }
+            this.reader = new PsdReader(stream, resolver);
+            this.fileHeader = new FileHeaderReader(this.reader);
+            this.colorModeData = new ColorModeDataReader(this.reader);
+            this.ReadImageResources(this.reader);
+            this.ReadLayers(this.reader);
+            this.imagePosition = this.reader.Position;
+        }
+
+        public void Dispose()
+        {
+            if (this.reader == null)
+                return;
+
+            this.reader.Dispose();
+            this.reader = null;
+            this.OnDisposed(EventArgs.Empty);
         }
 
         public FileHeader FileHeader
@@ -123,6 +132,16 @@ namespace Ntreev.Library.Psd
                 if (this.versionInfo == null)
                     return false;
                 return this.versionInfo.HasCompatibilityImage;
+            }
+        }
+
+        public event EventHandler Disposed;
+
+        protected virtual void OnDisposed(EventArgs e)
+        {
+            if (this.Disposed != null)
+            {
+                this.Disposed(this, e);
             }
         }
 
@@ -211,7 +230,6 @@ namespace Ntreev.Library.Psd
                                     }
 
                                     {
-                                        int descVer = reader.ReadInt32();
                                         var descriptor = new DescriptorStructure(reader) as IProperties;
                                         this.props.Add(imageResourceID.ToString(), descriptor);
 
@@ -226,7 +244,6 @@ namespace Ntreev.Library.Psd
                                 }
                                 else
                                 {
-                                    int descVer = reader.ReadInt32();
                                     var descriptor = new DescriptorStructure(reader) as IProperties;
                                     this.props.Add(imageResourceID.ToString(), descriptor);
 
@@ -256,14 +273,12 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        List<string> kkk = new List<string>();
-
         private void ReadLayers(PsdReader reader)
         {
             long length = reader.ReadLength();
             long end = reader.Position + length;
 
-            this.layers = LayerInfo.ReadLayers(reader, this, this.fileHeader.Depth);
+            this.layers = LayerInfo.ReadLayers(reader, this);
             LayerInfo.ComputeBounds(this.layers);
             this.globalLayerMask = new GlobalLayerMask(reader);
 
@@ -277,7 +292,6 @@ namespace Ntreev.Library.Psd
                 if (signature != "8BIM" && signature != "8B64")
                     throw new InvalidFormatException();
 
-                kkk.Add(key);
                 long ssss = reader.Position;
 
                 long l = 0;
@@ -335,7 +349,7 @@ namespace Ntreev.Library.Psd
             {
                 if (item.PlacedID != Guid.Empty)
                 {
-                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.Document != null).FirstOrDefault();
+                    item.LinkedLayer = this.linkedLayers.Where(i => i.ID == item.PlacedID && i.HasDocument).FirstOrDefault();
                 }
 
                 this.SetLinkedLayer(item.Childs);
@@ -351,12 +365,7 @@ namespace Ntreev.Library.Psd
 
             for (int i = 0; i < channels.Length; i++)
             {
-                channels[i] = new Channel(types[i], this.Width, this.Height);
-            }
-
-            for (int i = 0; i < channels.Length; i++)
-            {
-                channels[i] = new Channel(types[i], this.Width, this.Height);
+                channels[i] = new Channel(types[i], this.Width, this.Height, 0);
                 channels[i].LoadHeader(reader, compressionType);
             }
 
@@ -437,7 +446,15 @@ namespace Ntreev.Library.Psd
 
         IChannel[] IImageSource.Channels
         {
-            get { return this.channels; }
+            get 
+            {
+                if (this.channels == null)
+                {
+                    this.reader.Position = this.imagePosition;
+                    this.ReadImageData(this.reader);
+                }
+                return this.channels; 
+            }
         }
 
         float IImageSource.Opacity
@@ -446,6 +463,8 @@ namespace Ntreev.Library.Psd
         }
 
         #endregion
+
+        
     }
 }
 

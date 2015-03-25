@@ -15,7 +15,7 @@ namespace Ntreev.Library.Psd.Structures
                     return new StructureReference(reader);
 
                 case "Objc":
-                    return new DescriptorStructure(reader);
+                    return new DescriptorStructure(reader, false);
 
                 case "VlLs":
                     return new StructureList(reader);
@@ -39,7 +39,7 @@ namespace Ntreev.Library.Psd.Structures
                     return reader.ReadBoolean();
 
                 case "GlbO":
-                    return new DescriptorStructure(reader);
+                    return new DescriptorStructure(reader, false);
 
                 case "type":
                     return new StructureClass(reader);

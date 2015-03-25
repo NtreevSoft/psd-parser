@@ -4,7 +4,7 @@ using System.IO;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class LayerResource : Properties
+    class LayerResource : Properties
     {
         internal void Load(PsdReader reader, int index)
         {
@@ -58,7 +58,6 @@ namespace Ntreev.Library.Psd
                         if (id != "soLD")
                             throw new InvalidFormatException();
                         props.Add("Version", reader.ReadInt32());
-                        props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
                         this.Add(str2, props);
                     }
@@ -70,7 +69,6 @@ namespace Ntreev.Library.Psd
                         if (id != "soLD")
                             throw new InvalidFormatException();
                         props.Add("Version", reader.ReadInt32());
-                        props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
                         this.Add(str2, props);
                     }
@@ -79,7 +77,6 @@ namespace Ntreev.Library.Psd
                     {
                         Properties props = new Properties();
                         props.Add("Version", reader.ReadInt32());
-                        props.Add("DescriptorVersion", reader.ReadInt32());
                         props.Add("Descriptor", new DescriptorStructure(reader));
                         this.Add(str2, props);
                     }
@@ -98,7 +95,6 @@ namespace Ntreev.Library.Psd
                         props.Add("LayerType", reader.ReadInt32());
                         props.Add("Transformation", reader.ReadDoubles(8));
                         props.Add("WarpVersion ", reader.ReadInt32());
-                        props.Add("WarpDescriptorVersion ", reader.ReadInt32());
                         props.Add("WarpDescriptor", new DescriptorStructure(reader));
 
                         this.Add(str2, props);
@@ -163,7 +159,6 @@ namespace Ntreev.Library.Psd
                             var p = reader.ReadBytes(3);
                             var l = reader.ReadInt32();
                             var p2 = reader.Position;
-                            var v = reader.ReadInt32();
                             var ds = new DescriptorStructure(reader);
                             dss.Add(ds);
                             reader.Position = p2 + l;

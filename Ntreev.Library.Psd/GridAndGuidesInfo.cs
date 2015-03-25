@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class GridAndGuidesInfo
+    class GridAndGuidesInfo
     {
         private readonly GridInfo gridInfo = new GridInfo();
         private readonly GuideInfo guidesInfo = new GuideInfo();

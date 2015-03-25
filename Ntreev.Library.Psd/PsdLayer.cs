@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class PsdLayer : IPsdLayer
+    class PsdLayer : IPsdLayer
     {
         private int left, top, right, bottom;
         private int id;
@@ -22,15 +22,16 @@ namespace Ntreev.Library.Psd
         private List<IPsdLayer> childArray;
         private PsdLayer parent;
         private Guid placedID;
-        private int depth;
         private int index;
         private PsdDocument document;
+        private Channel[] channels;
+        private PsdReader channelReader;
+        private long channelPosition;
 
-        public PsdLayer(PsdReader reader, PsdDocument document, int bpp, int index)
+        public PsdLayer(PsdReader reader, PsdDocument document, int index)
         {
             this.document = document;
             this.index = index;
-            this.depth = bpp;
             this.top = reader.ReadInt32();
             this.left = reader.ReadInt32();
             this.bottom = reader.ReadInt32();
@@ -45,13 +46,12 @@ namespace Ntreev.Library.Psd
             {
                 throw new SystemException(string.Format("Too many channels {0}", channelCount));
             }
-            this.Channels = new Channel[channelCount];
+            this.channels = new Channel[channelCount];
             for (int i = 0; i < channelCount; i++)
             {
                 ChannelType type = (ChannelType)reader.ReadInt16();
                 long size = reader.ReadLength();
-                //    this.size = reader.ReadLength();
-                this.Channels[i] = new Channel(type, this.Width, this.Height);
+                this.Channels[i] = new Channel(type, this.Width, this.Height, size);
             }
             string str = reader.ReadAscii(4);
             if ("8BIM" != str)
@@ -124,7 +124,10 @@ namespace Ntreev.Library.Psd
             this.props.Add("Clipping", this.clipping);
         }
 
-        public Channel[] Channels { get; internal set; }
+        public Channel[] Channels
+        {
+            get { return this.channels; }
+        }
 
         public SectionType SectionType
         {
@@ -178,7 +181,7 @@ namespace Ntreev.Library.Psd
 
         public int Depth
         {
-            get { return this.depth; }
+            get { return this.document.FileHeader.Depth; }
         }
 
         public int Pitch
@@ -245,13 +248,13 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        public void LoadChannels(PsdReader reader, int bpp)
+        public void LoadChannels(PsdReader reader)
         {
-            foreach (var item in this.Channels)
+            this.channelReader = reader;
+            this.channelPosition = reader.Position;
+            foreach (var item in this.channels)
             {
-                CompressionType compressionType = (CompressionType)reader.ReadInt16();
-                item.LoadHeader(reader, compressionType);
-                item.Load(reader, bpp, compressionType);
+                reader.Position += item.Size;
             }
         }
 
@@ -377,7 +380,22 @@ namespace Ntreev.Library.Psd
 
         IChannel[] IImageSource.Channels
         {
-            get { return this.Channels; }
+            get 
+            {
+                if (this.channelReader != null)
+                {
+                    this.channelReader.Position = this.channelPosition;
+                    foreach (var item in this.channels)
+                    {
+                        CompressionType compressionType = (CompressionType)this.channelReader.ReadInt16();
+                        item.LoadHeader(this.channelReader, compressionType);
+                        item.Load(this.channelReader, this.Depth, compressionType);
+                    }
+                    this.channelReader = null;
+                }
+
+                return this.channels; 
+            }
         }
 
         #endregion

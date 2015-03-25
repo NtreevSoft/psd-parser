@@ -18,7 +18,7 @@ namespace Ntreev.Library.PsdViewer
 
         public ShellViewModel()
         {
- 
+
         }
 
         public IEnumerable ItemsSource
@@ -67,13 +67,42 @@ namespace Ntreev.Library.PsdViewer
         private void RefreshFile(string filename)
         {
             PsdDocument document = new PsdDocument();
+            var t = DateTime.Now;
             document.Read(filename);
+            var ddd = recursive(document).Distinct().ToArray();
+            string text = string.Join(System.Environment.NewLine, recursive(document).ToArray());
+
+
+            var time = DateTime.Now - t;
+            Console.WriteLine(text);
+            Console.WriteLine(time);
             this.filename = filename;
             this.itemsSource = new List<TreeViewItemViewModel>();
             this.itemsSource.Add(new PSDItemViewModel(document));
             this.NotifyOfPropertyChange(() => this.ItemsSource);
             this.NotifyOfPropertyChange(() => this.CanRefresh);
             this.NotifyOfPropertyChange(() => this.Title);
+        }
+
+        private static IEnumerable<string> recursive(Ntreev.Library.Psd.IPsdLayer layer)
+        {
+            if (layer.LinkedLayer != null)
+            {
+                if(layer.LinkedLayer.IsEmbedded == true)
+                    yield return layer.LinkedLayer.FileName;
+                foreach (var item in recursive(layer.LinkedLayer.Document))
+                {
+                    yield return item;
+                }
+            }
+
+            foreach (var item in layer.Childs)
+            {
+                foreach (var i in recursive(item))
+                {
+                    yield return i;
+                }
+            }
         }
     }
 }

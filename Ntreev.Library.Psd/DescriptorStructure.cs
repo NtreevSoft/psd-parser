@@ -6,10 +6,22 @@ using System.IO;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class DescriptorStructure : Properties
+    class DescriptorStructure : Properties
     {
+        private readonly int version;
         public DescriptorStructure(PsdReader reader)
+            : this(reader, true)
         {
+
+        }
+
+        public DescriptorStructure(PsdReader reader, bool readVersion)
+        {
+            if (readVersion == true)
+            {
+                this.version = reader.ReadInt32();
+            }
+
             this.Add("Name", reader.ReadString());
             this.Add("ClassID", reader.ReadKey());
 

@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class LayerInfo
+    class LayerInfo
     {
-        public static PsdLayer[] ReadLayers(PsdReader reader, PsdDocument document, int bpp)
+        public static PsdLayer[] ReadLayers(PsdReader reader, PsdDocument document)
         {
             int length = reader.ReadLength();
             long start = reader.Position;
@@ -23,12 +23,12 @@ namespace Ntreev.Library.Psd
             PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new PsdLayer(reader, document, bpp, i);
+                layers[i] = new PsdLayer(reader, document, i);
             }
 
             foreach (var item in layers)
             {
-                item.LoadChannels(reader, bpp);
+                item.LoadChannels(reader);
             }
 
             reader.Position = start + length;

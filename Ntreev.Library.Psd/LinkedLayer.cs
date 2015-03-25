@@ -12,6 +12,7 @@ namespace Ntreev.Library.Psd
         private readonly string fileName;
         private PsdDocument document;
         private DescriptorStructure descriptor;
+        private bool hasDocument;
 
         public LinkedLayer(PsdReader reader)
         {
@@ -21,10 +22,10 @@ namespace Ntreev.Library.Psd
             string type = reader.ReadType();
             int version = reader.ReadInt32();
 
-            if (type == "liFE")
-            {
-                int qwer = 0;
-            }
+            //if (type != "liFE")
+            //{
+            //    throw new Exception();
+            //}
 
             this.Validate(type, version);
             this.id = new Guid(reader.ReadPascalString(1));
@@ -42,7 +43,7 @@ namespace Ntreev.Library.Psd
             reader.Position += ((reader.Position - position) % 4);
         }
 
-        public PsdDocument Document
+        public virtual PsdDocument Document
         {
             get { return this.document; }
         }
@@ -52,7 +53,7 @@ namespace Ntreev.Library.Psd
             get { return this.id; }
         }
 
-        public string FileName
+        public virtual string FileName
         {
             get { return this.fileName; }
         }
@@ -67,6 +68,11 @@ namespace Ntreev.Library.Psd
             get { return false; }
         }
 
+        public virtual bool HasDocument
+        {
+            get { return this.hasDocument; }
+        }
+
         protected virtual void Validate(string type, int version)
         {
             if (type != "liFD" || version < 2)
@@ -78,66 +84,45 @@ namespace Ntreev.Library.Psd
             get { return string.Empty; }
         }
 
-        private void ReadDocument(PsdReader reader, ref string fileName)
+        protected virtual void OnDocumentRead(PsdReader reader, long length)
         {
-            long length = reader.ReadInt64();
-            long position = reader.Position;
-
-            bool fod = reader.ReadBoolean();
-            if (fod == true)
-            {
-                var version = reader.ReadInt32();
-                this.descriptor = new DescriptorStructure(reader);
-            }
-
             if (length > 0)
             {
-                byte[] bytes = reader.ReadBytes((int)length);
-
-                using (MemoryStream stream = new MemoryStream(bytes))
+                if (this.IsDocument(reader) == true)
                 {
-                    if (this.IsDocument(bytes) == true)
+                    using (Stream stream = new RangeStream(reader.Stream, reader.Position, length))
                     {
-                        PsdDocument psb = new PsdDocument();
+                        PsdDocument psb = new InternalDocument();
                         psb.Read(stream, reader.Resolver);
                         this.document = psb;
                     }
-                    else
-                    {
-                        //throw new NotSupportedException();
-                    }
-                }
-            }
-            else
-            {
-                int version = reader.ReadInt32();
-                IProperties desc = new DescriptorStructure(reader);
-                if (desc.Contains("relPath") == true)
-                {
-                    string relativePath = desc["relPath"] as string;
-                    fileName = reader.Resolver.GetPath(relativePath);
-                    this.document = reader.Resolver.GetDocument(relativePath);
-                }
-                else if (desc.Contains("fullPath") == true)
-                {
-                    string fullPath = desc["fullPath"] as string;
-                    fileName = fullPath;
-                    this.document = reader.Resolver.GetDocument(fileName);
-                }
-                else
-                {
-                    this.document = reader.Resolver.GetDocument(fileName);
+                    this.hasDocument = true;
                 }
             }
         }
 
-        private bool IsDocument(byte[] bytes)
+        private void ReadDocument(PsdReader reader, ref string fileName)
         {
-            using (MemoryStream stream = new MemoryStream(bytes))
-            using (PsdReader reader = new PsdReader(stream, null))
+            long length = reader.ReadInt64();
+
+            if (reader.ReadBoolean() == true)
             {
-                string key = reader.ReadType();
-                return key == "8BPS";
+                this.descriptor = new DescriptorStructure(reader);
+            }
+
+            this.OnDocumentRead(reader, length);
+        }
+
+        private bool IsDocument(PsdReader reader)
+        {
+            long position = reader.Position;
+            try
+            {
+                return reader.ReadType() == "8BPS";
+            }
+            finally
+            {
+                reader.Position = position;
             }
         }
     }

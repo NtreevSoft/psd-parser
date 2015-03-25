@@ -69,11 +69,13 @@
     <Compile Include="GuideInfo.cs" />
     <Compile Include="IChannel.cs" />
     <Compile Include="ILinkedLayer.cs" />
+    <Compile Include="InternalDocument.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
     <Compile Include="EmbeddedLayer.cs" />
     <Compile Include="PathResolver.cs" />
     <Compile Include="PsdResolver.cs" />
+    <Compile Include="RangeStream.cs" />
     <Compile Include="Readers\ColorModeDataReader.cs" />
     <Compile Include="Readers\FileHeaderReader.cs" />
     <Compile Include="Readers\ImageResourceReader.cs" />
