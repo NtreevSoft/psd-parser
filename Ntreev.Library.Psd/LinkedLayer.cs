@@ -8,14 +8,16 @@ namespace Ntreev.Library.Psd
 {
     class LinkedLayer : ILinkedLayer
     {
+        private readonly Uri baseUri;
         private readonly Guid id;
         private readonly string fileName;
         private PsdDocument document;
         private DescriptorStructure descriptor;
         private bool hasDocument;
 
-        public LinkedLayer(PsdReader reader)
+        public LinkedLayer(PsdReader reader, Uri baseUri)
         {
+            this.baseUri = baseUri;
             long length = reader.ReadInt64();
             long position = reader.Position;
 
@@ -53,7 +55,7 @@ namespace Ntreev.Library.Psd
             get { return this.id; }
         }
 
-        public virtual string FileName
+        public virtual string Name
         {
             get { return this.fileName; }
         }
@@ -63,14 +65,19 @@ namespace Ntreev.Library.Psd
             get { return this.descriptor; }
         }
 
-        public virtual bool IsEmbedded
+        public virtual Uri AbsoluteUri
         {
-            get { return false; }
+            get { return null; }
         }
 
         public virtual bool HasDocument
         {
             get { return this.hasDocument; }
+        }
+
+        public Uri BaseUri
+        {
+            get { return this.baseUri; }
         }
 
         protected virtual void Validate(string type, int version)
@@ -92,7 +99,7 @@ namespace Ntreev.Library.Psd
                 {
                     using (Stream stream = new RangeStream(reader.Stream, reader.Position, length))
                     {
-                        PsdDocument psb = new InternalDocument();
+                        PsdDocument psb = new InternalDocument(this.baseUri);
                         psb.Read(stream, reader.Resolver);
                         this.document = psb;
                     }

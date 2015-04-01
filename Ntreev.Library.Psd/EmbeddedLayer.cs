@@ -9,12 +9,13 @@ namespace Ntreev.Library.Psd
     class EmbeddedLayer : LinkedLayer
     {
         private PsdDocument document;
-        private string fileName;
+        private Uri absoluteUri;
+        private readonly PsdReader reader;
 
-        public EmbeddedLayer(PsdReader reader)
-            : base(reader)
+        public EmbeddedLayer(PsdReader reader, Uri baseUri)
+            : base(reader, baseUri)
         {
-
+            this.reader = reader;
         }
 
         protected override void Validate(string type, int version)
@@ -23,9 +24,9 @@ namespace Ntreev.Library.Psd
                 throw new InvalidFormatException();
         }
 
-        public override bool IsEmbedded
+        public override Uri AbsoluteUri
         {
-            get { return true; }
+            get { return this.absoluteUri; }
         }
 
         public override PsdDocument Document
@@ -34,16 +35,15 @@ namespace Ntreev.Library.Psd
             {
                 if (this.document == null)
                 {
-                    this.document = new PsdDocument();
-                    this.document.Read(this.fileName);
+                    this.document = this.reader.Resolver.GetDocument(this.absoluteUri);
                 }
                 return this.document; 
             }
         }
 
-        public override string FileName
+        public override string Name
         {
-            get { return this.fileName; }
+            get { return this.absoluteUri.LocalPath; }
         }
 
         public override bool HasDocument
@@ -56,21 +56,29 @@ namespace Ntreev.Library.Psd
             IProperties desc = new DescriptorStructure(reader);
             if (desc.Contains("fullPath") == true)
             {
-                Uri uri = new Uri(desc["fullPath"] as string);
-                this.fileName = uri.LocalPath;
-            }
-            else if (desc.Contains("relPath") == true)
-            {
-                string relativePath = desc["relPath"] as string;
-                this.fileName = reader.Resolver.GetPath(relativePath);
-            }
-            else
-            {
-                throw new Exception();
+                this.absoluteUri = new Uri(desc["fullPath"] as string);
+
+                if (File.Exists(this.absoluteUri.LocalPath) == true)
+                    return;
             }
 
-            if (File.Exists(this.fileName) == false)
-                throw new FileNotFoundException("찾을 수 없습니다.", this.fileName);
+            if (desc.Contains("relPath") == true)
+            {
+                string relativePath = desc["relPath"] as string;
+                this.absoluteUri = reader.Resolver.ResolveUri(this.BaseUri, relativePath);
+                if (File.Exists(this.absoluteUri.LocalPath) == true)
+                    return;
+            }
+
+            if (desc.Contains("Nm") == true)
+            {
+                string name = desc["Nm"] as string;
+                this.absoluteUri = reader.Resolver.ResolveUri(this.BaseUri, name);
+                if (File.Exists(this.absoluteUri.LocalPath) == true)
+                    return;
+            }
+
+            throw new FileNotFoundException(string.Format("{0} 파일을 찾을 수 없습니다.", this.absoluteUri.LocalPath), this.absoluteUri.LocalPath);
         }
     }
 }

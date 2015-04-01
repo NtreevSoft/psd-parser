@@ -22,17 +22,28 @@ namespace Ntreev.Library.Psd
         private Properties props = new Properties();
         private PsdReader reader;
         private long imagePosition;
+        private Uri baseUri;
 
         public PsdDocument()
         {
+            
+        }
 
+        internal PsdDocument(Uri baseUri)
+        {
+            this.baseUri = baseUri;
         }
 
         public void Read(string filename)
         {
+            this.Read(filename, new PathResolver());
+        }
+
+        public void Read(string filename, PsdResolver resolver)
+        {
             FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            this.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
-            
+            this.baseUri = new Uri(Path.GetDirectoryName(filename) + Path.AltDirectorySeparatorChar);
+            this.Read(stream, resolver);
         }
 
         public void Read(Stream stream)
@@ -136,6 +147,16 @@ namespace Ntreev.Library.Psd
         }
 
         public event EventHandler Disposed;
+
+        internal Uri BaseUri
+        {
+            get
+            {
+                if (this.baseUri == null)
+                    return new Uri(Directory.GetCurrentDirectory());
+                return this.baseUri;
+            }
+        }
 
         protected virtual void OnDisposed(EventArgs e)
         {
@@ -315,7 +336,7 @@ namespace Ntreev.Library.Psd
                             long e = reader.Position + l;
                             while (reader.Position < e)
                             {
-                                linkedLayers.Add(new EmbeddedLayer(reader));
+                                linkedLayers.Add(new EmbeddedLayer(reader, this.BaseUri));
                             }
                         }
                         break;
@@ -326,7 +347,7 @@ namespace Ntreev.Library.Psd
                             long e = reader.Position + l;
                             while (reader.Position < e)
                             {
-                                linkedLayers.Add(new LinkedLayer(reader));
+                                linkedLayers.Add(new LinkedLayer(reader, this.BaseUri));
                             }
                         }
                         break;

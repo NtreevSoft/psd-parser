@@ -9,6 +9,7 @@ namespace Ntreev.Library.Psd
     class DescriptorStructure : Properties
     {
         private readonly int version;
+
         public DescriptorStructure(PsdReader reader)
             : this(reader, true)
         {

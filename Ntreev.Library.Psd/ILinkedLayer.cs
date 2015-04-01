@@ -12,7 +12,7 @@ namespace Ntreev.Library.Psd
             get;
         }
 
-        bool IsEmbedded
+        Uri AbsoluteUri
         {
             get;
         }
@@ -27,7 +27,7 @@ namespace Ntreev.Library.Psd
             get;
         }
 
-        string FileName
+        string Name
         {
             get;
         }

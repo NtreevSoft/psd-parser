@@ -8,43 +8,25 @@ namespace Ntreev.Library.Psd
 {
     public class PathResolver : PsdResolver
     {
-        private readonly string directory;
+        private readonly string filename;
 
-        public PathResolver(string directory)
+        public PathResolver()
         {
-            this.directory = directory;
+            //this.filename = filename;
         }
 
-        public override PsdDocument GetDocument(string path)
+        public override PsdDocument GetDocument(Uri absoluteUri)
         {
-            string filename = this.GetPath(path);
+            //string filename = this.ResolveUri(path);
+
+            string filename = absoluteUri.LocalPath;
+            if (File.Exists(filename) == false)
+                throw new FileNotFoundException(string.Format("{0} 파일을 찾을 수 없습니다.", filename), filename);
 
             PsdDocument document = new PsdDocument();
-            using (FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                document.Read(stream, new PathResolver(Path.GetDirectoryName(filename)));
-            }
-            
+            document.Read(filename);
+           
             return document;
-        }
-
-        public override string GetPath(string path)
-        {
-            Uri uri = new Uri(path, UriKind.RelativeOrAbsolute);
-
-            string filename = string.Empty;
-            if (uri.IsAbsoluteUri == true)
-            {
-                filename = uri.LocalPath;
-            }
-            else
-            {
-                filename = System.IO.Path.Combine(this.directory, path);
-                if (File.Exists(filename) == false)
-                    throw new FileNotFoundException(string.Format("{0} 을(를) 찾을 수 없습니다.", filename), filename);
-            }
-
-            return filename;
         }
     }
 }
