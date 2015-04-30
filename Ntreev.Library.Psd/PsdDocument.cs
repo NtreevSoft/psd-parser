@@ -42,7 +42,9 @@ namespace Ntreev.Library.Psd
         public void Read(string filename, PsdResolver resolver)
         {
             FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            this.baseUri = new Uri(Path.GetDirectoryName(filename) + Path.AltDirectorySeparatorChar);
+            this.baseUri = new Uri(Path.GetDirectoryName(filename) + Path.AltDirectorySeparatorChar, UriKind.RelativeOrAbsolute);
+            if (this.baseUri.IsAbsoluteUri == false)
+                this.baseUri = new Uri(new Uri(Directory.GetCurrentDirectory() + Path.AltDirectorySeparatorChar), this.baseUri);
             this.Read(stream, resolver);
         }
 
@@ -484,8 +486,6 @@ namespace Ntreev.Library.Psd
         }
 
         #endregion
-
-        
     }
 }
 
