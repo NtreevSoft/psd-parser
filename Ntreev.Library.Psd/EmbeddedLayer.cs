@@ -11,6 +11,7 @@ namespace Ntreev.Library.Psd
         private PsdDocument document;
         private Uri absoluteUri;
         private readonly PsdReader reader;
+        private bool hasDocument;
 
         public EmbeddedLayer(PsdReader reader, Uri baseUri)
             : base(reader, baseUri)
@@ -33,6 +34,9 @@ namespace Ntreev.Library.Psd
         {
             get 
             {
+                if (this.HasDocument == false)
+                    return null;
+
                 if (this.document == null)
                 {
                     this.document = this.reader.Resolver.GetDocument(this.absoluteUri);
@@ -48,7 +52,7 @@ namespace Ntreev.Library.Psd
 
         public override bool HasDocument
         {
-            get { return true; }
+            get { return File.Exists(this.absoluteUri.LocalPath); }
         }
 
         protected override void OnDocumentRead(PsdReader reader, long length)
@@ -78,7 +82,7 @@ namespace Ntreev.Library.Psd
                     return;
             }
 
-            throw new FileNotFoundException(string.Format("{0} 파일을 찾을 수 없습니다.", this.absoluteUri.LocalPath), this.absoluteUri.LocalPath);
+            //throw new FileNotFoundException(string.Format("{0} 파일을 찾을 수 없습니다.", this.absoluteUri.LocalPath), this.absoluteUri.LocalPath);
         }
     }
 }
