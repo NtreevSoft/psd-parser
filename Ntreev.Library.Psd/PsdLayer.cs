@@ -78,17 +78,17 @@ namespace Ntreev.Library.Psd
             this.props.Add("Resources", resource);
 
             this.id = resource.ToInt32("lyid.ID");
-            if (resource.ContainsProperty("luni.Name") == true)
+            if (resource.Contains("luni.Name") == true)
                 this.name = resource.ToString("luni.Name");
-            if (resource.ContainsProperty("lsct.SectionType") == true)
-                this.sectionType = (SectionType)resource.GetProperty("lsct.SectionType");
-            if (resource.ContainsProperty("SoLd.Descriptor.Idnt") == true)
-                this.placedID = new Guid(resource.GetProperty("SoLd.Descriptor.Idnt") as string);
-            else if (resource.ContainsProperty("SoLE.Descriptor.Idnt") == true)
-                this.placedID = new Guid(resource.GetProperty("SoLE.Descriptor.Idnt") as string);
-            if (resource.ContainsProperty("iOpa") == true)
+            if (resource.Contains("lsct.SectionType") == true)
+                this.sectionType = (SectionType)resource["lsct.SectionType"];
+            if (resource.Contains("SoLd.Descriptor.Idnt") == true)
+                this.placedID = new Guid(resource["SoLd.Descriptor.Idnt"] as string);
+            else if (resource.Contains("SoLE.Descriptor.Idnt") == true)
+                this.placedID = new Guid(resource["SoLE.Descriptor.Idnt"] as string);
+            if (resource.Contains("iOpa") == true)
             {
-                byte opa = (byte)resource.GetProperty("iOpa.Opacity");
+                byte opa = (byte)resource["iOpa.Opacity"];
                 var alphaChannel = this.Channels.Where(item => item.Type == ChannelType.Alpha).FirstOrDefault();
                 if (alphaChannel != null)
                 {

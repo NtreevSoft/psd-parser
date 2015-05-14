@@ -68,6 +68,7 @@
     <Compile Include="IChannel.cs" />
     <Compile Include="ILinkedLayer.cs" />
     <Compile Include="ImageDataReader.cs" />
+    <Compile Include="ImageResourceID.cs" />
     <Compile Include="ImageResourceReader.cs" />
     <Compile Include="InternalDocument.cs" />
     <Compile Include="InvalidFormatException.cs" />

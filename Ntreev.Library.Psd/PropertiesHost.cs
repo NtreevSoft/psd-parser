@@ -9,6 +9,21 @@ namespace Ntreev.Library.Psd
     {
         private Properties properties;
 
+        public bool Contains(string property)
+        {
+            return this.Properties.Contains(property);
+        }
+
+        public object this[string property]
+        {
+            get { return this.Properties[property]; }
+        }
+
+        public int Count
+        {
+            get { return this.Properties.Count; }
+        }
+
         protected abstract IDictionary<string, object> CreateProperties();
 
         protected void Initialize()
@@ -43,20 +58,7 @@ namespace Ntreev.Library.Psd
 
         #region IProperties
 
-        bool IProperties.Contains(string property)
-        {
-            return this.Properties.Contains(property);
-        }
 
-        object IProperties.this[string property]
-        {
-            get { return this.Properties[property]; }
-        }
-
-        int IProperties.Count
-        {
-            get { return this.Properties.Count; }
-        }
 
         IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string,object>>.GetEnumerator()
         {

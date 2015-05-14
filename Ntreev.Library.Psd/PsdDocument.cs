@@ -8,7 +8,7 @@ namespace Ntreev.Library.Psd
 {
     public class PsdDocument : IPsdLayer, IDisposable
     {
-        private FileHeader fileHeader;
+        private FileHeaderReader fileHeader;
         private ColorModeDataReader colorModeData;
         private ImageResourceReader imageResources;
         private ImageDataReader imageDataReader;
@@ -69,7 +69,7 @@ namespace Ntreev.Library.Psd
 
         public FileHeader FileHeader
         {
-            get { return this.fileHeader; }
+            get { return this.fileHeader.Value; }
         }
 
         public byte[] ColorModeData
@@ -79,17 +79,17 @@ namespace Ntreev.Library.Psd
 
         public int Width
         {
-            get { return this.fileHeader.Width; }
+            get { return this.fileHeader.Value.Width; }
         }
 
         public int Height
         {
-            get { return this.fileHeader.Height; }
+            get { return this.fileHeader.Value.Height; }
         }
 
         public int Depth
         {
-            get { return this.fileHeader.Depth; }
+            get { return this.fileHeader.Value.Depth; }
         }
 
         public IEnumerable<IPsdLayer> Childs
@@ -114,7 +114,7 @@ namespace Ntreev.Library.Psd
 
         public bool HasImage
         {
-            get { return (bool)this.imageResources["0x0421.HasCompatibilityImage"]; }
+            get { return this.imageResources.ToBoolean(ImageResourceID.VersionInfo, "HasCompatibilityImage"); }
         }
 
         public event EventHandler Disposed;

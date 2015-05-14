@@ -9,11 +9,40 @@ namespace Ntreev.Library.Psd
     {
         private readonly PsdReader reader;
         private readonly long position;
+        private readonly long length;
 
         protected ReadablePropertiesHost(PsdReader reader)
+            : this(reader, false)
         {
+            
+        }
+
+        protected ReadablePropertiesHost(PsdReader reader, bool readSize)
+        {
+            if (readSize == true)
+            {
+                this.length = reader.ReadLength();
+            }
+
             this.reader = reader;
             this.position = reader.Position;
+
+            reader.Position += this.length;
+        }
+
+        protected ReadablePropertiesHost(PsdReader reader, Func<long> readFunc)
+        {
+            this.length = readFunc();
+
+            this.reader = reader;
+            this.position = reader.Position;
+
+            reader.Position += this.length;
+        }
+
+        protected long Length
+        {
+            get { return this.length; }
         }
 
         protected sealed override IDictionary<string, object> CreateProperties()

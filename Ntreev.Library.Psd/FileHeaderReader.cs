@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    class FileHeaderReader : FileHeader
+    class FileHeaderReader
     {
         private readonly string signature;
         private readonly short version;
@@ -15,6 +15,8 @@ namespace Ntreev.Library.Psd
         private readonly ColorMode colorMode;
         private readonly int height;
         private readonly int width;
+
+        private readonly FileHeader value;
 
         public FileHeaderReader(PsdReader reader)
         {
@@ -34,38 +36,20 @@ namespace Ntreev.Library.Psd
             reader.Version = this.version;
             if (this.depth != 8)
             {
-                throw new SystemException("For now, only Support 8 Bit Per Channel");
+                throw new NotSupportedException("only support 8 Bit Channel");
             }
+
+            this.value.Depth = this.depth;
+            this.value.NumberOfChannels = this.channels;
+            this.value.ColorMode = this.colorMode;
+            this.value.Height = this.height;
+            this.value.Width = this.width;
+            this.value.Version = this.version;
         }
 
-        public override int Depth
+        public FileHeader Value
         {
-            get { return this.depth; }
-        }
-
-        public override int NumberOfChannels
-        {
-            get { return this.channels; }
-        }
-
-        public override ColorMode ColorMode
-        {
-            get { return this.colorMode; }
-        }
-
-        public override int Height
-        {
-            get { return this.height; }
-        }
-
-        public override int Width
-        {
-            get { return this.width; }
-        }
-
-        public override int Version
-        {
-            get { return this.version; }
+            get { return this.value; }
         }
     }
 }

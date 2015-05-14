@@ -5,24 +5,30 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    class Properties : Dictionary<string, object>, IProperties
+    class Properties : IProperties
     {
+        private readonly Dictionary<string, object> props;
+
         public Properties()
         {
-
+            this.props = new Dictionary<string, object>();
         }
 
         public Properties(int capacity)
-            : base(capacity)
         {
-        
+            this.props = new Dictionary<string, object>(capacity);
         }
 
-        public bool ContainsProperty(string property)
+        public void Add(string key, object value)
+        {
+            this.props.Add(key, value);
+        }
+
+        public bool Contains(string property)
         {
             string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);
 
-            object value = this;
+            object value = this.props;
 
             foreach (var item in ss)
             {
@@ -51,11 +57,11 @@ namespace Ntreev.Library.Psd
             return true; 
         }
 
-        public object GetProperty(string property)
+        private object GetProperty(string property)
         {
             string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);
 
-            object value = this;
+            object value = this.props;
 
             foreach (var item in ss)
             {
@@ -69,22 +75,44 @@ namespace Ntreev.Library.Psd
                     IDictionary<string, object> props = value as IDictionary<string, object>;
                     value = props[item];
                 }
-
+                else if (value is IProperties == true)
+                {
+                    IProperties props = value as IProperties;
+                    value = props[item];
+                }
             }
             return value;
         }
 
-        bool IProperties.Contains(string property)
+        public int Count
         {
-            return this.ContainsProperty(property);
+            get { return this.props.Count; }
         }
 
-        object IProperties.this[string property]
+        public object this[string property]
         {
             get
             {
                 return this.GetProperty(property);
             }
+            set
+            {
+                this.props[property] = value;
+            }
         }
+
+        #region IProperties
+
+        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+        {
+            return this.props.GetEnumerator();
+        }
+
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return this.props.GetEnumerator();
+        }
+
+        #endregion
     }
 }

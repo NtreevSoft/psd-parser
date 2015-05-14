@@ -187,7 +187,7 @@ namespace Ntreev.Library.Psd
 
             reader.Position = position + num;
 
-            if (this.ContainsKey(str2) == false)
+            if (this.Contains(str2) == false)
             {
                 this.Add(str2, "Unparsed");
             }

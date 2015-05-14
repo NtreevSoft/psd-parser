@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    sealed class GlobalLayerMaskReader
+    class GlobalLayerMaskReader
     {
         internal GlobalLayerMaskReader(PsdReader reader)
         {

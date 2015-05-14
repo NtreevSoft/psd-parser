@@ -10,7 +10,7 @@ namespace Ntreev.Library.Psd
         public GridAndGuidesReader(PsdReader reader)
             : base(reader)
         {
-            
+
         }
 
         protected override IDictionary<string, object> CreateProperties(PsdReader reader)
