@@ -6,7 +6,15 @@ namespace Ntreev.Library.Psd
 {
     class LayerResource : Properties
     {
-        internal void Load(PsdReader reader, int index)
+        public LayerResource(PsdReader reader, long end)
+        {
+            while (reader.Position < end)
+            {
+                this.Read(reader);
+            }
+        }
+
+        private void Read(PsdReader reader)
         {
             string str = reader.ReadAscii(4);
             string str2 = reader.ReadAscii(4);

@@ -7,6 +7,12 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureEnumerate : Properties
     {
+        public StructureEnumerate()
+            : base(2)
+        {
+
+        }
+
         public StructureEnumerate(PsdReader reader)
         {
             this.Add("Type", reader.ReadKey());

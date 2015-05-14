@@ -34,29 +34,44 @@ namespace Ntreev.Library.Psd
             return Encoding.ASCII.GetString(this.reader.ReadBytes(length));
         }
 
+        public bool VerifySignature()
+        {
+            string signature = this.ReadType();
+
+            if (signature == "8BIM")
+                return true;
+            return false;
+        }
+
+        public void ValidateSignature()
+        {
+            if (this.VerifySignature() == false)
+                throw new InvalidFormatException();
+        }
+
         public string ReadPascalString(int modLength)
         {
             byte count = this.reader.ReadByte();
-            string str = "";
+            string text = string.Empty;
             if (count == 0)
             {
                 Stream baseStream = this.reader.BaseStream;
                 baseStream.Position += modLength - 1;
-                return str;
+                return text;
             }
             byte[] bytes = this.reader.ReadBytes(count);
-            str = Encoding.UTF8.GetString(bytes);
+            text = Encoding.UTF8.GetString(bytes);
             for (int i = count + 1; (i % modLength) != 0; i++)
             {
                 Stream stream2 = this.reader.BaseStream;
                 stream2.Position += 1L;
             }
-            return str;
+            return text;
         }
 
         public string ReadString()
         {
-             int length = this.ReadInt32();
+            int length = this.ReadInt32();
             if (length == 0)
                 return string.Empty;
 
@@ -163,8 +178,8 @@ namespace Ntreev.Library.Psd
 
         public void Skip(char c)
         {
-            char ddd = this.ReadChar();
-            if(ddd != c)
+            char ch = this.ReadChar();
+            if (ch != c)
                 throw new NotSupportedException();
         }
 
@@ -179,10 +194,7 @@ namespace Ntreev.Library.Psd
         public long Position
         {
             get { return this.reader.BaseStream.Position; }
-            set
-            {
-                this.reader.BaseStream.Position = value;
-            }
+            set { this.reader.BaseStream.Position = value; }
         }
 
         public long Length

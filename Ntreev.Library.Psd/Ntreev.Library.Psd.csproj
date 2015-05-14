@@ -64,22 +64,28 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
-    <Compile Include="GridAndGuidesInfo.cs" />
-    <Compile Include="GridInfo.cs" />
-    <Compile Include="GuideInfo.cs" />
+    <Compile Include="GridAndGuidesReader.cs" />
     <Compile Include="IChannel.cs" />
     <Compile Include="ILinkedLayer.cs" />
+    <Compile Include="ImageDataReader.cs" />
+    <Compile Include="ImageResourceReader.cs" />
     <Compile Include="InternalDocument.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
     <Compile Include="EmbeddedLayer.cs" />
+    <Compile Include="LinkedLayerReader.cs" />
+    <Compile Include="LayerReader.cs" />
     <Compile Include="PathResolver.cs" />
+    <Compile Include="ReadableValue.cs" />
+    <Compile Include="ReadablePropertiesHost.cs" />
+    <Compile Include="PropertiesHost.cs" />
     <Compile Include="PsdResolver.cs" />
     <Compile Include="RangeStream.cs" />
-    <Compile Include="Readers\ColorModeDataReader.cs" />
-    <Compile Include="Readers\FileHeaderReader.cs" />
-    <Compile Include="Readers\ImageResourceReader.cs" />
-    <Compile Include="Readers\VersionInfoReader.cs" />
+    <Compile Include="ColorModeDataReader.cs" />
+    <Compile Include="FileHeaderReader.cs" />
+    <Compile Include="VersionInfoReader.cs" />
+    <Compile Include="ResolutionInfoReader.cs" />
+    <Compile Include="SliceInfoReader.cs" />
     <Compile Include="SliceInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureReader.cs" />
@@ -96,7 +102,7 @@
     <Compile Include="Structures\StructureUnitFloat.cs" />
     <Compile Include="Structures\StructureUnknownOSType.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="GlobalLayerMask.cs" />
+    <Compile Include="GlobalLayerMaskReader.cs" />
     <Compile Include="IImageSource.cs" />
     <Compile Include="IProperties.cs" />
     <Compile Include="IPropertiesExtension.cs" />
@@ -120,22 +126,16 @@
     <Compile Include="Channel.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="ColorModeData.cs">
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Include="FileHeader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PsdLayer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LayerInfo.cs">
+    <Compile Include="LayerAndMaskReader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="LayerResource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="ResolutionInfo.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="TypeToolInfo.cs">
@@ -145,7 +145,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UnitType.cs" />
-    <Compile Include="VersionInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

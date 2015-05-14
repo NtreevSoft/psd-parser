@@ -7,6 +7,12 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureProperty : Properties
     {
+        public StructureProperty()
+            : base(3)
+        {
+
+        }
+
         public StructureProperty(PsdReader reader)
         {
             this.Add("Name", reader.ReadString());

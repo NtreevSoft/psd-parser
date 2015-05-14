@@ -5,21 +5,25 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    class GridAndGuidesInfo
+    class GridAndGuidesReader : ReadablePropertiesHost
     {
-        private readonly GridInfo gridInfo = new GridInfo();
-        private readonly GuideInfo guidesInfo = new GuideInfo();
-
-        internal GridAndGuidesInfo(PsdReader reader)
+        public GridAndGuidesReader(PsdReader reader)
+            : base(reader)
         {
-            int version = reader.ReadInt32();
             
+        }
+
+        protected override IDictionary<string, object> CreateProperties(PsdReader reader)
+        {
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            int version = reader.ReadInt32();
+
             if (version != 1)
                 throw new InvalidFormatException();
 
-
-            this.gridInfo.Horizontal = reader.ReadInt32();
-            this.gridInfo.Vertical = reader.ReadInt32();
+            props["HorizontalGrid"] = reader.ReadInt32();
+            props["VerticalGrid"] = reader.ReadInt32();
 
             int guideCount = reader.ReadInt32();
 
@@ -37,18 +41,10 @@ namespace Ntreev.Library.Psd
                     hg.Add(n);
             }
 
-            this.guidesInfo.Horizontals = hg.ToArray();
-            this.guidesInfo.Verticals = vg.ToArray();
-        }
+            props["HorizontalGuides"] = hg.ToArray();
+            props["VerticalGuides"] = vg.ToArray();
 
-        public GridInfo GridInfo
-        {
-            get { return this.gridInfo; }
-        }
-
-        public GuideInfo GuidesInfo
-        {
-            get { return this.guidesInfo; }
+            return props;
         }
     }
 }

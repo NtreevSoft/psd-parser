@@ -7,6 +7,17 @@ namespace Ntreev.Library.Psd
 {
     class Properties : Dictionary<string, object>, IProperties
     {
+        public Properties()
+        {
+
+        }
+
+        public Properties(int capacity)
+            : base(capacity)
+        {
+        
+        }
+
         public bool ContainsProperty(string property)
         {
             string[] ss = property.Split(new char[] { '.', '[', ']', }, StringSplitOptions.RemoveEmptyEntries);

@@ -27,6 +27,7 @@ namespace Ntreev.Library.Psd
         private Channel[] channels;
         private PsdReader channelReader;
         private long channelPosition;
+        private ILinkedLayer linkedLayer;
 
         public PsdLayer(PsdReader reader, PsdDocument document, int index)
         {
@@ -36,34 +37,25 @@ namespace Ntreev.Library.Psd
             this.left = reader.ReadInt32();
             this.bottom = reader.ReadInt32();
             this.right = reader.ReadInt32();
+            this.ValidateSize(this.Width, this.Height);
 
-            if ((this.Width > 0x3000) || (this.Height > 0x3000))
-            {
-                throw new SystemException(string.Format("Too big image (width:{0} height{1})", this.Width, this.Height));
-            }
             ushort channelCount = reader.ReadUInt16();
-            if (channelCount > 0x38)
-            {
-                throw new SystemException(string.Format("Too many channels {0}", channelCount));
-            }
+            this.ValidateChannelCount(channelCount);
+
             this.channels = new Channel[channelCount];
             for (int i = 0; i < channelCount; i++)
             {
-                ChannelType type = (ChannelType)reader.ReadInt16();
-                long size = reader.ReadLength();
-                this.Channels[i] = new Channel(type, this.Width, this.Height, size);
+                this.channels[i] = new Channel(reader, this.Width, this.Height);
             }
-            string str = reader.ReadAscii(4);
-            if ("8BIM" != str)
-            {
-                throw new SystemException(string.Format("Wrong signature {0}", str));
-            }
+
+            reader.ValidateSignature();
+
             //reader.ReadInt32();
             this.blendMode = PsdUtility.ToBlendMode(reader.ReadAscii(4));
             this.opacity = reader.ReadByte();
             this.clipping = reader.ReadBoolean();
-            this.flags = (LayerFlags)reader.ReadByte(); // Flags
-            this.filter = reader.ReadByte(); // Filter
+            this.flags = (LayerFlags)reader.ReadByte();
+            this.filter = reader.ReadByte();
 
             long extraSize = reader.ReadUInt32(); // Length of the extra data field ( = the total length of the next five fields).
             long end = reader.Position + extraSize;
@@ -81,12 +73,7 @@ namespace Ntreev.Library.Psd
             new LayerBlendingRanges(reader); // Layer blending ranges
             this.name = reader.ReadPascalString(4); // Layer name: Pascal string, padded to a multiple of 4 bytes.
 
-            LayerResource resource = new LayerResource();
-
-            while (reader.Position < end)
-            {
-                resource.Load(reader, index);
-            }
+            LayerResource resource = new LayerResource(reader, end);
 
             this.props.Add("Resources", resource);
 
@@ -134,7 +121,10 @@ namespace Ntreev.Library.Psd
             get { return this.sectionType; }
         }
 
-        public int ID { get { return this.id; } }
+        public int ID
+        {
+            get { return this.id; }
+        }
 
         public string Name
         {
@@ -143,10 +133,7 @@ namespace Ntreev.Library.Psd
 
         public float Opacity
         {
-            get
-            {
-                return (((float)this.opacity) / 255f);
-            }
+            get { return (((float)this.opacity) / 255f); }
         }
 
         public int Left
@@ -186,10 +173,7 @@ namespace Ntreev.Library.Psd
 
         public int Pitch
         {
-            get
-            {
-                return (this.Width * this.Channels.Length);
-            }
+            get { return (this.Width * this.Channels.Length); }
         }
 
         public bool IsClipping
@@ -209,10 +193,7 @@ namespace Ntreev.Library.Psd
 
         public IEnumerable<PsdLayer> Childs
         {
-            get
-            {
-                return this.childs;
-            }
+            get { return this.childs; }
         }
 
         public IProperties Properties
@@ -230,10 +211,19 @@ namespace Ntreev.Library.Psd
             get { return this.document; }
         }
 
-        public LinkedLayer LinkedLayer
+        public ILinkedLayer LinkedLayer
         {
-            get;
-            set;
+            get
+            {
+                if (this.placedID == Guid.Empty)
+                    return null;
+
+                if (this.linkedLayer == null)
+                {
+                    this.linkedLayer = this.document.LinkedLayers.Where(i => i.ID == this.placedID && i.HasDocument).FirstOrDefault();
+                }
+                return this.linkedLayer;
+            }
         }
 
         public bool HasImage
@@ -248,7 +238,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        public void LoadChannels(PsdReader reader)
+        public void ReadChannels(PsdReader reader)
         {
             this.channelReader = reader;
             this.channelPosition = reader.Position;
@@ -350,11 +340,27 @@ namespace Ntreev.Library.Psd
             return rootLayers.ToArray();
         }
 
+        private void ValidateSize(int width, int height)
+        {
+            if ((width > 0x3000) || (height > 0x3000))
+            {
+                throw new Exception(string.Format("Invalidated size ({0}, {1})", width, height));
+            }
+        }
+
+        private void ValidateChannelCount(int channelCount)
+        {
+            if (channelCount > 0x38)
+            {
+                throw new Exception(string.Format("Too many channels : {0}", channelCount));
+            }
+        }
+
         #region IPsdLayer
 
         IEnumerable<IPsdLayer> IPsdLayer.Childs
         {
-            get 
+            get
             {
                 if (this.childArray == null)
                 {
@@ -364,7 +370,7 @@ namespace Ntreev.Library.Psd
                         this.childArray.Add(item);
                     }
                 }
-                return this.childArray; 
+                return this.childArray;
             }
         }
 
@@ -380,7 +386,7 @@ namespace Ntreev.Library.Psd
 
         IChannel[] IImageSource.Channels
         {
-            get 
+            get
             {
                 if (this.channelReader != null)
                 {
@@ -388,13 +394,13 @@ namespace Ntreev.Library.Psd
                     foreach (var item in this.channels)
                     {
                         CompressionType compressionType = (CompressionType)this.channelReader.ReadInt16();
-                        item.LoadHeader(this.channelReader, compressionType);
-                        item.Load(this.channelReader, this.Depth, compressionType);
+                        item.ReadHeader(this.channelReader, compressionType);
+                        item.Read(this.channelReader, this.Depth, compressionType);
                     }
                     this.channelReader = null;
                 }
 
-                return this.channels; 
+                return this.channels;
             }
         }
 

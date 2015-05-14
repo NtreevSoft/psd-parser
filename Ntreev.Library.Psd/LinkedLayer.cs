@@ -99,9 +99,9 @@ namespace Ntreev.Library.Psd
                 {
                     using (Stream stream = new RangeStream(reader.Stream, reader.Position, length))
                     {
-                        PsdDocument psb = new InternalDocument(this.baseUri);
-                        psb.Read(stream, reader.Resolver);
-                        this.document = psb;
+                        PsdDocument document = new InternalDocument(this.baseUri);
+                        document.Read(stream, reader.Resolver);
+                        this.document = document;
                     }
                     this.hasDocument = true;
                 }

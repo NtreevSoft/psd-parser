@@ -8,10 +8,9 @@ namespace Ntreev.Library.Psd
 {
     class EmbeddedLayer : LinkedLayer
     {
+        private readonly PsdReader reader;
         private PsdDocument document;
         private Uri absoluteUri;
-        private readonly PsdReader reader;
-        private bool hasDocument;
 
         public EmbeddedLayer(PsdReader reader, Uri baseUri)
             : base(reader, baseUri)

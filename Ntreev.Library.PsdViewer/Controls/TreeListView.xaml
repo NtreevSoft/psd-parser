@@ -10,7 +10,6 @@
           mc:Ignorable="d" 
           d:DesignHeight="300" d:DesignWidth="500">
     <TreeView.Resources>
-
         <conv:LevelToIndentConverter x:Key="LevelToIndentConverter"/>
         <!--<conv:TreeViewItemToImageConverter x:Key="treeViewItemToImageConverter" />
         <conv:SyncStateToBrushConverter x:Key="syncStateToBrushConverter" />

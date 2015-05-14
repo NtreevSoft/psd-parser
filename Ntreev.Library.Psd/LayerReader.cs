@@ -4,12 +4,18 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd
 {
-    class LayerInfo
+    class LayerReader : ReadableValue<PsdLayer[]>
     {
-        public static PsdLayer[] ReadLayers(PsdReader reader, PsdDocument document)
+        private readonly PsdDocument document;
+
+        public LayerReader(PsdReader reader, PsdDocument document)
+            : base(reader, true)
         {
-            int length = reader.ReadLength();
-            long start = reader.Position;
+            this.document = document;
+        }
+
+        protected override PsdLayer[] ReadValue(PsdReader reader)
+        {
             int layerCount = reader.ReadInt16();
             if (layerCount == 0)
             {
@@ -23,25 +29,22 @@ namespace Ntreev.Library.Psd
             PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new PsdLayer(reader, document, i);
+                layers[i] = new PsdLayer(reader, this.document, i);
             }
 
             foreach (var item in layers)
             {
-                item.LoadChannels(reader);
+                item.ReadChannels(reader);
             }
 
-            reader.Position = start + length;
+            layers = PsdLayer.Initialize(null, layers);
 
-            return PsdLayer.Initialize(null, layers);
-        }
-
-        public static void ComputeBounds(PsdLayer[] layers)
-        {
             foreach (var item in layers.SelectMany(item => item.All()).Reverse())
             {
                 item.ComputeBounds();
             }
+
+            return layers;
         }
     }
 }

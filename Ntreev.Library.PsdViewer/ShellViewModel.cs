@@ -88,8 +88,8 @@ namespace Ntreev.Library.PsdViewer
         {
             if (layer.LinkedLayer != null)
             {
-                if(layer.LinkedLayer.IsEmbedded == true)
-                    yield return layer.LinkedLayer.FileName;
+                if(layer.LinkedLayer.AbsoluteUri != null)
+                    yield return layer.LinkedLayer.Name;
                 foreach (var item in recursive(layer.LinkedLayer.Document))
                 {
                     yield return item;

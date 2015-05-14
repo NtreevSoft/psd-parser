@@ -45,7 +45,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         {
             get
             {
-                return string.Format("LinkedLayer({0})", this.linkedLayer.FileName);
+                return string.Format("LinkedLayer({0})", this.linkedLayer.Name);
             }
         }
     }

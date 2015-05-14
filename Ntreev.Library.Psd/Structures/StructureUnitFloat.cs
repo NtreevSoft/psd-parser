@@ -7,6 +7,12 @@ namespace Ntreev.Library.Psd.Structures
 {
     class StructureUnitFloat : Properties
     {
+        public StructureUnitFloat()
+            : base(2)
+        {
+
+        }
+
         public StructureUnitFloat(PsdReader reader)
         {
             string type = reader.ReadType();

@@ -57,7 +57,7 @@ namespace Ntreev.Library.Psd.Structures
                     {
                         Properties p = new Properties();
                         this.ReadProperties(reader, level + 1, p);
-                        if(p.Count > 0)
+                        if (p.Count > 0)
                             props.Add(name, p);
                         reader.Skip('\n');
                     }
@@ -175,18 +175,9 @@ namespace Ntreev.Library.Psd.Structures
                     if (bool.TryParse(value, out f) == true)
                         return f;
                 }
-                
+
                 return value;
             }
         }
-
-        //private void SkipTabs(PSDReader reader, int count)
-        //{
-        //    for (int i = 0; i < count; i++)
-        //    {
-        //        byte tabCh = reader.ReadByte();
-        //        //assert tabCh == 9 : "must be tab: " + tabCh;
-        //    }
-        //}
     }
 }
