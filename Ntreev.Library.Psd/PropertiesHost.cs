@@ -24,7 +24,7 @@ namespace Ntreev.Library.Psd
             get { return this.Properties.Count; }
         }
 
-        protected abstract IDictionary<string, object> CreateProperties();
+        protected abstract IEnumerable<KeyValuePair<string, object>> CreateProperties();
 
         protected void Initialize()
         {
@@ -49,7 +49,7 @@ namespace Ntreev.Library.Psd
         private void Create()
         {
             var props = this.CreateProperties();
-            this.properties = new Properties(props.Count);
+            this.properties = new Properties(props.Count());
             foreach (var item in props)
             {
                 this.properties.Add(item.Key, item.Value);

@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers.ImageResource
 {
-    class GridAndGuidesReader : ReadablePropertiesHost
+    [ResourceID("1032", DisplayName = "GridAndGuides")]
+    class Reader_GridAndGuides : ImageResourceBase
     {
-        public GridAndGuidesReader(PsdReader reader)
+        public Reader_GridAndGuides(PsdReader reader)
             : base(reader)
         {
 
         }
 
-        protected override IDictionary<string, object> CreateProperties(PsdReader reader)
+        protected override IEnumerable<KeyValuePair<string, object>> CreateProperties(PsdReader reader)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
 

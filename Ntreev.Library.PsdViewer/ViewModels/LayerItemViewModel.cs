@@ -49,17 +49,33 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             //    }
             //}
 
-            foreach (var item in layer.Properties)
-            {
-                if (item.Value is IProperties == true)
-                {
-                    this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value as IProperties, this));
-                }
-                else
-                {
-                    this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value, this));
-                }
-            }
+            this.Children.Add(new PropertiesItemViewModel("Resources", layer.Resources, this));
+
+            //this.Children.Add(new PropertiesItemViewModel("ID", layer.id, this));
+            this.Children.Add(new PropertiesItemViewModel("Name", layer.Name, this));
+            //this.Children.Add(new PropertiesItemViewModel("SectionType", layer.sectionType, this));
+            this.Children.Add(new PropertiesItemViewModel("BlendMode", layer.BlendMode, this));
+            this.Children.Add(new PropertiesItemViewModel("Opacity", layer.Opacity, this));
+            this.Children.Add(new PropertiesItemViewModel("Left", layer.Left, this));
+            this.Children.Add(new PropertiesItemViewModel("Top", layer.Top, this));
+            this.Children.Add(new PropertiesItemViewModel("Right", layer.Right, this));
+            this.Children.Add(new PropertiesItemViewModel("Bottom", layer.Bottom, this));
+            this.Children.Add(new PropertiesItemViewModel("Width", layer.Width, this));
+            this.Children.Add(new PropertiesItemViewModel("Height", layer.Height, this));
+            this.Children.Add(new PropertiesItemViewModel("IsClipping", layer.IsClipping, this));
+            
+
+            //foreach (var item in layer.Resources)
+            //{
+            //    if (item.Value is IProperties == true)
+            //    {
+            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value as IProperties, this));
+            //    }
+            //    else
+            //    {
+            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value, this));
+            //    }
+            //}
         }
 
         public override string Text

@@ -58,5 +58,15 @@ namespace Ntreev.Library.Psd
                 }
             }
         }
+
+        internal static BlendMode ReadBlendMode(this PsdReader reader)
+        {
+            return PsdUtility.ToBlendMode(reader.ReadAscii(4));
+        }
+
+        internal static LayerFlags ReadLayerFlags(this PsdReader reader)
+        {
+            return (LayerFlags)reader.ReadByte();
+        }
     }
 }

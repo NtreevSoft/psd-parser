@@ -12,5 +12,17 @@ namespace Ntreev.Library.Psd
         {
 
         }
+
+        public InvalidFormatException(string message)
+            : base(message)
+        {
+
+        }
+
+        public InvalidFormatException(string format, params object[] args)
+            : base(string.Format(format, args))
+        {
+
+        }
     }
 }

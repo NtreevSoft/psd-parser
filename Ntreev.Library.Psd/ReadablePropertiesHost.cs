@@ -45,12 +45,12 @@ namespace Ntreev.Library.Psd
             get { return this.length; }
         }
 
-        protected sealed override IDictionary<string, object> CreateProperties()
+        protected sealed override IEnumerable<KeyValuePair<string, object>> CreateProperties()
         {
             this.reader.Position = this.position;
             return this.CreateProperties(this.reader);
         }
 
-        protected abstract IDictionary<string, object> CreateProperties(PsdReader reader);
+        protected abstract IEnumerable<KeyValuePair<string, object>> CreateProperties(PsdReader reader);
     }
 }

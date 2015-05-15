@@ -18,22 +18,25 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             : base(null)
         {
             this.document = document;
+
+            this.Children.Add(new PropertiesItemViewModel("Resources", document.Resources, this));
+
             foreach (var item in document.Childs)
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }
 
-            var bmp = this.document.GetBitmap();
-            if (bmp != null)
-            {
-                PngBitmapEncoder d = new PngBitmapEncoder();
-                d.Frames.Add(BitmapFrame.Create(bmp));
-                string n = Regex.Replace("root", "[\\\\/:*?\"<>|]", "_");
-                using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
-                {
-                    d.Save(stream);
-                }
-            }
+            //var bmp = this.document.GetBitmap();
+            //if (bmp != null)
+            //{
+            //    PngBitmapEncoder d = new PngBitmapEncoder();
+            //    d.Frames.Add(BitmapFrame.Create(bmp));
+            //    string n = Regex.Replace("root", "[\\\\/:*?\"<>|]", "_");
+            //    using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
+            //    {
+            //        d.Save(stream);
+            //    }
+            //}
 
             //foreach (var item in document.Properties)
             //{

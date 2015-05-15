@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public enum PSDColorSpace
+    public enum ColorSpace
     {
         ANPA = 0xbb8,
 

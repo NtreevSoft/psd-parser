@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers
 {
-    class LayerMask
+    class LayerMaskReader
     {
         private int left, top, right, bottom;
         private long size;
         private byte color;
         private byte flag;
 
-        public LayerMask(PsdReader reader)
+        public LayerMaskReader(PsdReader reader)
         {
             this.size = reader.ReadInt32();
             long position = reader.Position;

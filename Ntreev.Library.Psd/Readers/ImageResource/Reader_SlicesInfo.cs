@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers.ImageResource
 {
-    class SliceInfoReader : ReadablePropertiesHost
+    [ResourceID("1050", DisplayName = "Slices")]
+    class Reader_SlicesInfo : ImageResourceBase
     {
-        public SliceInfoReader(PsdReader reader)
+        public Reader_SlicesInfo(PsdReader reader)
             : base(reader)
         {
 
         }
 
-        protected override IDictionary<string, object> CreateProperties(PsdReader reader)
+        protected override IEnumerable<KeyValuePair<string, object>> CreateProperties(PsdReader reader)
         {
             Dictionary<string, object> props = new Dictionary<string, object>(1);
 
@@ -42,7 +43,7 @@ namespace Ntreev.Library.Psd
                 {
                     slices.Add(ReadSliceInfo(item as IProperties));
                 }
-                props["Slices"] = slices.ToArray();
+                props["Items"] = slices.ToArray();
             }
 
             return props;

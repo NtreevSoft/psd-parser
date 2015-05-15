@@ -2,7 +2,7 @@
 using System.IO;
 using System.Linq;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers
 {
     class LayerReader : ReadableValue<PsdLayer[]>
     {

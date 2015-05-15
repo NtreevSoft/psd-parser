@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public enum SectionType
+    enum SectionType
     {
         Normal,
 

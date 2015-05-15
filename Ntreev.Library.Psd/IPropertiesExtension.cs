@@ -17,29 +17,48 @@ namespace Ntreev.Library.Psd
             return (T)props[GeneratePropertyName(property, properties)];
         }
 
+        public static Guid ToGuid(this IProperties props, string property, params string[] properties)
+        {
+            return new Guid(props.ToString(property, properties));
+        }
+
         public static string ToString(this IProperties props, string property, params string[] properties)
         {
-            return props[GeneratePropertyName(property, properties)] as string;
+            return ToValue<string>(props, property, properties);
+        }
+
+        public static byte ToByte(this IProperties props, string property, params string[] properties)
+        {
+            return ToValue<byte>(props, property, properties);
         }
 
         public static int ToInt32(this IProperties props, string property, params string[] properties)
         {
-            return (int)props[GeneratePropertyName(property, properties)];
+            return ToValue<int>(props, property, properties);
         }
 
         public static float ToSingle(this IProperties props, string property, params string[] properties)
         {
-            return (float)props[GeneratePropertyName(property, properties)];
+            return ToValue<float>(props, property, properties);
         }
 
         public static double ToDouble(this IProperties props, string property, params string[] properties)
         {
-            return (double)props[GeneratePropertyName(property, properties)];
+            return ToValue<double>(props, property, properties);
         }
 
         public static bool ToBoolean(this IProperties props, string property, params string[] properties)
         {
-            return (bool)props[GeneratePropertyName(property, properties)];
+            return ToValue<bool>(props, property, properties);
+        }
+
+        public static bool TryGetValue<T>(this IProperties props, ref T value, string property, params string[] properties)
+        {
+            string propertyName = GeneratePropertyName(property, properties);
+            if (props.Contains(propertyName) == false)
+                return false;
+            value = props.ToValue<T>(propertyName);
+            return true;
         }
 
         private static string GeneratePropertyName(string property, params string[] properties)

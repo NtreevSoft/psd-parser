@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq;
+using Ntreev.Library.Psd.Readers;
 
 namespace Ntreev.Library.Psd
 {
@@ -17,7 +18,6 @@ namespace Ntreev.Library.Psd
         private bool clipping;
         private LayerFlags flags;
         private int filter;
-        private Properties props = new Properties();
         private List<PsdLayer> childs = new List<PsdLayer>();
         private List<IPsdLayer> childArray;
         private PsdLayer parent;
@@ -28,6 +28,11 @@ namespace Ntreev.Library.Psd
         private PsdReader channelReader;
         private long channelPosition;
         private ILinkedLayer linkedLayer;
+
+        private LayerMaskReader layerMask;
+        private LayerBlendingRangesReader blendingRanges;
+        private LayerResourceReader resources;
+        
 
         public PsdLayer(PsdReader reader, PsdDocument document, int index)
         {
@@ -51,17 +56,17 @@ namespace Ntreev.Library.Psd
             reader.ValidateSignature();
 
             //reader.ReadInt32();
-            this.blendMode = PsdUtility.ToBlendMode(reader.ReadAscii(4));
+            this.blendMode = reader.ReadBlendMode();
             this.opacity = reader.ReadByte();
             this.clipping = reader.ReadBoolean();
-            this.flags = (LayerFlags)reader.ReadByte();
+            this.flags = reader.ReadLayerFlags();
             this.filter = reader.ReadByte();
 
             long extraSize = reader.ReadUInt32(); // Length of the extra data field ( = the total length of the next five fields).
             long end = reader.Position + extraSize;
 
             long position = reader.Position;
-            LayerMask layerMask = new LayerMask(reader);
+            this.layerMask = new LayerMaskReader(reader);
 
             if (layerMask.Size > 0)
             {
@@ -70,25 +75,23 @@ namespace Ntreev.Library.Psd
                 mask.Height = layerMask.Height;
             }
 
-            new LayerBlendingRanges(reader); // Layer blending ranges
+            this.blendingRanges = new LayerBlendingRangesReader(reader); // Layer blending ranges
             this.name = reader.ReadPascalString(4); // Layer name: Pascal string, padded to a multiple of 4 bytes.
 
-            LayerResource resource = new LayerResource(reader, end);
+            //LayerResource resource = new LayerResource(reader, end);
+            this.resources = new LayerResourceReader(reader, end);
 
-            this.props.Add("Resources", resource);
+            this.id = this.resources.ToInt32("lyid.ID");
+            this.resources.TryGetValue<string>(ref this.name, "luni.Name");
+            this.resources.TryGetValue<SectionType>(ref this.sectionType, "lsct.SectionType");
 
-            this.id = resource.ToInt32("lyid.ID");
-            if (resource.Contains("luni.Name") == true)
-                this.name = resource.ToString("luni.Name");
-            if (resource.Contains("lsct.SectionType") == true)
-                this.sectionType = (SectionType)resource["lsct.SectionType"];
-            if (resource.Contains("SoLd.Descriptor.Idnt") == true)
-                this.placedID = new Guid(resource["SoLd.Descriptor.Idnt"] as string);
-            else if (resource.Contains("SoLE.Descriptor.Idnt") == true)
-                this.placedID = new Guid(resource["SoLE.Descriptor.Idnt"] as string);
-            if (resource.Contains("iOpa") == true)
+            if (this.resources.Contains("SoLd.Idnt") == true)
+                this.placedID = this.resources.ToGuid("SoLd.Idnt");
+            else if (this.resources.Contains("SoLE.Idnt") == true)
+                this.placedID = this.resources.ToGuid("SoLE.Idnt");
+            if (this.resources.Contains("iOpa") == true)
             {
-                byte opa = (byte)resource["iOpa.Opacity"];
+                byte opa = this.resources.ToByte("iOpa.Opacity");
                 var alphaChannel = this.Channels.Where(item => item.Type == ChannelType.Alpha).FirstOrDefault();
                 if (alphaChannel != null)
                 {
@@ -96,19 +99,21 @@ namespace Ntreev.Library.Psd
                 }
             }
 
-            this.props.Add("ID", this.id);
-            this.props.Add("Name", this.name);
-            this.props.Add("SectionType", this.sectionType);
-            this.props.Add("BlendMode", this.blendMode);
-            this.props.Add("Opacity", this.opacity);
-            this.props.Add("Left", this.left);
-            this.props.Add("Top", this.top);
-            this.props.Add("Right", this.right);
-            this.props.Add("Bottom", this.bottom);
-            this.props.Add("Width", this.Width);
-            this.props.Add("Height", this.Height);
-            this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
-            this.props.Add("Clipping", this.clipping);
+            //this.props.Add("ID", this.id);
+            //this.props.Add("Name", this.name);
+            //this.props.Add("SectionType", this.sectionType);
+            //this.props.Add("BlendMode", this.blendMode);
+            //this.props.Add("Opacity", this.opacity);
+            //this.props.Add("Left", this.left);
+            //this.props.Add("Top", this.top);
+            //this.props.Add("Right", this.right);
+            //this.props.Add("Bottom", this.bottom);
+            //this.props.Add("Width", this.Width);
+            //this.props.Add("Height", this.Height);
+            //this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
+            //this.props.Add("Clipping", this.clipping);
+
+            reader.Position = end;
         }
 
         public Channel[] Channels
@@ -196,9 +201,9 @@ namespace Ntreev.Library.Psd
             get { return this.childs; }
         }
 
-        public IProperties Properties
+        public IProperties Resources
         {
-            get { return this.props; }
+            get { return this.resources; }
         }
 
         public Guid PlacedID
@@ -266,9 +271,9 @@ namespace Ntreev.Library.Psd
                     continue;
 
                 // 일반 레이어인데 비어 있을때
-                if (item.Properties.Contains("PlLd.Transformation"))
+                if (item.Resources.Contains("PlLd.Transformation"))
                 {
-                    double[] transforms = (double[])item.Properties["PlLd.Transformation"];
+                    double[] transforms = (double[])item.Resources["PlLd.Transformation"];
                     double[] xx = new double[] { transforms[0], transforms[2], transforms[4], transforms[6], };
                     double[] yy = new double[] { transforms[1], transforms[3], transforms[5], transforms[7], };
 
@@ -299,12 +304,12 @@ namespace Ntreev.Library.Psd
             this.right = right;
             this.bottom = bottom;
 
-            this.props["Left"] = this.left;
-            this.props["Top"] = this.top;
-            this.props["Right"] = this.right;
-            this.props["Bottom"] = this.bottom;
-            this.props["Width"] = this.Width;
-            this.props["Height"] = this.Height;
+            //this.props["Left"] = this.left;
+            //this.props["Top"] = this.top;
+            //this.props["Right"] = this.right;
+            //this.props["Bottom"] = this.bottom;
+            //this.props["Width"] = this.Width;
+            //this.props["Height"] = this.Height;
         }
 
         public static PsdLayer[] Initialize(PsdLayer parent, PsdLayer[] layers)

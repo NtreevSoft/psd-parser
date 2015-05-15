@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ntreev.Library.Psd.Readers;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -11,8 +12,8 @@ namespace Ntreev.Library.Psd
         private FileHeaderReader fileHeader;
         private ColorModeDataReader colorModeData;
         private ImageResourceReader imageResources;
-        private ImageDataReader imageDataReader;
-        private LayerAndMaskReader layerAndMaskReader;
+        private ImageDataReader imageData;
+        private LayerAndMaskReader layerAndMask;
        
         private PsdReader reader;
         private Uri baseUri;
@@ -51,10 +52,9 @@ namespace Ntreev.Library.Psd
             this.reader = new PsdReader(stream, resolver);
             this.fileHeader = new FileHeaderReader(this.reader);
             this.colorModeData = new ColorModeDataReader(this.reader);
-            this.imageResources = new ImageResourceReader(reader);
-            this.layerAndMaskReader = new LayerAndMaskReader(reader, this);
-            this.imageDataReader = new ImageDataReader(this.reader, this);
-            //this.imagePosition = this.reader.Position;
+            this.imageResources = new ImageResourceReader(this.reader);
+            this.layerAndMask = new LayerAndMaskReader(this.reader, this);
+            this.imageData = new ImageDataReader(this.reader, this);
         }
 
         public void Dispose()
@@ -94,27 +94,22 @@ namespace Ntreev.Library.Psd
 
         public IEnumerable<IPsdLayer> Childs
         {
-            get { return this.layerAndMaskReader.Layers; }
+            get { return this.layerAndMask.Layers; }
         }
 
         public IEnumerable<ILinkedLayer> LinkedLayers
         {
-            get { return this.layerAndMaskReader.LinkedLayers; }
+            get { return this.layerAndMask.LinkedLayers; }
         }
 
-        public IProperties Properties
-        {
-            get { return this.imageResources; }
-        }
-
-        public IProperties ImageResources
+        public IProperties Resources
         {
             get { return this.imageResources; }
         }
 
         public bool HasImage
         {
-            get { return this.imageResources.ToBoolean(ImageResourceID.VersionInfo, "HasCompatibilityImage"); }
+            get { return this.imageResources.ToBoolean("Version", "HasCompatibilityImage"); }
         }
 
         public event EventHandler Disposed;
@@ -191,7 +186,7 @@ namespace Ntreev.Library.Psd
 
         IChannel[] IImageSource.Channels
         {
-            get { return this.imageDataReader.Value; }
+            get { return this.imageData.Value; }
         }
 
         float IImageSource.Opacity

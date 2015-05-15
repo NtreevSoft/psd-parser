@@ -19,7 +19,7 @@ namespace Ntreev.Library.Psd
 
         IPsdLayer Parent { get; }
 
-        IProperties Properties { get; }
+        IProperties Resources { get; }
 
         PsdDocument Document { get; }
 

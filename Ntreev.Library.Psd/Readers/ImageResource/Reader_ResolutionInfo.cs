@@ -2,17 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers.ImageResource
 {
-    class ResolutionInfoReader : ReadablePropertiesHost
+    [ResourceID("1005", DisplayName = "Resolution")]
+    class Reader_ResolutionInfo : ImageResourceBase
     {
-        public ResolutionInfoReader(PsdReader reader)
+        public Reader_ResolutionInfo(PsdReader reader)
             : base(reader)
         {
             
         }
 
-        protected override IDictionary<string, object> CreateProperties(PsdReader reader)
+        protected override IEnumerable<KeyValuePair<string, object>> CreateProperties(PsdReader reader)
         {
             Dictionary<string, object> props = new Dictionary<string, object>(6);
 

@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace Ntreev.Library.Psd
+namespace Ntreev.Library.Psd.Readers
 {
     class GlobalLayerMaskReader
     {

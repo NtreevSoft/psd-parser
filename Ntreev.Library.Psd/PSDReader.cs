@@ -49,6 +49,29 @@ namespace Ntreev.Library.Psd
                 throw new InvalidFormatException();
         }
 
+        private void ValidateValue<T>(T value, string name, Func<T> readFunc)
+        {
+            if (object.Equals(value, readFunc()) == false)
+            {
+                throw new InvalidFormatException("{0}의 값이 {1}이 아닙니다.", name, value);
+            }
+        }
+
+        public void ValidateInt16(short value, string name)
+        {
+            this.ValidateValue<short>(value, name, () => this.ReadInt16());
+        }
+
+        public void ValidateInt32(int value, string name)
+        {
+            this.ValidateValue<int>(value, name, () => this.ReadInt32());
+        }
+
+        public void ValidateType(string value, string name)
+        {
+            this.ValidateValue<string>(value, name, () => this.ReadType());
+        }
+
         public string ReadPascalString(int modLength)
         {
             byte count = this.reader.ReadByte();

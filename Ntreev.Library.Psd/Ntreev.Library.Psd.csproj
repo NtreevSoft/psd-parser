@@ -64,30 +64,46 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
-    <Compile Include="GridAndGuidesReader.cs" />
+    <Compile Include="Readers\ImageResource\ImageResourceBase.cs" />
+    <Compile Include="Readers\ImageResource\Reader_GridAndGuides.cs" />
     <Compile Include="IChannel.cs" />
     <Compile Include="ILinkedLayer.cs" />
-    <Compile Include="ImageDataReader.cs" />
-    <Compile Include="ImageResourceID.cs" />
-    <Compile Include="ImageResourceReader.cs" />
+    <Compile Include="Readers\ImageDataReader.cs" />
+    <Compile Include="Readers\ImageResourceReader.cs" />
     <Compile Include="InternalDocument.cs" />
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
     <Compile Include="EmbeddedLayer.cs" />
-    <Compile Include="LinkedLayerReader.cs" />
-    <Compile Include="LayerReader.cs" />
+    <Compile Include="Readers\LayerResourceReader.cs" />
+    <Compile Include="Readers\LinkedLayerReader.cs" />
+    <Compile Include="Readers\LayerReader.cs" />
     <Compile Include="PathResolver.cs" />
     <Compile Include="ReadableValue.cs" />
     <Compile Include="ReadablePropertiesHost.cs" />
     <Compile Include="PropertiesHost.cs" />
     <Compile Include="PsdResolver.cs" />
     <Compile Include="RangeStream.cs" />
-    <Compile Include="ColorModeDataReader.cs" />
-    <Compile Include="FileHeaderReader.cs" />
-    <Compile Include="VersionInfoReader.cs" />
-    <Compile Include="ResolutionInfoReader.cs" />
-    <Compile Include="SliceInfoReader.cs" />
-    <Compile Include="SliceInfo.cs" />
+    <Compile Include="Readers\ColorModeDataReader.cs" />
+    <Compile Include="Readers\FileHeaderReader.cs" />
+    <Compile Include="Readers\LayerResource\LayerResourceBase.cs" />
+    <Compile Include="Readers\ReaderCollector.cs" />
+    <Compile Include="ResourceIDAttribute.cs" />
+    <Compile Include="Readers\LayerResource\Reader_shmd.cs" />
+    <Compile Include="Readers\LayerResource\Reader_iOpa.cs" />
+    <Compile Include="Readers\LayerResource\Reader_lsct.cs" />
+    <Compile Include="Readers\LayerResource\Reader_lyid.cs" />
+    <Compile Include="Readers\LayerResource\Reader_luni.cs" />
+    <Compile Include="Readers\LayerResource\Reader_TySh.cs" />
+    <Compile Include="Readers\LayerResource\Reader_fxrp.cs" />
+    <Compile Include="Readers\LayerResource\Reader_lnsr.cs" />
+    <Compile Include="Readers\LayerResource\Reader_PlLd.cs" />
+    <Compile Include="Readers\LayerResource\Reader_SoLd.cs" />
+    <Compile Include="Readers\LayerResource\Reader_lfx2.cs" />
+    <Compile Include="Readers\LayerResource\Reader_SoLE.cs" />
+    <Compile Include="Readers\LayerResource\Reader_lrFX.cs" />
+    <Compile Include="Readers\ImageResource\Reader_VersionInfo.cs" />
+    <Compile Include="Readers\ImageResource\Reader_ResolutionInfo.cs" />
+    <Compile Include="Readers\ImageResource\Reader_SlicesInfo.cs" />
     <Compile Include="Structures\BaseStructure.cs" />
     <Compile Include="Structures\StructureReader.cs" />
     <Compile Include="Structures\StructureAlias.cs" />
@@ -103,13 +119,13 @@
     <Compile Include="Structures\StructureUnitFloat.cs" />
     <Compile Include="Structures\StructureUnknownOSType.cs" />
     <Compile Include="Extension.cs" />
-    <Compile Include="GlobalLayerMaskReader.cs" />
+    <Compile Include="Readers\GlobalLayerMaskReader.cs" />
     <Compile Include="IImageSource.cs" />
     <Compile Include="IProperties.cs" />
     <Compile Include="IPropertiesExtension.cs" />
-    <Compile Include="LayerBlendingRanges.cs" />
+    <Compile Include="Readers\LayerBlendingRanges.cs" />
     <Compile Include="LayerFlags.cs" />
-    <Compile Include="LayerMask.cs" />
+    <Compile Include="Readers\LayerMaskReader.cs" />
     <Compile Include="LinkedLayer.cs" />
     <Compile Include="SectionType.cs" />
     <Compile Include="Properties.cs" />
@@ -133,13 +149,7 @@
     <Compile Include="PsdLayer.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="LayerAndMaskReader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="LayerResource.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="TypeToolInfo.cs">
+    <Compile Include="Readers\LayerAndMaskReader.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="PsdUtility.cs">
