@@ -5,35 +5,20 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class ColorModeDataReader
+    class ColorModeDataReader : ReadableLazyValue<byte[]>
     {
-        private readonly PsdReader reader;
-        private readonly long position;
-
-        private byte[] data;
-
         public ColorModeDataReader(PsdReader reader)
+            : base(reader, true)
         {
-            this.reader = reader;
-            this.position = reader.Position;
-            int size = reader.ReadInt32();
-            reader.Position += size;
+            
         }
 
-        public byte[] Data
+        protected override long OnLengthGet(PsdReader reader)
         {
-            get 
-            {
-                if (this.data == null)
-                {
-                    this.reader.Position = this.position;
-                    this.data = Read(this.reader);
-                }
-                return this.data; 
-            }
+            return reader.ReadInt32();
         }
 
-        private static byte[] Read(PsdReader reader)
+        protected override byte[] ReadValue(PsdReader reader)
         {
             int size = reader.ReadInt32();
             if (size > 0)

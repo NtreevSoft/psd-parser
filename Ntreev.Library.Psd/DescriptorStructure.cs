@@ -16,9 +16,9 @@ namespace Ntreev.Library.Psd
 
         }
 
-        public DescriptorStructure(PsdReader reader, bool readVersion)
+        public DescriptorStructure(PsdReader reader, bool hasVersion)
         {
-            if (readVersion == true)
+            if (hasVersion == true)
             {
                 this.version = reader.ReadInt32();
             }

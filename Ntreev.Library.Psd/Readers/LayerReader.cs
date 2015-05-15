@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class LayerReader : ReadableValue<PsdLayer[]>
+    class LayerReader : ReadableLazyValue<PsdLayer[]>
     {
         private readonly PsdDocument document;
 
@@ -29,7 +29,7 @@ namespace Ntreev.Library.Psd.Readers
             PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new PsdLayer(reader, this.document, i);
+                layers[i] = new PsdLayer(reader, this.document);
             }
 
             foreach (var item in layers)

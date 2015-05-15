@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.ImageResource
 {
-    abstract class ImageResourceBase : ReadablePropertiesHost
+    abstract class ImageResourceBase : ReadableLazyProperties
     {
         protected ImageResourceBase(PsdReader reader)
             : base(reader)

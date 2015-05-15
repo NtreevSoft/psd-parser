@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public static class Extension
+    public static class Extensions
     {
         public static byte[] MergeChannels(this IImageSource imageSource)
         {
@@ -59,6 +59,11 @@ namespace Ntreev.Library.Psd
             }
         }
 
+        internal static ColorMode ReadColorMode(this PsdReader reader)
+        {
+            return (ColorMode)reader.ReadInt16();
+        }
+
         internal static BlendMode ReadBlendMode(this PsdReader reader)
         {
             return PsdUtility.ToBlendMode(reader.ReadAscii(4));
@@ -67,6 +72,11 @@ namespace Ntreev.Library.Psd
         internal static LayerFlags ReadLayerFlags(this PsdReader reader)
         {
             return (LayerFlags)reader.ReadByte();
+        }
+
+        internal static ChannelType ReadChannelType(this PsdReader reader)
+        {
+            return (ChannelType)reader.ReadInt16();
         }
     }
 }

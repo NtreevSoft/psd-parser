@@ -74,7 +74,7 @@ namespace Ntreev.Library.Psd
 
         public byte[] ColorModeData
         {
-            get { return this.colorModeData.Data; }
+            get { return this.colorModeData.Value; }
         }
 
         public int Width

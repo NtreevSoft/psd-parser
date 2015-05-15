@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerResource
 {
-    abstract class LayerResourceBase : ReadablePropertiesHost
+    abstract class LayerResourceBase : ReadableLazyProperties
     {
         protected LayerResourceBase(PsdReader reader)
             : base(reader)

@@ -5,51 +5,32 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class FileHeaderReader
+    class FileHeaderReader : ReadableValue<FileHeader>
     {
-        private readonly string signature;
-        private readonly short version;
-        private readonly byte[] reserved;
-        private readonly short depth;
-        private readonly int channels;
-        private readonly ColorMode colorMode;
-        private readonly int height;
-        private readonly int width;
-
-        private readonly FileHeader value;
-
         public FileHeaderReader(PsdReader reader)
+            : base(reader)
         {
-            this.signature = reader.ReadAscii(4);
-            this.version = reader.ReadInt16();
-            this.reserved = reader.ReadBytes(6);
-            if ((this.signature != "8BPS") || (this.version != 1 && this.version != 2))
-            {
-                throw new InvalidFormatException();
-            }
-            this.channels = reader.ReadInt16();
-            this.height = reader.ReadInt32();
-            this.width = reader.ReadInt32();
-            this.depth = reader.ReadInt16();
-            this.colorMode = (ColorMode)reader.ReadInt16();
+            
+        }
 
-            reader.Version = this.version;
-            if (this.depth != 8)
+        protected override void ReadValue(PsdReader reader, out FileHeader value)
+        {
+            value = new FileHeader();
+
+            reader.ValidateDocumentSignature();
+            reader.Version = reader.ReadInt16();
+            reader.Skip(6);
+            
+            value.NumberOfChannels = reader.ReadInt16();
+            value.Height = reader.ReadInt32();
+            value.Width = reader.ReadInt32();
+            value.Depth = reader.ReadInt16();
+            value.ColorMode = reader.ReadColorMode();
+
+            if (value.Depth != 8)
             {
                 throw new NotSupportedException("only support 8 Bit Channel");
             }
-
-            this.value.Depth = this.depth;
-            this.value.NumberOfChannels = this.channels;
-            this.value.ColorMode = this.colorMode;
-            this.value.Height = this.height;
-            this.value.Width = this.width;
-            this.value.Version = this.version;
-        }
-
-        public FileHeader Value
-        {
-            get { return this.value; }
         }
     }
 }

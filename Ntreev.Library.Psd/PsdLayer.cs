@@ -9,6 +9,8 @@ namespace Ntreev.Library.Psd
 {
     class PsdLayer : IPsdLayer
     {
+        private readonly PsdDocument document;
+        private readonly LayerRecordsReader records;
         private int left, top, right, bottom;
         private int id;
         private string name;
@@ -22,8 +24,7 @@ namespace Ntreev.Library.Psd
         private List<IPsdLayer> childArray;
         private PsdLayer parent;
         private Guid placedID;
-        private int index;
-        private PsdDocument document;
+        
         private Channel[] channels;
         private PsdReader channelReader;
         private long channelPosition;
@@ -33,11 +34,10 @@ namespace Ntreev.Library.Psd
         private LayerBlendingRangesReader blendingRanges;
         private LayerResourceReader resources;
         
-
-        public PsdLayer(PsdReader reader, PsdDocument document, int index)
+        public PsdLayer(PsdReader reader, PsdDocument document)
         {
             this.document = document;
-            this.index = index;
+            this.records = new LayerRecordsReader(reader);
             this.top = reader.ReadInt32();
             this.left = reader.ReadInt32();
             this.bottom = reader.ReadInt32();
@@ -62,23 +62,22 @@ namespace Ntreev.Library.Psd
             this.flags = reader.ReadLayerFlags();
             this.filter = reader.ReadByte();
 
-            long extraSize = reader.ReadUInt32(); // Length of the extra data field ( = the total length of the next five fields).
+            long extraSize = reader.ReadUInt32();
             long end = reader.Position + extraSize;
 
             long position = reader.Position;
             this.layerMask = new LayerMaskReader(reader);
 
-            if (layerMask.Size > 0)
+            if (this.layerMask.Size > 0)
             {
                 var mask = this.Channels.Where(item => item.Type == ChannelType.Mask).First();
-                mask.Width = layerMask.Width;
-                mask.Height = layerMask.Height;
+                mask.Width = this.layerMask.Width;
+                mask.Height = this.layerMask.Height;
             }
 
-            this.blendingRanges = new LayerBlendingRangesReader(reader); // Layer blending ranges
-            this.name = reader.ReadPascalString(4); // Layer name: Pascal string, padded to a multiple of 4 bytes.
+            this.blendingRanges = new LayerBlendingRangesReader(reader);
+            this.name = reader.ReadPascalString(4);
 
-            //LayerResource resource = new LayerResource(reader, end);
             this.resources = new LayerResourceReader(reader, end);
 
             this.id = this.resources.ToInt32("lyid.ID");
@@ -98,20 +97,6 @@ namespace Ntreev.Library.Psd
                     alphaChannel.Opacity = opa / 255.0f;
                 }
             }
-
-            //this.props.Add("ID", this.id);
-            //this.props.Add("Name", this.name);
-            //this.props.Add("SectionType", this.sectionType);
-            //this.props.Add("BlendMode", this.blendMode);
-            //this.props.Add("Opacity", this.opacity);
-            //this.props.Add("Left", this.left);
-            //this.props.Add("Top", this.top);
-            //this.props.Add("Right", this.right);
-            //this.props.Add("Bottom", this.bottom);
-            //this.props.Add("Width", this.Width);
-            //this.props.Add("Height", this.Height);
-            //this.props.Add("Bounds", string.Format("{0}, {1}, {2}, {3}", this.left, this.top, this.right, this.bottom));
-            //this.props.Add("Clipping", this.clipping);
 
             reader.Position = end;
         }

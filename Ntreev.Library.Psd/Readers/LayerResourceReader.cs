@@ -9,7 +9,7 @@ using System.Reflection;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class LayerResourceReader : ReadablePropertiesHost
+    class LayerResourceReader : ReadableLazyProperties
     {
         private readonly long end;
 

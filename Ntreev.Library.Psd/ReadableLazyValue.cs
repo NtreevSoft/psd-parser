@@ -5,20 +5,20 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    abstract class ReadableValue<T>
+    abstract class ReadableLazyValue<T>
     {
         private readonly PsdReader reader;
         private readonly long position;
         private readonly long length;
         private T value;
 
-        protected ReadableValue(PsdReader reader)
+        protected ReadableLazyValue(PsdReader reader)
             : this(reader, false)
         {
 
         }
 
-        protected ReadableValue(PsdReader reader, bool hasLength)
+        protected ReadableLazyValue(PsdReader reader, bool hasLength)
         {
             if (hasLength == true)
             {
@@ -27,14 +27,21 @@ namespace Ntreev.Library.Psd
 
             this.reader = reader;
             this.position = reader.Position;
-            this.ReadValue(reader, out this.value);
 
             reader.Position += this.length;
         }
 
         public T Value
         {
-            get { return this.value; }
+            get
+            {
+                if (this.value == null)
+                {
+                    this.reader.Position = this.position;
+                    this.value = this.ReadValue(this.reader);
+                }
+                return this.value;
+            }
         }
 
         protected virtual long OnLengthGet(PsdReader reader)
@@ -42,7 +49,7 @@ namespace Ntreev.Library.Psd
             return reader.ReadLength();
         }
 
-        protected abstract void ReadValue(PsdReader reader, out T value);
+        protected abstract T ReadValue(PsdReader reader);
 
         protected long Length
         {

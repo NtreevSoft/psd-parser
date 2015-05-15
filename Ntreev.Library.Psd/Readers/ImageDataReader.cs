@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class ImageDataReader : ReadableValue<Channel[]>
+    class ImageDataReader : ReadableLazyValue<Channel[]>
     {
         private readonly int channelCount;
         private readonly int width;

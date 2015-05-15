@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    abstract class PropertiesHost : IProperties
+    abstract class LazyProperties : IProperties
     {
         private Properties properties;
 

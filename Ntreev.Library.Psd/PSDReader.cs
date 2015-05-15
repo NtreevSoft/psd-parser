@@ -49,6 +49,14 @@ namespace Ntreev.Library.Psd
                 throw new InvalidFormatException();
         }
 
+        public void ValidateDocumentSignature()
+        {
+            string signature = this.ReadType();
+
+            if (signature != "8BPS")
+                throw new InvalidFormatException();
+        }
+
         private void ValidateValue<T>(T value, string name, Func<T> readFunc)
         {
             if (object.Equals(value, readFunc()) == false)
@@ -199,6 +207,11 @@ namespace Ntreev.Library.Psd
             return (int)this.ReadInt64();
         }
 
+        public void Skip(int count)
+        {
+            this.ReadBytes(count);
+        }
+
         public void Skip(char c)
         {
             char ch = this.ReadChar();
@@ -228,7 +241,13 @@ namespace Ntreev.Library.Psd
         public int Version
         {
             get { return this.version; }
-            set { this.version = value; }
+            set 
+            {
+                if (value != 1 && value != 2)
+                    throw new InvalidFormatException();
+
+                this.version = value; 
+            }
         }
 
         public PsdResolver Resolver

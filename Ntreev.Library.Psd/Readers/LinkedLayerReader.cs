@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class LinkedLayerReader : ReadableValue<LinkedLayer[]>
+    class LinkedLayerReader : ReadableLazyValue<LinkedLayer[]>
     {
         private readonly long end;
         private readonly Uri baseUri;

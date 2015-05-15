@@ -64,6 +64,9 @@
     <Compile Include="ColorMode.cs" />
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
+    <Compile Include="LayerRecords.cs" />
+    <Compile Include="ReadableValue.cs" />
+    <Compile Include="Readers\ChannelsReader.cs" />
     <Compile Include="Readers\ImageResource\ImageResourceBase.cs" />
     <Compile Include="Readers\ImageResource\Reader_GridAndGuides.cs" />
     <Compile Include="IChannel.cs" />
@@ -74,13 +77,14 @@
     <Compile Include="InvalidFormatException.cs" />
     <Compile Include="IPsdLayer.cs" />
     <Compile Include="EmbeddedLayer.cs" />
+    <Compile Include="Readers\LayerRecordsReader.cs" />
     <Compile Include="Readers\LayerResourceReader.cs" />
     <Compile Include="Readers\LinkedLayerReader.cs" />
     <Compile Include="Readers\LayerReader.cs" />
     <Compile Include="PathResolver.cs" />
-    <Compile Include="ReadableValue.cs" />
-    <Compile Include="ReadablePropertiesHost.cs" />
-    <Compile Include="PropertiesHost.cs" />
+    <Compile Include="ReadableLazyValue.cs" />
+    <Compile Include="ReadableLazyProperties.cs" />
+    <Compile Include="LazyProperties.cs" />
     <Compile Include="PsdResolver.cs" />
     <Compile Include="RangeStream.cs" />
     <Compile Include="Readers\ColorModeDataReader.cs" />
@@ -118,7 +122,7 @@
     <Compile Include="Structures\StructureReference.cs" />
     <Compile Include="Structures\StructureUnitFloat.cs" />
     <Compile Include="Structures\StructureUnknownOSType.cs" />
-    <Compile Include="Extension.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Readers\GlobalLayerMaskReader.cs" />
     <Compile Include="IImageSource.cs" />
     <Compile Include="IProperties.cs" />

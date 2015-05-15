@@ -4,42 +4,36 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    public struct FileHeader
+    public class FileHeader
     {
         public int Depth
         {
             get;
-            set;
+            internal set;
         }
 
         public int NumberOfChannels
         {
             get;
-            set;
+            internal set;
         }
 
         public ColorMode ColorMode
         {
             get;
-            set;
+            internal set;
         }
 
         public int Height
         {
             get;
-            set;
+            internal set;
         }
 
         public int Width
         {
             get;
-            set;
-        }
-
-        public int Version
-        {
-            get;
-            set;
+            internal set;
         }
     }
 }
