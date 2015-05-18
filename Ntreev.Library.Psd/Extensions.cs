@@ -78,5 +78,10 @@ namespace Ntreev.Library.Psd
         {
             return (ChannelType)reader.ReadInt16();
         }
+
+        internal static CompressionType ReadCompressionType(this PsdReader reader)
+        {
+            return (CompressionType)reader.ReadInt16();
+        }
     }
 }

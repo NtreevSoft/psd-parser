@@ -9,11 +9,11 @@ namespace Ntreev.Library.Psd
 {
     public class PsdDocument : IPsdLayer, IDisposable
     {
-        private FileHeaderReader fileHeader;
-        private ColorModeDataReader colorModeData;
-        private ImageResourceReader imageResources;
-        private ImageDataReader imageData;
-        private LayerAndMaskReader layerAndMask;
+        private FileHeaderSectionReader fileHeaderSection;
+        private ColorModeDataSectionReader colorModeDataSection;
+        private ImageResourcesSectionReader imageResourcesSection;
+        private LayerAndMaskInformationSectionReader layerAndMaskSection;
+        private ImageDataSectionReader imageDataSection;
        
         private PsdReader reader;
         private Uri baseUri;
@@ -50,11 +50,11 @@ namespace Ntreev.Library.Psd
         public void Read(Stream stream, PsdResolver resolver)
         {
             this.reader = new PsdReader(stream, resolver);
-            this.fileHeader = new FileHeaderReader(this.reader);
-            this.colorModeData = new ColorModeDataReader(this.reader);
-            this.imageResources = new ImageResourceReader(this.reader);
-            this.layerAndMask = new LayerAndMaskReader(this.reader, this);
-            this.imageData = new ImageDataReader(this.reader, this);
+            this.fileHeaderSection = new FileHeaderSectionReader(this.reader);
+            this.colorModeDataSection = new ColorModeDataSectionReader(this.reader);
+            this.imageResourcesSection = new ImageResourcesSectionReader(this.reader);
+            this.layerAndMaskSection = new LayerAndMaskInformationSectionReader(this.reader, this);
+            this.imageDataSection = new ImageDataSectionReader(this.reader, this);
         }
 
         public void Dispose()
@@ -67,49 +67,49 @@ namespace Ntreev.Library.Psd
             this.OnDisposed(EventArgs.Empty);
         }
 
-        public FileHeader FileHeader
+        public FileHeaderSection FileHeaderSection
         {
-            get { return this.fileHeader.Value; }
+            get { return this.fileHeaderSection.Value; }
         }
 
         public byte[] ColorModeData
         {
-            get { return this.colorModeData.Value; }
+            get { return this.colorModeDataSection.Value; }
         }
 
         public int Width
         {
-            get { return this.fileHeader.Value.Width; }
+            get { return this.fileHeaderSection.Value.Width; }
         }
 
         public int Height
         {
-            get { return this.fileHeader.Value.Height; }
+            get { return this.fileHeaderSection.Value.Height; }
         }
 
         public int Depth
         {
-            get { return this.fileHeader.Value.Depth; }
+            get { return this.fileHeaderSection.Value.Depth; }
         }
 
-        public IEnumerable<IPsdLayer> Childs
+        public IPsdLayer[] Childs
         {
-            get { return this.layerAndMask.Layers; }
+            get { return this.layerAndMaskSection.Value.Layers; }
         }
 
         public IEnumerable<ILinkedLayer> LinkedLayers
         {
-            get { return this.layerAndMask.LinkedLayers; }
+            get { return this.layerAndMaskSection.Value.LinkedLayers; }
         }
 
         public IProperties Resources
         {
-            get { return this.imageResources; }
+            get { return this.imageResourcesSection; }
         }
 
         public bool HasImage
         {
-            get { return this.imageResources.ToBoolean("Version", "HasCompatibilityImage"); }
+            get { return this.imageResourcesSection.ToBoolean("Version", "HasCompatibilityImage"); }
         }
 
         public event EventHandler Disposed;
@@ -186,7 +186,7 @@ namespace Ntreev.Library.Psd
 
         IChannel[] IImageSource.Channels
         {
-            get { return this.imageData.Value; }
+            get { return this.imageDataSection.Value; }
         }
 
         float IImageSource.Opacity

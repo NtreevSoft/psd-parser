@@ -28,6 +28,16 @@ namespace Ntreev.Library.Psd
 
         public int Bottom { get; set; }
 
+        public int Width
+        {
+            get { return this.Right - this.Left; }
+        }
+
+        public int Height
+        {
+            get { return this.Bottom - this.Top; }
+        }
+
         public int ChannelCount
         {
             get { return this.channelCount; }
@@ -54,5 +64,7 @@ namespace Ntreev.Library.Psd
         public LayerFlags Flags { get; set; }
 
         public int Filter { get; set; }
+
+        public string Name { get; set; }
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Runtime.CompilerServices;
 using System.Linq;
 using Ntreev.Library.Psd.Readers;
+using Ntreev.Library.Psd.Readers.LayerAndMaskInformation;
 
 namespace Ntreev.Library.Psd
 {
@@ -11,76 +12,35 @@ namespace Ntreev.Library.Psd
     {
         private readonly PsdDocument document;
         private readonly LayerRecordsReader records;
-        private int left, top, right, bottom;
-        private int id;
         private string name;
         private SectionType sectionType;
-        private byte opacity;
-        private BlendMode blendMode;
-        private bool clipping;
-        private LayerFlags flags;
-        private int filter;
-        private List<PsdLayer> childs = new List<PsdLayer>();
-        private List<IPsdLayer> childArray;
+
+        private PsdLayer[] childs;
         private PsdLayer parent;
         private Guid placedID;
-        
-        private Channel[] channels;
-        private PsdReader channelReader;
-        private long channelPosition;
         private ILinkedLayer linkedLayer;
 
         private LayerMaskReader layerMask;
         private LayerBlendingRangesReader blendingRanges;
         private LayerResourceReader resources;
+        private ChannelsReader channels;
+
+        private static PsdLayer[] emptyChilds = new PsdLayer[] { };
         
         public PsdLayer(PsdReader reader, PsdDocument document)
         {
             this.document = document;
             this.records = new LayerRecordsReader(reader);
-            this.top = reader.ReadInt32();
-            this.left = reader.ReadInt32();
-            this.bottom = reader.ReadInt32();
-            this.right = reader.ReadInt32();
-            this.ValidateSize(this.Width, this.Height);
 
-            ushort channelCount = reader.ReadUInt16();
-            this.ValidateChannelCount(channelCount);
-
-            this.channels = new Channel[channelCount];
-            for (int i = 0; i < channelCount; i++)
-            {
-                this.channels[i] = new Channel(reader, this.Width, this.Height);
-            }
-
-            reader.ValidateSignature();
-
-            //reader.ReadInt32();
-            this.blendMode = reader.ReadBlendMode();
-            this.opacity = reader.ReadByte();
-            this.clipping = reader.ReadBoolean();
-            this.flags = reader.ReadLayerFlags();
-            this.filter = reader.ReadByte();
-
-            long extraSize = reader.ReadUInt32();
-            long end = reader.Position + extraSize;
+            long length = reader.ReadUInt32();
+            long end = reader.Position + length;
 
             long position = reader.Position;
             this.layerMask = new LayerMaskReader(reader);
-
-            if (this.layerMask.Size > 0)
-            {
-                var mask = this.Channels.Where(item => item.Type == ChannelType.Mask).First();
-                mask.Width = this.layerMask.Width;
-                mask.Height = this.layerMask.Height;
-            }
-
             this.blendingRanges = new LayerBlendingRangesReader(reader);
             this.name = reader.ReadPascalString(4);
 
-            this.resources = new LayerResourceReader(reader, end);
-
-            this.id = this.resources.ToInt32("lyid.ID");
+            this.resources = new LayerResourceReader(reader, end - reader.Position);
             this.resources.TryGetValue<string>(ref this.name, "luni.Name");
             this.resources.TryGetValue<SectionType>(ref this.sectionType, "lsct.SectionType");
 
@@ -88,32 +48,18 @@ namespace Ntreev.Library.Psd
                 this.placedID = this.resources.ToGuid("SoLd.Idnt");
             else if (this.resources.Contains("SoLE.Idnt") == true)
                 this.placedID = this.resources.ToGuid("SoLE.Idnt");
-            if (this.resources.Contains("iOpa") == true)
-            {
-                byte opa = this.resources.ToByte("iOpa.Opacity");
-                var alphaChannel = this.Channels.Where(item => item.Type == ChannelType.Alpha).FirstOrDefault();
-                if (alphaChannel != null)
-                {
-                    alphaChannel.Opacity = opa / 255.0f;
-                }
-            }
 
             reader.Position = end;
         }
 
         public Channel[] Channels
         {
-            get { return this.channels; }
+            get { return this.channels.Value; }
         }
 
         public SectionType SectionType
         {
             get { return this.sectionType; }
-        }
-
-        public int ID
-        {
-            get { return this.id; }
         }
 
         public string Name
@@ -123,77 +69,74 @@ namespace Ntreev.Library.Psd
 
         public float Opacity
         {
-            get { return (((float)this.opacity) / 255f); }
+            get { return (((float)this.records.Value.Opacity) / 255f); }
         }
 
         public int Left
         {
-            get { return this.left; }
+            get { return this.records.Value.Left; }
         }
 
         public int Top
         {
-            get { return this.top; }
+            get { return this.records.Value.Top; }
         }
 
         public int Right
         {
-            get { return this.right; }
+            get { return this.records.Value.Right; }
         }
 
         public int Bottom
         {
-            get { return this.bottom; }
+            get { return this.records.Value.Bottom; }
         }
 
         public int Width
         {
-            get { return this.right - this.left; }
+            get { return this.records.Value.Width; }
         }
 
         public int Height
         {
-            get { return this.bottom - this.top; }
+            get { return this.records.Value.Height; }
         }
 
         public int Depth
         {
-            get { return this.document.FileHeader.Depth; }
-        }
-
-        public int Pitch
-        {
-            get { return (this.Width * this.Channels.Length); }
+            get { return this.document.FileHeaderSection.Depth; }
         }
 
         public bool IsClipping
         {
-            get { return this.clipping; }
+            get { return this.records.Value.Clipping; }
         }
 
         public BlendMode BlendMode
         {
-            get { return this.blendMode; }
+            get { return this.records.Value.BlendMode; }
         }
 
         public PsdLayer Parent
         {
             get { return this.parent; }
+            set { this.parent = value; }
         }
 
-        public IEnumerable<PsdLayer> Childs
+        public PsdLayer[] Childs
         {
-            get { return this.childs; }
+            get 
+            {
+                if (this.childs == null)
+                    return emptyChilds;
+                return this.childs; 
+            }
+            set { this.childs = value; }
         }
 
         public IProperties Resources
         {
             get { return this.resources; }
-        }
-
-        public Guid PlacedID
-        {
-            get { return this.placedID; }
         }
 
         public PsdDocument Document
@@ -230,12 +173,7 @@ namespace Ntreev.Library.Psd
 
         public void ReadChannels(PsdReader reader)
         {
-            this.channelReader = reader;
-            this.channelPosition = reader.Position;
-            foreach (var item in this.channels)
-            {
-                reader.Position += item.Size;
-            }
+            this.channels = new ChannelsReader(reader, this, this.records.Value, this.layerMask.Value, this.document.Depth);
         }
 
         public void ComputeBounds()
@@ -250,7 +188,7 @@ namespace Ntreev.Library.Psd
 
             bool isSet = false;
 
-            foreach (var item in this.All())
+            foreach (IPsdLayer item in this.All())
             {
                 if (item == this || item.HasImage == false)
                     continue;
@@ -284,10 +222,12 @@ namespace Ntreev.Library.Psd
             if (isSet == false)
                 return;
 
-            this.left = left;
-            this.top = top;
-            this.right = right;
-            this.bottom = bottom;
+            //this.records.Value.Left = left;
+
+            this.records.Value.Left = left;
+            this.records.Value.Top = top;
+            this.records.Value.Right = right;
+            this.records.Value.Bottom = bottom;
 
             //this.props["Left"] = this.left;
             //this.props["Top"] = this.top;
@@ -297,104 +237,86 @@ namespace Ntreev.Library.Psd
             //this.props["Height"] = this.Height;
         }
 
-        public static PsdLayer[] Initialize(PsdLayer parent, PsdLayer[] layers)
-        {
-            Stack<PsdLayer> stack = new Stack<PsdLayer>();
-            List<PsdLayer> rootLayers = new List<PsdLayer>();
+        //public static PsdLayer[] Initialize(PsdLayer parent, PsdLayer[] layers)
+        //{
+        //    Stack<PsdLayer> stack = new Stack<PsdLayer>();
+        //    List<PsdLayer> rootLayers = new List<PsdLayer>();
 
-            foreach (var item in layers.Reverse())
-            {
-                if (item.SectionType == SectionType.Divider == true)
-                {
-                    parent = stack.Pop();
-                    continue;
-                }
+        //    foreach (var item in layers.Reverse())
+        //    {
+        //        if (item.SectionType == SectionType.Divider)
+        //        {
+        //            parent = stack.Pop();
+        //            continue;
+        //        }
 
-                if (parent != null)
-                {
-                    parent.childs.Insert(0, item);
-                    item.parent = parent;
-                }
-                else
-                {
-                    rootLayers.Insert(0, item);
-                }
+        //        if (parent != null)
+        //        {
+        //            parent.childs.Insert(0, item);
+        //            item.parent = parent;
+        //        }
+        //        else
+        //        {
+        //            rootLayers.Insert(0, item);
+        //        }
 
-                if (item.sectionType == SectionType.Opend || item.sectionType == SectionType.Closed)
-                {
-                    stack.Push(parent);
-                    parent = item;
-                }
-            }
+        //        if (item.sectionType == SectionType.Opend || item.sectionType == SectionType.Closed)
+        //        {
+        //            stack.Push(parent);
+        //            parent = item;
+        //        }
+        //    }
 
-            return rootLayers.ToArray();
-        }
+        //    return rootLayers.ToArray();
+        //}
 
-        private void ValidateSize(int width, int height)
-        {
-            if ((width > 0x3000) || (height > 0x3000))
-            {
-                throw new Exception(string.Format("Invalidated size ({0}, {1})", width, height));
-            }
-        }
+        //private void ValidateSize(int width, int height)
+        //{
+        //    if ((width > 0x3000) || (height > 0x3000))
+        //    {
+        //        throw new Exception(string.Format("Invalidated size ({0}, {1})", width, height));
+        //    }
+        //}
 
-        private void ValidateChannelCount(int channelCount)
-        {
-            if (channelCount > 0x38)
-            {
-                throw new Exception(string.Format("Too many channels : {0}", channelCount));
-            }
-        }
+        //private void ValidateChannelCount(int channelCount)
+        //{
+        //    if (channelCount > 0x38)
+        //    {
+        //        throw new Exception(string.Format("Too many channels : {0}", channelCount));
+        //    }
+        //}
 
         #region IPsdLayer
 
-        IEnumerable<IPsdLayer> IPsdLayer.Childs
+        IPsdLayer IPsdLayer.Parent
         {
-            get
+            get 
             {
-                if (this.childArray == null)
-                {
-                    this.childArray = new List<IPsdLayer>(this.childs.Count);
-                    foreach (var item in this.childs)
-                    {
-                        this.childArray.Add(item);
-                    }
-                }
-                return this.childArray;
+                if (this.parent == null)
+                    return this.document;
+                return this.parent; 
             }
         }
 
-        IPsdLayer IPsdLayer.Parent
-        {
-            get { return this.parent; }
-        }
-
-        ILinkedLayer IPsdLayer.LinkedLayer
-        {
-            get { return this.LinkedLayer; }
-        }
+        //ILinkedLayer IPsdLayer.LinkedLayer
+        //{
+        //    get { return this.LinkedLayer; }
+        //}
 
         IChannel[] IImageSource.Channels
         {
-            get
-            {
-                if (this.channelReader != null)
-                {
-                    this.channelReader.Position = this.channelPosition;
-                    foreach (var item in this.channels)
-                    {
-                        CompressionType compressionType = (CompressionType)this.channelReader.ReadInt16();
-                        item.ReadHeader(this.channelReader, compressionType);
-                        item.Read(this.channelReader, this.Depth, compressionType);
-                    }
-                    this.channelReader = null;
-                }
+            get { return this.channels.Value; }
+        }
 
-                return this.channels;
-            }
+        IPsdLayer[] IPsdLayer.Childs
+        {
+            get { return this.Childs; }
         }
 
         #endregion
+
+
+        
     }
 }
 

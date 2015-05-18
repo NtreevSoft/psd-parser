@@ -14,14 +14,6 @@ namespace Ntreev.Library.Psd
         private float opacity = 1.0f;
         private long size;
 
-        public Channel(PsdReader reader, int width, int height)
-        {
-            this.type = (ChannelType)reader.ReadInt16();
-            this.width = width;
-            this.height = height;
-            this.size = reader.ReadLength();
-        }
-
         public Channel(ChannelType type, int width, int height, long size)
         {
             this.type = type;

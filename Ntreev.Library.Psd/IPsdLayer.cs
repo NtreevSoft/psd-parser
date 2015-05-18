@@ -9,7 +9,7 @@ namespace Ntreev.Library.Psd
     {
         BlendMode BlendMode { get; }
 
-        IEnumerable<IPsdLayer> Childs { get; }
+        IPsdLayer[] Childs { get; }
 
         bool IsClipping { get; }
 
