@@ -36,16 +36,30 @@ namespace Ntreev.Library.Psd
 
         public bool VerifySignature()
         {
+            return this.VerifySignature(false);
+        }
+
+        public bool VerifySignature(bool check64bit)
+        {
             string signature = this.ReadType();
 
             if (signature == "8BIM")
                 return true;
+
+            if (check64bit == true && signature == "8B64")
+                return true;
+            
             return false;
         }
 
         public void ValidateSignature()
         {
-            if (this.VerifySignature() == false)
+            this.ValidateSignature(false);
+        }
+
+        public void ValidateSignature(bool check64bit)
+        {
+            if (this.VerifySignature(check64bit) == false)
                 throw new InvalidFormatException();
         }
 
@@ -200,11 +214,11 @@ namespace Ntreev.Library.Psd
             return this.ReverseValue(this.reader.ReadUInt64());
         }
 
-        public int ReadLength()
+        public long ReadLength()
         {
             if (this.version == 1)
                 return this.ReadInt32();
-            return (int)this.ReadInt64();
+            return this.ReadInt64();
         }
 
         public void Skip(int count)
@@ -225,6 +239,38 @@ namespace Ntreev.Library.Psd
             {
                 this.Skip(c);
             }
+        }
+
+        public ColorMode ReadColorMode()
+        {
+            return (ColorMode)this.ReadInt16();
+        }
+
+        public BlendMode ReadBlendMode()
+        {
+            return PsdUtility.ToBlendMode(this.ReadAscii(4));
+        }
+
+        public LayerFlags ReadLayerFlags()
+        {
+            return (LayerFlags)this.ReadByte();
+        }
+
+        public ChannelType ReadChannelType()
+        {
+            return (ChannelType)this.ReadInt16();
+        }
+
+        public CompressionType ReadCompressionType()
+        {
+            return (CompressionType)this.ReadInt16();
+        }
+
+        public void ReadDocumentHeader()
+        {
+            this.ValidateDocumentSignature();
+            this.Version = this.ReadInt16();
+            this.Skip(6);
         }
 
         public long Position

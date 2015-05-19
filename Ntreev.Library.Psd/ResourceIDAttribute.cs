@@ -8,17 +8,17 @@ namespace Ntreev.Library.Psd
     [AttributeUsage(AttributeTargets.Class)]
     class ResourceIDAttribute : Attribute
     {
-        private readonly string layerResourceID;
+        private readonly string resourceID;
         private string displayName;
 
-        public ResourceIDAttribute(string layerResourceID)
+        public ResourceIDAttribute(string resourceID)
         {
-            this.layerResourceID = layerResourceID;
+            this.resourceID = resourceID;
         }
 
         public string ID
         {
-            get { return this.layerResourceID; }
+            get { return this.resourceID; }
         }
 
         public string DisplayName
@@ -26,7 +26,7 @@ namespace Ntreev.Library.Psd
             get
             {
                 if (string.IsNullOrEmpty(this.displayName) == true)
-                    return this.layerResourceID;
+                    return this.resourceID;
                 return this.displayName;
             }
             set

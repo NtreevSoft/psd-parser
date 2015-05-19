@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerMaskReader : ReadableValue<LayerMask>
+    class LayerMaskReader : LazyValueReader<LayerMask>
     {
         public LayerMaskReader(PsdReader reader)
-            : base(reader, true)
+            : base(reader, null)
         {
 
         }
@@ -18,20 +18,22 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             return reader.ReadInt32();
         }
 
-        protected override void ReadValue(PsdReader reader, out LayerMask value)
+        protected override void ReadValue(PsdReader reader, object userData, out LayerMask value)
         {
-            value = new LayerMask();
+            LayerMask mask = new LayerMask();
 
-            if (this.Length == 0)
-                return;
+            if (this.Length > 0)
+            {
+                mask.Top = reader.ReadInt32();
+                mask.Left = reader.ReadInt32();
+                mask.Bottom = reader.ReadInt32();
+                mask.Right = reader.ReadInt32();
+                mask.Size = this.Length;
+                mask.Color = reader.ReadByte();
+                mask.Flag = reader.ReadByte();
+            }
 
-            value.Top = reader.ReadInt32();
-            value.Left = reader.ReadInt32();
-            value.Bottom = reader.ReadInt32();
-            value.Right = reader.ReadInt32();
-            value.Size = this.Length;
-            value.Color = reader.ReadByte();
-            value.Flag = reader.ReadByte();
+            value = mask;
         }
     }
 }

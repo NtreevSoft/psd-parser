@@ -1,75 +1,51 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
-//namespace Ntreev.Library.Psd
-//{
-//    abstract class LazyProperties : IProperties
-//    {
-//        private Properties properties;
+namespace Ntreev.Library.Psd
+{
+    abstract class LazyProperties : LazyValueReader<IProperties>, IProperties
+    {
+        protected LazyProperties(PsdReader reader, object userData)
+            : base(reader, userData)
+        {
 
-//        public bool Contains(string property)
-//        {
-//            return this.Properties.Contains(property);
-//        }
+        }
 
-//        public object this[string property]
-//        {
-//            get { return this.Properties[property]; }
-//        }
+        protected LazyProperties(PsdReader reader, long length, object userData)
+            : base(reader, length, userData)
+        {
 
-//        public int Count
-//        {
-//            get { return this.Properties.Count; }
-//        }
+        }
 
-//        protected abstract IEnumerable<KeyValuePair<string, object>> CreateProperties();
+        public bool Contains(string property)
+        {
+            return this.Value.Contains(property);
+        }
 
-//        protected void Initialize()
-//        {
-//            if (this.properties == null)
-//            {
-//                this.Create();
-//            }
-//        }
+        public object this[string property]
+        {
+            get { return this.Value[property]; }
+        }
 
-//        private IProperties Properties
-//        {
-//            get
-//            {
-//                if (this.properties == null)
-//                {
-//                    this.Create();
-//                }
-//                return this.properties;
-//            }
-//        }
+        public int Count
+        {
+            get { return this.Value.Count; }
+        }
 
-//        private void Create()
-//        {
-//            var props = this.CreateProperties();
-//            this.properties = new Properties(props.Count());
-//            foreach (var item in props)
-//            {
-//                this.properties.Add(item.Key, item.Value);
-//            }
-//        }
+        #region IProperties
 
-//        #region IProperties
+        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string, object>>.GetEnumerator()
+        {
+            return (this.Value as IProperties).GetEnumerator();
+        }
 
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+            return (this.Value as IProperties).GetEnumerator();
+        }
 
-
-//        IEnumerator<KeyValuePair<string, object>> IEnumerable<KeyValuePair<string,object>>.GetEnumerator()
-//        {
-//            return this.Properties.GetEnumerator();
-//        }
-
-//        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-//        {
-//            return this.Properties.GetEnumerator();
-//        }
-
-//        #endregion
-//    }
-//}
+        #endregion
+    }
+}

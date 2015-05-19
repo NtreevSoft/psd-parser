@@ -13,8 +13,8 @@ namespace Ntreev.Library.Psd.Structures
             int count = reader.ReadInt32();
             for (int i = 0; i < count; i++)
             {
-                string osType = reader.ReadAscii(4);
-                object value = StructureReader.Read(osType, reader);
+                string type = reader.ReadType();
+                object value = StructureReader.Read(type, reader);
                 items.Add(value);
             }
             this.Add("Items", items.ToArray());

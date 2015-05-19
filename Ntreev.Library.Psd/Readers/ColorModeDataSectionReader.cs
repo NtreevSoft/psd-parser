@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class ColorModeDataSectionReader : LazyReadableValue<byte[]>
+    class ColorModeDataSectionReader : LazyValueReader<byte[]>
     {
         public ColorModeDataSectionReader(PsdReader reader)
-            : base(reader, true)
+            : base(reader, null)
         {
 
         }
@@ -18,12 +18,11 @@ namespace Ntreev.Library.Psd.Readers
             return reader.ReadInt32();
         }
 
-        protected override void ReadValue(PsdReader reader, out byte[] value)
+        protected override void ReadValue(PsdReader reader, object userData, out byte[] value)
         {
-            int size = reader.ReadInt32();
-            if (size > 0)
+            if (this.Length > 0)
             {
-                value = reader.ReadBytes(size);
+                value = reader.ReadBytes((int)this.Length);
             }
             else
             {

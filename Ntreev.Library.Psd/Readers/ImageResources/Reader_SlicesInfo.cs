@@ -6,15 +6,15 @@ using System.Text;
 namespace Ntreev.Library.Psd.Readers.ImageResources
 {
     [ResourceID("1050", DisplayName = "Slices")]
-    class Reader_SlicesInfo : ImageResourceBase
+    class Reader_SlicesInfo : ResourceReaderBase
     {
-        public Reader_SlicesInfo(PsdReader reader)
-            : base(reader)
+        public Reader_SlicesInfo(PsdReader reader, long length)
+            : base(reader, length)
         {
 
         }
 
-        protected override void ReadValue(PsdReader reader, out IProperties value)
+        protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             Properties props = new Properties();
 

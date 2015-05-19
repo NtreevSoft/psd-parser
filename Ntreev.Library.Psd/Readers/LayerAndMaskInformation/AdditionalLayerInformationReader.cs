@@ -5,44 +5,47 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class AdditionalLayerInformationReader : LazyReadableValue<AdditionalLayerInformation>
+    class AdditionalLayerInformationReader : LazyValueReader<AdditionalLayerInformation>
     {
         private static string[] doubleTypeKeys = { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", "extd", };
         private readonly Uri baseUri;
 
         public AdditionalLayerInformationReader(PsdReader reader, long length, Uri baseUri)
-            : base(reader, length)
+            : base(reader, length, null)
         {
             this.baseUri = baseUri;
         }
 
-        protected override void ReadValue(PsdReader reader, out AdditionalLayerInformation value)
+        protected override void ReadValue(PsdReader reader, object userData, out AdditionalLayerInformation value)
         {
             value = new AdditionalLayerInformation();
 
-            //List<string> keys = new List<string>(new string[] { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", "extd", });
             List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
 
             long end = this.Position + this.Length;
             while (reader.Position < end)
             {
-                string signature = reader.ReadType();
+                //reader.ValidateSignature(true);
+                string typess = reader.ReadType();
                 string key = reader.ReadType();
-                if (signature != "8BIM" && signature != "8B64")
-                    throw new InvalidFormatException();
+
+                Console.WriteLine(key + " : " + typess);
 
                 long ssss = reader.Position;
 
                 long l = 0;
                 long p;
 
-                if (doubleTypeKeys.Contains(key) == true && reader.Version == 2)
+                //if (doubleTypeKeys.Contains(key) == true && reader.Version == 2)
+                if(typess != "8BIM")
                 {
                     l = reader.ReadInt64();
                     p = reader.Position;
                 }
                 else
                 {
+                    //if (typess != "8BIM")
+                    //    throw new Exception();
                     l = reader.ReadInt32();
                     p = reader.Position;
                 }

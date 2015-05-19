@@ -50,6 +50,8 @@ namespace Ntreev.Library.Psd
         public void Read(Stream stream, PsdResolver resolver)
         {
             this.reader = new PsdReader(stream, resolver);
+            this.reader.ReadDocumentHeader();
+
             this.fileHeaderSection = new FileHeaderSectionReader(this.reader);
             this.colorModeDataSection = new ColorModeDataSectionReader(this.reader);
             this.imageResourcesSection = new ImageResourcesSectionReader(this.reader);

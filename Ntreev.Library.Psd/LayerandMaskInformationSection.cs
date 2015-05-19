@@ -9,15 +9,15 @@ namespace Ntreev.Library.Psd
 {
     class LayerAndMaskInformationSection
     {
-        private LayerInfoReader layerInfo;
-        private GlobalLayerMaskInfoReader globalLayerMask;
-        private AdditionalLayerInformationReader additionalLayerInformation;
+        private readonly LayerInfoReader layerInfo;
+        private readonly GlobalLayerMaskInfoReader globalLayerMask;
+        private readonly AdditionalLayerInformationReader additionalLayerInformation;
 
-        public LayerAndMaskInformationSection(PsdReader reader,  PsdDocument document, long end)
+        public LayerAndMaskInformationSection(LayerInfoReader layerInfo, GlobalLayerMaskInfoReader globalLayerMask, AdditionalLayerInformationReader additionalLayerInformation)
         {
-            this.layerInfo = new LayerInfoReader(reader, document);
-            this.globalLayerMask = new GlobalLayerMaskInfoReader(reader);
-            this.additionalLayerInformation = new AdditionalLayerInformationReader(reader, end - reader.Position, document.BaseUri);
+            this.layerInfo = layerInfo;
+            this.globalLayerMask = globalLayerMask;
+            this.additionalLayerInformation = additionalLayerInformation;
         }
 
         public PsdLayer[] Layers

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class ImageDataSectionReader : LazyReadableValue<Channel[]>
+    class ImageDataSectionReader : LazyValueReader<Channel[]>
     {
         private readonly int channelCount;
         private readonly int width;
@@ -13,7 +13,7 @@ namespace Ntreev.Library.Psd.Readers
         private readonly int depth;
 
         public ImageDataSectionReader(PsdReader reader, PsdDocument document)
-            : base(reader)
+            : base(reader, null)
         {
             this.channelCount = document.FileHeaderSection.NumberOfChannels;
             this.width = document.Width;
@@ -21,7 +21,7 @@ namespace Ntreev.Library.Psd.Readers
             this.depth = document.FileHeaderSection.Depth;
         }
 
-        protected override void ReadValue(PsdReader reader, out Channel[] value)
+        protected override void ReadValue(PsdReader reader, object userData, out Channel[] value)
         {
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
 

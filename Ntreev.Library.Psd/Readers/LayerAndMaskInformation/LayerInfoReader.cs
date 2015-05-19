@@ -5,33 +5,23 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerInfoReader : LazyReadableValue<PsdLayer[]>
+    class LayerInfoReader : LazyValueReader<PsdLayer[]>
     {
-        private readonly PsdDocument document;
-
         public LayerInfoReader(PsdReader reader, PsdDocument document)
-            : base(reader, true)
+            : base(reader, document)
         {
-            this.document = document;
+            
         }
 
-        protected override void ReadValue(PsdReader reader, out PsdLayer[] value)
+        protected override void ReadValue(PsdReader reader, object userData, out PsdLayer[] value)
         {
-            int layerCount = reader.ReadInt16();
-            if (layerCount == 0)
-            {
-                value = new PsdLayer[] { };
-                return;
-            }
+            PsdDocument document = userData as PsdDocument;
+            int layerCount = Math.Abs((int)reader.ReadInt16());
 
-            if (layerCount < 0)
-            {
-                layerCount = -layerCount;
-            }
             PsdLayer[] layers = new PsdLayer[layerCount];
             for (int i = 0; i < layerCount; i++)
             {
-                layers[i] = new PsdLayer(reader, this.document);
+                layers[i] = new PsdLayer(reader, document);
             }
 
             foreach (var item in layers)
@@ -41,7 +31,7 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 
             layers = Initialize(null, layers);
 
-            foreach (var item in layers.SelectMany(item => item.All()).Reverse())
+            foreach (var item in layers.SelectMany(item => item.Descendants()).Reverse())
             {
                 item.ComputeBounds();
             }
@@ -86,7 +76,7 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
                 }
             }
 
-            foreach(var item in layerToChilds)
+            foreach (var item in layerToChilds)
             {
                 item.Key.Childs = item.Value.ToArray();
             }

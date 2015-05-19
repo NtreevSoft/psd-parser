@@ -6,15 +6,15 @@ using System.Text;
 namespace Ntreev.Library.Psd.Readers.LayerResources
 {
     [ResourceID("TySh")]
-    class Reader_TySh : LayerResourceBase
+    class Reader_TySh : ResourceReaderBase
     {
-        public Reader_TySh(PsdReader reader)
-            : base(reader)
+        public Reader_TySh(PsdReader reader, long length)
+            : base(reader, length)
         {
 
         }
 
-        protected override void ReadValue(PsdReader reader, out IProperties value)
+        protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             Properties props = new Properties(7);
 

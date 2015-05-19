@@ -6,15 +6,15 @@ using System.Text;
 namespace Ntreev.Library.Psd.Readers.LayerResources
 {
     [ResourceID("SoLd")]
-    class Reader_SoLd : LayerResourceBase
+    class Reader_SoLd : ResourceReaderBase
     {
-        public Reader_SoLd(PsdReader reader)
-            : base(reader)
+        public Reader_SoLd(PsdReader reader, long length)
+            : base(reader, length)
         {
 
         }
 
-        protected override void ReadValue(PsdReader reader, out IProperties value)
+        protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             reader.ValidateType("soLD", "SoLd ID");
             reader.ValidateInt32(4, "SoLd Version");

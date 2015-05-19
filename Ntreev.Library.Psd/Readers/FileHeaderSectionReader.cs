@@ -5,22 +5,18 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class FileHeaderSectionReader : ReadableValue<FileHeaderSection>
+    class FileHeaderSectionReader : ValueReader<FileHeaderSection>
     {
         public FileHeaderSectionReader(PsdReader reader)
-            : base(reader)
+            : base(reader, false, null)
         {
             
         }
 
-        protected override void ReadValue(PsdReader reader, out FileHeaderSection value)
+        protected override void ReadValue(PsdReader reader, object userData, out FileHeaderSection value)
         {
             value = new FileHeaderSection();
-
-            reader.ValidateDocumentSignature();
-            reader.Version = reader.ReadInt16();
-            reader.Skip(6);
-            
+           
             value.NumberOfChannels = reader.ReadInt16();
             value.Height = reader.ReadInt32();
             value.Width = reader.ReadInt32();

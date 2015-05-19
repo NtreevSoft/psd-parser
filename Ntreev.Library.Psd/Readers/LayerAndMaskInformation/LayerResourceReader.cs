@@ -9,52 +9,31 @@ using System.Reflection;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerResourceReader : LazyReadableProperties
+    class LayerResourceReader : LazyProperties
     {
-        private static readonly IDictionary<string, Type> readers = ReaderCollector.Collect(typeof(LayerResourceBase));
-
         public LayerResourceReader(PsdReader reader, long length)
-            : base(reader, length)
+            : base(reader, length, null)
         {
             
         }
 
-        private void Read(PsdReader reader, Properties properties)
-        {
-            reader.ValidateSignature();
-            string resourceID = reader.ReadAscii(4);
-
-            int length = reader.ReadInt32();
-
-            long position = reader.Position;
-
-            Type readerType = null;
-            if (readers.ContainsKey(resourceID) == true)
-            {
-                readerType = readers[resourceID];
-            }
-
-            if (readerType != null)
-            {
-                properties.Add(resourceID, TypeDescriptor.CreateInstance(null, readerType, new Type[] { typeof(PsdReader), }, new object[] { reader, }));
-            }
-
-
-            if (reader.Position > position + length)
-            {
-                throw new InvalidFormatException();
-            }
-
-            reader.Position = position + length;
-        }
-
-        protected override void ReadValue(PsdReader reader, out IProperties value)
+        protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             Properties props = new Properties();
+
             while (reader.Position < this.EndPosition)
             {
-                this.Read(reader, props);
+                reader.ValidateSignature();
+                string resourceID = reader.ReadType();
+                long length = reader.ReadInt32();
+                length += length % 2;
+
+                ResourceReaderBase resourceReader = ReaderCollector.CreateReader(resourceID, reader, length);
+                string resourceName = ReaderCollector.GetDisplayName(resourceID);
+
+                props[resourceName] = resourceReader;
             }
+
             value = props;
         }
     }

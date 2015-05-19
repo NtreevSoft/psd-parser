@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Ntreev.Library.Psd.Readers.LayerAndMaskInformation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,7 +65,5 @@ namespace Ntreev.Library.Psd
         public LayerFlags Flags { get; set; }
 
         public int Filter { get; set; }
-
-        public string Name { get; set; }
     }
 }

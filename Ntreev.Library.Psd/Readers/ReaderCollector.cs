@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -8,16 +9,18 @@ namespace Ntreev.Library.Psd.Readers
 {
     static class ReaderCollector
     {
-        public static IDictionary<string, Type> Collect(Type type)
+        private static readonly Dictionary<string, Type> readers;
+
+        static ReaderCollector()
         {
-            Assembly assembly = type.Assembly;
+            Assembly assembly = typeof(ResourceReaderBase).Assembly;
 
             var query = from item in assembly.GetTypes()
-                        where type.IsAssignableFrom(item) &&
+                        where typeof(ResourceReaderBase).IsAssignableFrom(item) &&
                               (item.Attributes & TypeAttributes.Abstract) != TypeAttributes.Abstract
                         select item;
 
-            Dictionary<string, Type> readers = new Dictionary<string, Type>(query.Count());
+            readers = new Dictionary<string, Type>(query.Count());
 
             foreach (var item in query)
             {
@@ -29,16 +32,34 @@ namespace Ntreev.Library.Psd.Readers
                 ResourceIDAttribute attr = attrs.First() as ResourceIDAttribute;
                 readers.Add(attr.ID, item);
             }
-
-            return readers;
         }
 
-        public static string GetDisplayName(this Type type)
+        public static ResourceReaderBase CreateReader(string resourceID, PsdReader reader, long length)
+        {
+            Type readerType = typeof(EmptyResourceReader);
+            if (readers.ContainsKey(resourceID) == true)
+            {
+                readerType = readers[resourceID];
+            }
+            return TypeDescriptor.CreateInstance(null, readerType, new Type[] { typeof(PsdReader), typeof(long), }, new object[] { reader, length, }) as ResourceReaderBase;
+        }
+
+        public static string GetDisplayName(Type type)
         {
             var attrs = type.GetCustomAttributes(typeof(ResourceIDAttribute), true);
 
             ResourceIDAttribute attr = attrs.First() as ResourceIDAttribute;
             return attr.DisplayName;
+        }
+
+        public static string GetDisplayName(string resourceID)
+        {
+            if (readers.ContainsKey(resourceID) == true)
+            {
+                return GetDisplayName(readers[resourceID]);
+            }
+
+            return resourceID;
         }
     }
 }

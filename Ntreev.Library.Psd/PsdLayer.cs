@@ -12,17 +12,18 @@ namespace Ntreev.Library.Psd
     {
         private readonly PsdDocument document;
         private readonly LayerRecordsReader records;
-        private string name;
-        private SectionType sectionType;
+        private readonly LayerExtraRecordsReader extraRecords;
+        //private string name;
+        //private SectionType sectionType;
 
         private PsdLayer[] childs;
         private PsdLayer parent;
-        private Guid placedID;
+        //private Guid placedID;
         private ILinkedLayer linkedLayer;
 
-        private LayerMaskReader layerMask;
-        private LayerBlendingRangesReader blendingRanges;
-        private LayerResourceReader resources;
+        //private LayerMaskReader layerMask;
+        //private LayerBlendingRangesReader blendingRanges;
+        //private LayerResourceReader resources;
         private ChannelsReader channels;
 
         private static PsdLayer[] emptyChilds = new PsdLayer[] { };
@@ -31,25 +32,26 @@ namespace Ntreev.Library.Psd
         {
             this.document = document;
             this.records = new LayerRecordsReader(reader);
+            this.extraRecords = new LayerExtraRecordsReader(reader);
 
-            long length = reader.ReadUInt32();
-            long end = reader.Position + length;
+            //long length = reader.ReadUInt32();
+            //long end = reader.Position + length;
 
-            long position = reader.Position;
-            this.layerMask = new LayerMaskReader(reader);
-            this.blendingRanges = new LayerBlendingRangesReader(reader);
-            this.name = reader.ReadPascalString(4);
+            //long position = reader.Position;
+            //this.layerMask = new LayerMaskReader(reader);
+            //this.blendingRanges = new LayerBlendingRangesReader(reader);
+            //this.name = reader.ReadPascalString(4);
 
-            this.resources = new LayerResourceReader(reader, end - reader.Position);
-            this.resources.TryGetValue<string>(ref this.name, "luni.Name");
-            this.resources.TryGetValue<SectionType>(ref this.sectionType, "lsct.SectionType");
+            //this.resources = new LayerResourceReader(reader, end - reader.Position);
+            //this.resources.TryGetValue<string>(ref this.name, "luni.Name");
+            //this.resources.TryGetValue<SectionType>(ref this.sectionType, "lsct.SectionType");
 
-            if (this.resources.Contains("SoLd.Idnt") == true)
-                this.placedID = this.resources.ToGuid("SoLd.Idnt");
-            else if (this.resources.Contains("SoLE.Idnt") == true)
-                this.placedID = this.resources.ToGuid("SoLE.Idnt");
+            //if (this.resources.Contains("SoLd.Idnt") == true)
+            //    this.placedID = this.resources.ToGuid("SoLd.Idnt");
+            //else if (this.resources.Contains("SoLE.Idnt") == true)
+            //    this.placedID = this.resources.ToGuid("SoLE.Idnt");
 
-            reader.Position = end;
+            //reader.Position = end;
         }
 
         public Channel[] Channels
@@ -59,12 +61,12 @@ namespace Ntreev.Library.Psd
 
         public SectionType SectionType
         {
-            get { return this.sectionType; }
+            get { return this.extraRecords.Value.SectionType; }
         }
 
         public string Name
         {
-            get { return this.name; }
+            get { return this.extraRecords.Value.Name; }
         }
 
         public float Opacity
@@ -136,7 +138,7 @@ namespace Ntreev.Library.Psd
 
         public IProperties Resources
         {
-            get { return this.resources; }
+            get { return this.extraRecords.Value.Resources; }
         }
 
         public PsdDocument Document
@@ -144,16 +146,28 @@ namespace Ntreev.Library.Psd
             get { return this.document; }
         }
 
+        public LayerRecords Records
+        {
+            get { return this.records.Value; }
+        }
+
+        public LayerExtraRecords ExtraRecords
+        {
+            get { return this.extraRecords.Value; }
+        }
+
         public ILinkedLayer LinkedLayer
         {
             get
             {
-                if (this.placedID == Guid.Empty)
+                Guid placeID = this.extraRecords.Value.PlacedID;
+
+                if (placeID == Guid.Empty)
                     return null;
 
                 if (this.linkedLayer == null)
                 {
-                    this.linkedLayer = this.document.LinkedLayers.Where(i => i.ID == this.placedID && i.HasDocument).FirstOrDefault();
+                    this.linkedLayer = this.document.LinkedLayers.Where(i => i.ID == placeID && i.HasDocument).FirstOrDefault();
                 }
                 return this.linkedLayer;
             }
@@ -163,7 +177,7 @@ namespace Ntreev.Library.Psd
         {
             get
             {
-                if (this.sectionType != SectionType.Normal)
+                if (this.extraRecords.Value.SectionType != SectionType.Normal)
                     return false;
                 if (this.Width == 0 || this.Height == 0)
                     return false;
@@ -173,12 +187,13 @@ namespace Ntreev.Library.Psd
 
         public void ReadChannels(PsdReader reader)
         {
-            this.channels = new ChannelsReader(reader, this, this.records.Value, this.layerMask.Value, this.document.Depth);
+            this.channels = new ChannelsReader(reader, this);
         }
 
         public void ComputeBounds()
         {
-            if (this.sectionType != SectionType.Opend && this.sectionType != SectionType.Closed)
+            SectionType sectionType = this.extraRecords.Value.SectionType;
+            if (sectionType != SectionType.Opend && sectionType != SectionType.Closed)
                 return;
 
             int left = int.MaxValue;
@@ -188,7 +203,7 @@ namespace Ntreev.Library.Psd
 
             bool isSet = false;
 
-            foreach (IPsdLayer item in this.All())
+            foreach (var item in this.Descendants())
             {
                 if (item == this || item.HasImage == false)
                     continue;

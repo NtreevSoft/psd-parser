@@ -5,10 +5,10 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerBlendingRangesReader : ReadableValue<object>
+    class LayerBlendingRangesReader : LazyValueReader<object>
     {
         public LayerBlendingRangesReader(PsdReader reader)
-            : base(reader, true)
+            : base(reader, null)
         {
             
         }
@@ -18,7 +18,7 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             return reader.ReadInt32();
         }
 
-        protected override void ReadValue(PsdReader reader, out object value)
+        protected override void ReadValue(PsdReader reader, object userData, out object value)
         {
             value = new object();
         }

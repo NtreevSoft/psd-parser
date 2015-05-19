@@ -8,12 +8,10 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers
 {
-    class ImageResourcesSectionReader : LazyReadableProperties
+    class ImageResourcesSectionReader : LazyProperties
     {
-        private static readonly IDictionary<string, Type> readers = ReaderCollector.Collect(typeof(ImageResourceBase));
-
         public ImageResourcesSectionReader(PsdReader reader)
-            : base(reader, true)
+            : base(reader, null)
         {
 
         }
@@ -23,40 +21,25 @@ namespace Ntreev.Library.Psd.Readers
             return reader.ReadInt32();
         }
 
-        protected override void ReadValue(PsdReader reader, out IProperties value)
+        protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             Properties props = new Properties();
 
-            long position = reader.Position;
-
-            while ((reader.Position - position) < this.Length)
+            while(reader.Position < this.EndPosition)
             {
                 reader.ValidateSignature();
 
                 string resourceID = reader.ReadInt16().ToString();
                 string name = reader.ReadPascalString(2);
+                long length = reader.ReadInt32();
+                length += (length % 2);
 
-                int resourceSize = reader.ReadInt32();
+                ResourceReaderBase resourceReader = ReaderCollector.CreateReader(resourceID, reader, length);
+                string resourceName = ReaderCollector.GetDisplayName(resourceID);
 
-                if (resourceSize == 0)
-                    continue;
-
-                if (readers.ContainsKey(resourceID) == true)
-                {
-                    Type readerType = readers[resourceID];
-
-                    string displayName = ReaderCollector.GetDisplayName(readerType);
-                    object instance = TypeDescriptor.CreateInstance(null, readerType, new Type[] { typeof(PsdReader), }, new object[] { reader, });
-                    props[displayName] = instance;
-                }
-
-                reader.Position += resourceSize;
-
-                if ((resourceSize % 2) != 0)
-                {
-                    reader.Position += 1L;
-                }
+                props[resourceName] = resourceReader;
             }
+
             value = props;
         }
     }

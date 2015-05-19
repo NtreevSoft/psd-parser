@@ -46,42 +46,17 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        internal static IEnumerable<PsdLayer> All(this PsdLayer layer)
+        internal static IEnumerable<PsdLayer> Descendants(this PsdLayer layer)
         {
             yield return layer;
 
             foreach (var item in layer.Childs)
             {
-                foreach (var child in item.All())
+                foreach (var child in item.Descendants())
                 {
                     yield return child;
                 }
             }
-        }
-
-        internal static ColorMode ReadColorMode(this PsdReader reader)
-        {
-            return (ColorMode)reader.ReadInt16();
-        }
-
-        internal static BlendMode ReadBlendMode(this PsdReader reader)
-        {
-            return PsdUtility.ToBlendMode(reader.ReadAscii(4));
-        }
-
-        internal static LayerFlags ReadLayerFlags(this PsdReader reader)
-        {
-            return (LayerFlags)reader.ReadByte();
-        }
-
-        internal static ChannelType ReadChannelType(this PsdReader reader)
-        {
-            return (ChannelType)reader.ReadInt16();
-        }
-
-        internal static CompressionType ReadCompressionType(this PsdReader reader)
-        {
-            return (CompressionType)reader.ReadInt16();
         }
     }
 }
