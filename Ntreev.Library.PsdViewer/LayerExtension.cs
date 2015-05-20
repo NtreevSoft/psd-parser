@@ -13,7 +13,7 @@ namespace Ntreev.Library.PsdViewer
     {
         public static BitmapSource GetBitmap(this IImageSource imageSource)
         {
-            if (imageSource.Width == 0 || imageSource.Height == 0)
+            if (imageSource.HasImage == false)
                 return null;
 
             byte[] data = imageSource.MergeChannels();

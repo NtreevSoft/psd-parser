@@ -27,7 +27,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
                 this.Children.Add(new LayerItemViewModel(item, this));
             }
 
-            //var bmp = this.document.GetBitmap();
+            var bmp = this.document.GetBitmap();
             //if (bmp != null)
             //{
             //    PngBitmapEncoder d = new PngBitmapEncoder();

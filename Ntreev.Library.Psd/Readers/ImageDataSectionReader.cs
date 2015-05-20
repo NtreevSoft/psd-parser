@@ -21,6 +21,11 @@ namespace Ntreev.Library.Psd.Readers
             this.depth = document.FileHeaderSection.Depth;
         }
 
+        protected override long OnLengthGet(PsdReader reader)
+        {
+            return reader.Length - reader.Position;
+        }
+
         protected override void ReadValue(PsdReader reader, object userData, out Channel[] value)
         {
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
