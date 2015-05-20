@@ -21,17 +21,12 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
         protected override void ReadValue(PsdReader reader, object userData, out LayerMask value)
         {
             LayerMask mask = new LayerMask();
-
-            if (this.Length > 0)
-            {
-                mask.Top = reader.ReadInt32();
-                mask.Left = reader.ReadInt32();
-                mask.Bottom = reader.ReadInt32();
-                mask.Right = reader.ReadInt32();
-                mask.Size = this.Length;
-                mask.Color = reader.ReadByte();
-                mask.Flag = reader.ReadByte();
-            }
+            mask.Top = reader.ReadInt32();
+            mask.Left = reader.ReadInt32();
+            mask.Bottom = reader.ReadInt32();
+            mask.Right = reader.ReadInt32();
+            mask.Color = reader.ReadByte();
+            mask.Flag = reader.ReadByte();
 
             value = mask;
         }

@@ -35,7 +35,7 @@ namespace Ntreev.Library.Psd
             this.position = reader.Position;
             this.userData = userData;
 
-            if (this.length == 0)
+            if (hasLength == false)
             {
                 this.Refresh();
                 this.length = reader.Position - this.position;
@@ -89,7 +89,13 @@ namespace Ntreev.Library.Psd
             {
                 if (this.isRead == false)
                 {
+                    if (this.length == 0)
+                        throw new Exception("weqrqwr");
+                    long position = reader.Position;
+                    int version = reader.Version;
                     this.Refresh();
+                    reader.Position = position;
+                    reader.Version = version;
                 }
                 return this.value;
             }

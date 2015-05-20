@@ -27,13 +27,11 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 
                 CompressionType compressionType = reader.ReadCompressionType();
 
-                int width, height;
-                if (channelType != ChannelType.Mask)
-                {
-                    width = layer.Width;
-                    height = layer.Height;
-                }
-                else
+                long p = reader.Position;
+                int width = layer.Width;
+
+                int height = layer.Height;
+                if (channelType == ChannelType.Mask && layer.ExtraRecords.Mask != null)
                 {
                     LayerMask layerMask = layer.ExtraRecords.Mask;
                     width = layerMask.Width;

@@ -42,14 +42,14 @@ namespace Ntreev.Library.Psd
             {
                 for (int i = 0; i < this.height; i++)
                 {
-                    rlePackLengths[i] = reader.ReadInt16();
+                    this.rlePackLengths[i] = reader.ReadInt16();
                 }
             }
             else
             {
                 for (int i = 0; i < this.height; i++)
                 {
-                    rlePackLengths[i] = reader.ReadInt32();
+                    this.rlePackLengths[i] = reader.ReadInt32();
                 }
             }
         }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Ntreev.Library.Psd
 {
-    struct LayerMask
+    class LayerMask
     {
         public int Left { get; set; }
 
@@ -14,8 +14,6 @@ namespace Ntreev.Library.Psd
         public int Right { get; set; }
 
         public int Bottom { get; set; }
-
-        public long Size { get; set; }
 
         public byte Color { get; set; }
 
