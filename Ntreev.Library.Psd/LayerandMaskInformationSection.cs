@@ -11,13 +11,15 @@ namespace Ntreev.Library.Psd
     {
         private readonly LayerInfoReader layerInfo;
         private readonly GlobalLayerMaskInfoReader globalLayerMask;
-        private readonly AdditionalLayerInformationReader additionalLayerInformation;
+        private readonly DocumentResourceReader documentResource;
 
-        public LayerAndMaskInformationSection(LayerInfoReader layerInfo, GlobalLayerMaskInfoReader globalLayerMask, AdditionalLayerInformationReader additionalLayerInformation)
+        private ILinkedLayer[] linkedLayers;
+
+        public LayerAndMaskInformationSection(LayerInfoReader layerInfo, GlobalLayerMaskInfoReader globalLayerMask, DocumentResourceReader additionalLayerInformation)
         {
             this.layerInfo = layerInfo;
             this.globalLayerMask = globalLayerMask;
-            this.additionalLayerInformation = additionalLayerInformation;
+            this.documentResource = additionalLayerInformation;
         }
 
         public PsdLayer[] Layers
@@ -25,9 +27,32 @@ namespace Ntreev.Library.Psd
             get { return this.layerInfo.Value; }
         }
 
-        public LinkedLayer[] LinkedLayers
+        public ILinkedLayer[] LinkedLayers
         {
-            get { return this.additionalLayerInformation.Value.LinkedLayers; }
+            get
+            {
+                if (this.linkedLayers == null)
+                {
+                    List<ILinkedLayer> list = new List<ILinkedLayer>();
+                    string[] ids = { "lnk2", "lnk3", "lnkD", "lnkE", };
+
+                    foreach (var item in ids)
+                    {
+                        if (this.documentResource.Contains(item))
+                        {
+                            var items = this.documentResource.ToValue<ILinkedLayer[]>(item, "Items");
+                            list.AddRange(items);
+                        }
+                    }
+                    this.linkedLayers = list.ToArray();
+                }
+                return this.linkedLayers;
+            }
+        }
+
+        public IProperties Resources
+        {
+            get { return this.documentResource; }
         }
     }
 }

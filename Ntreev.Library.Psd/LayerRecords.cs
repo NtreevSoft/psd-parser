@@ -65,5 +65,13 @@ namespace Ntreev.Library.Psd
         public LayerFlags Flags { get; set; }
 
         public int Filter { get; set; }
+
+        public long ChannelSize
+        {
+            get
+            {
+                return this.ChannelSizes.Aggregate((v, n) => v + n);
+            }
+        }
     }
 }

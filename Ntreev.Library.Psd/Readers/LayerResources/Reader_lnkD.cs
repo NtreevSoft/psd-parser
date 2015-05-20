@@ -6,10 +6,10 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerResources
 {
-    [ResourceID("lnkE")]
-    class Reader_lnkE : ResourceReaderBase
+    [ResourceID("lnkD")]
+    class Reader_lnkD : ResourceReaderBase
     {
-        public Reader_lnkE(PsdReader reader, long length)
+        public Reader_lnkD(PsdReader reader, long length)
             : base(reader, length)
         {
             
@@ -18,10 +18,10 @@ namespace Ntreev.Library.Psd.Readers.LayerResources
         protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
         {
             Properties props = new Properties();
-            List<EmbeddedLayer> linkedLayers = new List<EmbeddedLayer>();
+            List<LinkedLayer> linkedLayers = new List<LinkedLayer>();
             while (reader.Position < this.EndPosition)
             {
-                EmbeddedLayerReader r = new EmbeddedLayerReader(reader);
+                LinkedLayerReader r = new LinkedLayerReader(reader);
                 linkedLayers.Add(r.Value);
             }
 

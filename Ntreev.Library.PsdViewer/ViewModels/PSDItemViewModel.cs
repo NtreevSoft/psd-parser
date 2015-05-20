@@ -20,6 +20,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             this.document = document;
 
             this.Children.Add(new PropertiesItemViewModel("Resources", document.Resources, this));
+            this.Children.Add(new PropertiesItemViewModel("ImageResources", document.ImageResources, this));
 
             foreach (var item in document.Childs)
             {

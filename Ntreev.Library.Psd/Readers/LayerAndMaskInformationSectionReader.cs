@@ -20,9 +20,9 @@ namespace Ntreev.Library.Psd.Readers
 
             LayerInfoReader layerInfo = new LayerInfoReader(reader, document);
             GlobalLayerMaskInfoReader globalLayerMask = new GlobalLayerMaskInfoReader(reader);
-            AdditionalLayerInformationReader additionalLayerInformation = new AdditionalLayerInformationReader(reader, this.EndPosition - reader.Position, document.BaseUri);
+            DocumentResourceReader documentResource = new DocumentResourceReader(reader, this.EndPosition - reader.Position);
 
-            value = new LayerAndMaskInformationSection(layerInfo, globalLayerMask, additionalLayerInformation);
+            value = new LayerAndMaskInformationSection(layerInfo, globalLayerMask, documentResource);
         }
     }
 }

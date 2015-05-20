@@ -70,6 +70,12 @@
     <Compile Include="LayerExtraRecords.cs" />
     <Compile Include="LayerRecords.cs" />
     <Compile Include="Readers\EmptyResourceReader.cs" />
+    <Compile Include="Readers\LayerAndMaskInformation\LinkedDocumentReader.cs" />
+    <Compile Include="Readers\LayerAndMaskInformation\EmbeddedLayerReader.cs" />
+    <Compile Include="Readers\LayerAndMaskInformation\LinkedLayerReader.cs" />
+    <Compile Include="Readers\LayerResources\Reader_lnk2.cs" />
+    <Compile Include="Readers\LayerResources\Reader_lnk3.cs" />
+    <Compile Include="Readers\LayerResources\Reader_lnkD.cs" />
     <Compile Include="Readers\LayerResources\Reader_lnkE.cs" />
     <Compile Include="Readers\ResourceReaderBase.cs" />
     <Compile Include="ValueReader.cs" />
@@ -86,7 +92,7 @@
     <Compile Include="Readers\LayerAndMaskInformation\LayerExtraRecordsReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\LayerRecordsReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\LayerResourceReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\AdditionalLayerInformationReader.cs" />
+    <Compile Include="Readers\LayerAndMaskInformation\DocumentResourceReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\LayerInfoReader.cs" />
     <Compile Include="PathResolver.cs" />
     <Compile Include="LazyValueReader.cs" />

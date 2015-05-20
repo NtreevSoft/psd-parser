@@ -7,8 +7,8 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
     class ChannelsReader : LazyValueReader<Channel[]>
     {
-        public ChannelsReader(PsdReader reader, PsdLayer layer)
-            : base(reader, 0, layer)
+        public ChannelsReader(PsdReader reader, long length, PsdLayer layer)
+            : base(reader, length, layer)
         {
 
         }

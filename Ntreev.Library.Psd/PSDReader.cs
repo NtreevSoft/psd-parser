@@ -9,14 +9,16 @@ namespace Ntreev.Library.Psd
         private readonly BinaryReader reader;
         private readonly PsdResolver resolver;
         private readonly Stream stream;
+        private readonly Uri uri;
 
         private int version = 1;
 
-        public PsdReader(Stream stream, PsdResolver resolver)
+        public PsdReader(Stream stream, PsdResolver resolver, Uri uri)
         {
             this.stream = stream;
             this.reader = new InternalBinaryReader(stream);
             this.resolver = resolver;
+            this.uri = uri;
         }
 
         public void Dispose()
@@ -52,6 +54,13 @@ namespace Ntreev.Library.Psd
             return false;
         }
 
+        public void ValidateSignature(string signature)
+        {
+            string s = this.ReadType();
+            if(s != signature)
+                throw new InvalidFormatException();
+        }
+
         public void ValidateSignature()
         {
             this.ValidateSignature(false);
@@ -73,7 +82,8 @@ namespace Ntreev.Library.Psd
 
         private void ValidateValue<T>(T value, string name, Func<T> readFunc)
         {
-            if (object.Equals(value, readFunc()) == false)
+            T v = readFunc();
+            if (object.Equals(value, v) == false)
             {
                 throw new InvalidFormatException("{0}의 값이 {1}이 아닙니다.", name, value);
             }
@@ -304,6 +314,11 @@ namespace Ntreev.Library.Psd
         public Stream Stream
         {
             get { return this.stream; }
+        }
+
+        public Uri Uri
+        {
+            get { return this.uri; }
         }
 
         private bool ReverseValue(bool value)

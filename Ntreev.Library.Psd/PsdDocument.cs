@@ -16,17 +16,17 @@ namespace Ntreev.Library.Psd
         private ImageDataSectionReader imageDataSection;
        
         private PsdReader reader;
-        private Uri baseUri;
+        //private Uri baseUri;
 
         public PsdDocument()
         {
 
         }
 
-        internal PsdDocument(Uri baseUri)
-        {
-            this.baseUri = baseUri;
-        }
+        //internal PsdDocument(Uri baseUri)
+        //{
+        //    this.baseUri = baseUri;
+        //}
 
         public void Read(string filename)
         {
@@ -35,11 +35,9 @@ namespace Ntreev.Library.Psd
 
         public void Read(string filename, PsdResolver resolver)
         {
-            FileStream stream = new FileStream(filename, FileMode.Open, FileAccess.Read, FileShare.Read);
-            this.baseUri = new Uri(Path.GetDirectoryName(filename) + Path.AltDirectorySeparatorChar, UriKind.RelativeOrAbsolute);
-            if (this.baseUri.IsAbsoluteUri == false)
-                this.baseUri = new Uri(new Uri(Directory.GetCurrentDirectory() + Path.AltDirectorySeparatorChar), this.baseUri);
-            this.Read(stream, resolver);
+            FileInfo fileInfo = new FileInfo(filename);
+            FileStream stream = new FileStream(fileInfo.FullName, FileMode.Open, FileAccess.Read, FileShare.Read);
+            this.Read(stream, resolver, new Uri(fileInfo.DirectoryName));
         }
 
         public void Read(Stream stream)
@@ -49,14 +47,7 @@ namespace Ntreev.Library.Psd
 
         public void Read(Stream stream, PsdResolver resolver)
         {
-            this.reader = new PsdReader(stream, resolver);
-            this.reader.ReadDocumentHeader();
-
-            this.fileHeaderSection = new FileHeaderSectionReader(this.reader);
-            this.colorModeDataSection = new ColorModeDataSectionReader(this.reader);
-            this.imageResourcesSection = new ImageResourcesSectionReader(this.reader);
-            this.layerAndMaskSection = new LayerAndMaskInformationSectionReader(this.reader, this);
-            this.imageDataSection = new ImageDataSectionReader(this.reader, this);
+            this.Read(stream, resolver, new Uri(Directory.GetCurrentDirectory()));
         }
 
         public void Dispose()
@@ -106,6 +97,11 @@ namespace Ntreev.Library.Psd
 
         public IProperties Resources
         {
+            get { return this.layerAndMaskSection.Value.Resources; }
+        }
+
+        public IProperties ImageResources
+        {
             get { return this.imageResourcesSection; }
         }
 
@@ -116,15 +112,15 @@ namespace Ntreev.Library.Psd
 
         public event EventHandler Disposed;
 
-        internal Uri BaseUri
-        {
-            get
-            {
-                if (this.baseUri == null)
-                    return new Uri(Directory.GetCurrentDirectory());
-                return this.baseUri;
-            }
-        }
+        //internal Uri BaseUri
+        //{
+        //    get
+        //    {
+        //        if (this.baseUri == null)
+        //            return new Uri(Directory.GetCurrentDirectory());
+        //        return this.baseUri;
+        //    }
+        //}
 
         protected virtual void OnDisposed(EventArgs e)
         {
@@ -132,6 +128,18 @@ namespace Ntreev.Library.Psd
             {
                 this.Disposed(this, e);
             }
+        }
+
+        internal void Read(Stream stream, PsdResolver resolver, Uri uri)
+        {
+            this.reader = new PsdReader(stream, resolver, uri);
+            this.reader.ReadDocumentHeader();
+
+            this.fileHeaderSection = new FileHeaderSectionReader(this.reader);
+            this.colorModeDataSection = new ColorModeDataSectionReader(this.reader);
+            this.imageResourcesSection = new ImageResourcesSectionReader(this.reader);
+            this.layerAndMaskSection = new LayerAndMaskInformationSectionReader(this.reader, this);
+            this.imageDataSection = new ImageDataSectionReader(this.reader, this);
         }
 
         #region IPsdLayer

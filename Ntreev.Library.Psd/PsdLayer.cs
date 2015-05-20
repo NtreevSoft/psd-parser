@@ -187,7 +187,8 @@ namespace Ntreev.Library.Psd
 
         public void ReadChannels(PsdReader reader)
         {
-            this.channels = new ChannelsReader(reader, this);
+            
+            this.channels = new ChannelsReader(reader, this.records.Value.ChannelSize, this);
         }
 
         public void ComputeBounds()

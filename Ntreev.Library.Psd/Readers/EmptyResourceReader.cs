@@ -8,7 +8,7 @@ namespace Ntreev.Library.Psd.Readers
     class EmptyResourceReader : ResourceReaderBase
     {
         public EmptyResourceReader(PsdReader reader, long length)
-            : base(reader, length, null)
+            : base(reader, length)
         {
 
         }
