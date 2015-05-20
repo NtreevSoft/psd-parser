@@ -22,10 +22,11 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         {
             this.linkedLayer = linkedLayer;
 
-            foreach (var item in linkedLayer.Document.Childs)
-            {
-                this.Children.Add(new LayerItemViewModel(item, parent));
-            }
+            this.Children.Add(new PSDItemViewModel(linkedLayer.Document));
+            //foreach (var item in linkedLayer.Document.Childs)
+            //{
+            //    this.Children.Add(new LayerItemViewModel(item, parent));
+            //}
 
             //var bmp = this.linkedLayer.Document.GetBitmap();
             //if (bmp != null)

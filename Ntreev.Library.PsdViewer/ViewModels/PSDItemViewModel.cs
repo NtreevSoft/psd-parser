@@ -54,7 +54,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
         public override string Text
         {
-            get { return "Root"; }
+            get { return "Document"; }
         }
     }
 }

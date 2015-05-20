@@ -8,11 +8,11 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
     class DocumentResourceReader : LazyProperties
     {
         private static string[] doubleTypeKeys = { "LMsk", "Lr16", "Lr32", "Layr", "Mt16", "Mt32", "Mtrn", "Alph", "FMsk", "lnk2", "FEid", "FXid", "PxSD", "lnkE", "extd", };
-        
+
         public DocumentResourceReader(PsdReader reader, long length)
             : base(reader, length, null)
         {
-            
+
         }
 
         protected override void ReadValue(PsdReader reader, object userData, out IProperties value)
@@ -21,11 +21,9 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 
             while (reader.Position < this.EndPosition)
             {
-                string type = reader.ReadType();
+                reader.ValidateSignature(true);
                 string resourceID = reader.ReadType();
-
-                long length = type != "8BIM" ? reader.ReadInt64() : reader.ReadInt32();
-                length = (length + 3) & (~3);
+                long length = this.ReadLength(reader, resourceID);
 
                 ResourceReaderBase resourceReader = ReaderCollector.CreateReader(resourceID, reader, length);
                 string resourceName = ReaderCollector.GetDisplayName(resourceID);
@@ -34,6 +32,21 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             }
 
             value = props;
+        }
+
+        private long ReadLength(PsdReader reader, string resourceID)
+        {
+            long length = 0;
+            if (doubleTypeKeys.Contains(resourceID) && reader.Version == 2)
+            {
+                length = reader.ReadInt64();
+            }
+            else
+            {
+                length = reader.ReadInt32();
+            }
+
+            return (length + 3) & (~3);
         }
     }
 }

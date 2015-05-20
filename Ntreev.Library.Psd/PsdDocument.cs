@@ -166,7 +166,7 @@ namespace Ntreev.Library.Psd
 
         string IPsdLayer.Name
         {
-            get { return "Root"; }
+            get { return "Document"; }
         }
 
         int IPsdLayer.Left
