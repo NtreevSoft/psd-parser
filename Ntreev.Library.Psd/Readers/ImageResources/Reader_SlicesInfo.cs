@@ -52,7 +52,7 @@ namespace Ntreev.Library.Psd.Readers.ImageResources
         private static Properties ReadSliceInfo(PsdReader reader)
         {
             Properties props = new Properties();
-            props["Id"] = reader.ReadInt32();
+            props["ID"] = reader.ReadInt32();
             props["GroupID"] = reader.ReadInt32();
             int origin = reader.ReadInt32();
             if (origin == 1)
@@ -90,29 +90,29 @@ namespace Ntreev.Library.Psd.Readers.ImageResources
         private static Properties ReadSliceInfo(IProperties properties)
         {
             Properties props = new Properties();
-            props["Id"] = (int)properties["sliceID"];
+            props["ID"] = (int)properties["sliceID"];
             props["GroupID"] = (int)properties["groupID"];
             if (properties.Contains("Nm") == true)
                 props["Name"] = properties["Nm"] as string;
 
-            props["left"] = (int)properties["bounds.Left"];
-            props["top"] = (int)properties["bounds.Top"];
-            props["right"] = (int)properties["bounds.Rght"];
-            props["bottom"] = (int)properties["bounds.Btom"];
+            props["Left"] = (int)properties["bounds.Left"];
+            props["Top"] = (int)properties["bounds.Top"];
+            props["Right"] = (int)properties["bounds.Rght"];
+            props["Bottom"] = (int)properties["bounds.Btom"];
 
-            props["url"] = properties["url"] as string;
-            props["target"] = properties["null"] as string;
-            props["message"] = properties["Msge"] as string;
-            props["altTag"] = properties["altTag"] as string;
+            props["Url"] = properties["url"] as string;
+            props["Target"] = properties["null"] as string;
+            props["Message"] = properties["Msge"] as string;
+            props["AltTag"] = properties["altTag"] as string;
             //this.horzAlign;
             //this.vertAlign;
 
             if (properties.Contains("bgColor") == true)
             {
-                props["alpha"] = (byte)(int)properties["bgColor.alpha"];
-                props["red"] = (byte)(int)properties["bgColor.Rd"];
-                props["green"] = (byte)(int)properties["bgColor.Grn"];
-                props["blue"] = (byte)(int)properties["bgColor.Bl"];
+                props["Alpha"] = (byte)(int)properties["bgColor.alpha"];
+                props["Red"] = (byte)(int)properties["bgColor.Rd"];
+                props["Green"] = (byte)(int)properties["bgColor.Grn"];
+                props["Blue"] = (byte)(int)properties["bgColor.Bl"];
             }
 
             return props;
