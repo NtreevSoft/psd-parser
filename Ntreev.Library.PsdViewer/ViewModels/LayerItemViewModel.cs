@@ -37,6 +37,8 @@ namespace Ntreev.Library.PsdViewer.ViewModels
                 //double dl = (double)textProps["bounds.Left.Value"];
             }
 
+
+            var c = this.layer.Channels;
             //var bmp = this.layer.GetBitmap();
             //if (bmp != null)
             //{

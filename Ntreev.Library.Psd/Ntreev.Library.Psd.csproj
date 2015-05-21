@@ -66,6 +66,7 @@
     <Compile Include="ColorSpace.cs" />
     <Compile Include="CompressionType.cs" />
     <Compile Include="LayerAndMaskInformationSection.cs" />
+    <Compile Include="LayerBlendingRanges.cs" />
     <Compile Include="LayerMask.cs" />
     <Compile Include="LayerExtraRecords.cs" />
     <Compile Include="LayerRecords.cs" />

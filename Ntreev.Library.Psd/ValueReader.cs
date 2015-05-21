@@ -16,13 +16,6 @@ namespace Ntreev.Library.Psd
         private T value;
         private bool isRead;
 
-
-        //protected ValueReader(PsdReader reader, object userData)
-        //    : this(reader, false, userData)
-        //{
-
-        //}
-
         protected ValueReader(PsdReader reader, bool hasLength, object userData)
         {
             if (hasLength == true)
@@ -87,10 +80,8 @@ namespace Ntreev.Library.Psd
         {
             get
             {
-                if (this.isRead == false)
+                if (this.isRead == false && this.length > 0)
                 {
-                    if (this.length == 0)
-                        throw new Exception("weqrqwr");
                     long position = reader.Position;
                     int version = reader.Version;
                     this.Refresh();

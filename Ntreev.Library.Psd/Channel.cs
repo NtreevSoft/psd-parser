@@ -7,7 +7,7 @@ namespace Ntreev.Library.Psd
     class Channel : IChannel
     {
         private byte[] data;
-        private readonly ChannelType type;
+        private ChannelType type;
         private int height;
         private int width;
         private int[] rlePackLengths;
@@ -22,6 +22,11 @@ namespace Ntreev.Library.Psd
             this.size = size;
         }
 
+        public Channel()
+        {
+            
+        }
+
         public byte[] Data
         {
             get { return this.data; }
@@ -30,6 +35,7 @@ namespace Ntreev.Library.Psd
         public ChannelType Type
         {
             get { return this.type; }
+            set { this.type = value; }
         }
 
         public void ReadHeader(PsdReader reader, CompressionType compressionType)
@@ -74,19 +80,13 @@ namespace Ntreev.Library.Psd
         public int Width
         {
             get { return this.width; }
-            set
-            {
-                this.width = value;
-            }
+            set { this.width = value; }
         }
 
         public int Height
         {
             get { return this.height; }
-            set
-            {
-                this.height = value;
-            }
+            set { this.height = value; }
         }
 
         public float Opacity
@@ -98,6 +98,7 @@ namespace Ntreev.Library.Psd
         public long Size
         {
             get { return this.size; }
+            set { this.size = value; }
         }
 
         private void ReadData(PsdReader reader, int bps, CompressionType compressionType, int[] rlePackLengths)

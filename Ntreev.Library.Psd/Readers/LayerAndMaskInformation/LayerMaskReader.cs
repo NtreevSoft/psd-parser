@@ -5,12 +5,18 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerMaskReader : LazyValueReader<LayerMask>
+    class LayerMaskReader : ValueReader<LayerMask>
     {
-        public LayerMaskReader(PsdReader reader)
-            : base(reader, null)
+        private LayerMaskReader(PsdReader reader)
+            : base(reader, true, null)
         {
 
+        }
+
+        public static LayerMask Read(PsdReader reader)
+        {
+            LayerMaskReader instance = new LayerMaskReader(reader);
+            return instance.Value;
         }
 
         protected override long OnLengthGet(PsdReader reader)

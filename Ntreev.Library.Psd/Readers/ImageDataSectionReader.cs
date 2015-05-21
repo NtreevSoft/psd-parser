@@ -7,18 +7,10 @@ namespace Ntreev.Library.Psd.Readers
 {
     class ImageDataSectionReader : LazyValueReader<Channel[]>
     {
-        private readonly int channelCount;
-        private readonly int width;
-        private readonly int height;
-        private readonly int depth;
-
         public ImageDataSectionReader(PsdReader reader, PsdDocument document)
-            : base(reader, null)
+            : base(reader, document)
         {
-            this.channelCount = document.FileHeaderSection.NumberOfChannels;
-            this.width = document.Width;
-            this.height = document.Height;
-            this.depth = document.FileHeaderSection.Depth;
+            
         }
 
         protected override long OnLengthGet(PsdReader reader)
@@ -28,20 +20,27 @@ namespace Ntreev.Library.Psd.Readers
 
         protected override void ReadValue(PsdReader reader, object userData, out Channel[] value)
         {
+            PsdDocument document = userData as PsdDocument;
+
+            int channelCount = document.FileHeaderSection.NumberOfChannels;
+            int width = document.Width;
+            int height = document.Height;
+            int depth = document.FileHeaderSection.Depth;
+
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
 
             ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha, };
-            Channel[] channels = new Channel[this.channelCount];
+            Channel[] channels = new Channel[channelCount];
 
             for (int i = 0; i < channels.Length; i++)
             {
-                channels[i] = new Channel(types[i], this.width, this.height, 0);
+                channels[i] = new Channel(types[i], width, height, 0);
                 channels[i].ReadHeader(reader, compressionType);
             }
 
             for (int i = 0; i < channels.Length; i++)
             {
-                channels[i].Read(reader, this.depth, compressionType);
+                channels[i].Read(reader, depth, compressionType);
             }
 
             if (channels.Length == 4)

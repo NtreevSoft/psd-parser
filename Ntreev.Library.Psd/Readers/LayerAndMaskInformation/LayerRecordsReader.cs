@@ -7,10 +7,16 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
     class LayerRecordsReader : ValueReader<LayerRecords>
     {
-        public LayerRecordsReader(PsdReader reader)
+        private LayerRecordsReader(PsdReader reader)
             : base(reader, false, null)
         {
             
+        }
+
+        public static LayerRecords Read(PsdReader reader)
+        {
+            LayerRecordsReader instance = new LayerRecordsReader(reader);
+            return instance.Value;
         }
 
         protected override void ReadValue(PsdReader reader, object userData, out LayerRecords value)
@@ -26,13 +32,13 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             int channelCount = reader.ReadUInt16();
 
             records.ChannelCount = channelCount;
-            records.ChannelTypes = new ChannelType[channelCount];
-            records.ChannelSizes = new long[channelCount];
 
             for (int i = 0; i < channelCount; i++)
             {
-                records.ChannelTypes[i] = reader.ReadChannelType();
-                records.ChannelSizes[i] = reader.ReadLength();
+                records.Channels[i].Type = reader.ReadChannelType();
+                records.Channels[i].Size = reader.ReadLength();
+                records.Channels[i].Width = records.Width;
+                records.Channels[i].Height = records.Height;
             }
 
             reader.ValidateSignature();
