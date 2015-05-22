@@ -38,12 +38,13 @@ namespace Ntreev.Library.Psd.Readers
 
             CompressionType compressionType = (CompressionType)reader.ReadInt16();
 
-            ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha, };
+            ChannelType[] types = new ChannelType[] { ChannelType.Red, ChannelType.Green, ChannelType.Blue, ChannelType.Alpha };
             Channel[] channels = new Channel[channelCount];
 
             for (int i = 0; i < channels.Length; i++)
             {
-                channels[i] = new Channel(types[i], width, height, 0);
+                ChannelType type = i < types.Length ? types[i] : ChannelType.Mask;
+                channels[i] = new Channel(type, width, height, 0);
                 channels[i].ReadHeader(reader, compressionType);
             }
 

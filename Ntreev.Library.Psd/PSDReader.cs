@@ -226,9 +226,7 @@ namespace Ntreev.Library.Psd
 
         public long ReadLength()
         {
-            long length = this.version == 1 ? this.ReadInt32() : this.ReadInt64();
-
-            return length + length % 4;
+            return this.version == 1 ? this.ReadInt32() : this.ReadInt64();
         }
 
         public void Skip(int count)

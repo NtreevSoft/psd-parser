@@ -37,10 +37,8 @@ namespace Ntreev.Library.Psd
             {
                 //this.Refresh();
             }
-            //else
-            {
-                this.reader.Position = this.position + this.length;
-            }
+
+            this.reader.Position = this.position + this.length;
         }
 
         protected ValueReader(PsdReader reader, long length, object userData)
@@ -63,9 +61,7 @@ namespace Ntreev.Library.Psd
                 //this.Refresh();
             }
 
-            {
-                this.reader.Position = this.position + this.length;
-            }
+            this.reader.Position = this.position + this.length;
         }
 
         public void Refresh()

@@ -20,7 +20,7 @@ namespace Ntreev.Library.Psd.Readers
 
             LayerInfoReader layerInfo = new LayerInfoReader(reader, document);
 
-            if (this.EndPosition == reader.Position)
+            if (reader.Position + 4 >= this.EndPosition)
             {
                 value = new LayerAndMaskInformationSection(layerInfo, null, new Properties());
             }

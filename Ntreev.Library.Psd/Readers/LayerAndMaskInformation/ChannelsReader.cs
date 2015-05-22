@@ -19,20 +19,12 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             PsdLayer layer = userData as PsdLayer;
             LayerRecords records = layer.Records;
 
-
             using (MemoryStream stream = new MemoryStream(reader.ReadBytes((int)this.Length)))
             using (PsdReader r = new PsdReader(stream, reader.Resolver, reader.Uri))
             {
                 r.Version = reader.Version;
                 this.ReadValue(r, layer.Depth, records.Channels);
             }
-            
-            //foreach(var item in records.Channels)
-            //{
-            //    CompressionType compressionType = reader.ReadCompressionType();
-            //    item.ReadHeader(reader, compressionType);
-            //    item.Read(reader, layer.Depth, compressionType);
-            //}
 
             value = records.Channels;
         }
