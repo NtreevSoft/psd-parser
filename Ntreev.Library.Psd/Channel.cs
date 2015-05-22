@@ -117,13 +117,87 @@ namespace Ntreev.Library.Psd
                         byte[] buffer = new byte[rlePackLengths[i]];
                         byte[] dst = new byte[length];
                         reader.Read(buffer, 0, rlePackLengths[i]);
-                        PsdUtility.DecodeRLE(buffer, dst, rlePackLengths[i], length);
+                        DecodeRLE(buffer, dst, rlePackLengths[i], length);
                         for (int j = 0; j < length; j++)
                         {
                             this.data[(i * length) + j] = (byte)(dst[j] * this.opacity);
                         }
                     }
                     break;
+            }
+        }
+
+        public static void DecodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)
+        {
+            int index = 0;
+            int num2 = 0;
+            int num3 = 0;
+            byte num4 = 0;
+            int num5 = unpackedLength;
+            int num6 = packedLength;
+            while ((num5 > 0) && (num6 > 0))
+            {
+                num3 = src[index++];
+                num6--;
+                if (num3 != 0x80)
+                {
+                    if (num3 > 0x80)
+                    {
+                        num3 -= 0x100;
+                    }
+                    if (num3 < 0)
+                    {
+                        num3 = 1 - num3;
+                        if (num6 == 0)
+                        {
+                            throw new Exception("Input buffer exhausted in replicate");
+                        }
+                        if (num3 > num5)
+                        {
+                            throw new Exception(string.Format("Overrun in packbits replicate of {0} chars", num3 - num5));
+                        }
+                        num4 = src[index];
+                        while (num3 > 0)
+                        {
+                            if (num5 == 0)
+                            {
+                                break;
+                            }
+                            dst[num2++] = num4;
+                            num5--;
+                            num3--;
+                        }
+                        if (num5 > 0)
+                        {
+                            index++;
+                            num6--;
+                        }
+                        continue;
+                    }
+                    num3++;
+                    while (num3 > 0)
+                    {
+                        if (num6 == 0)
+                        {
+                            throw new Exception("Input buffer exhausted in copy");
+                        }
+                        if (num5 == 0)
+                        {
+                            throw new Exception("Output buffer exhausted in copy");
+                        }
+                        dst[num2++] = src[index++];
+                        num5--;
+                        num6--;
+                        num3--;
+                    }
+                }
+            }
+            if (num5 > 0)
+            {
+                for (num3 = 0; num3 < num6; num3++)
+                {
+                    dst[num2++] = 0;
+                }
             }
         }
     }

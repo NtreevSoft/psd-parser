@@ -19,10 +19,18 @@ namespace Ntreev.Library.Psd.Readers
             PsdDocument document = userData as PsdDocument;
 
             LayerInfoReader layerInfo = new LayerInfoReader(reader, document);
-            GlobalLayerMaskInfoReader globalLayerMask = new GlobalLayerMaskInfoReader(reader);
-            DocumentResourceReader documentResource = new DocumentResourceReader(reader, this.EndPosition - reader.Position);
 
-            value = new LayerAndMaskInformationSection(layerInfo, globalLayerMask, documentResource);
+            if (this.EndPosition == reader.Position)
+            {
+                value = new LayerAndMaskInformationSection(layerInfo, null, new Properties());
+            }
+            else
+            {
+                GlobalLayerMaskInfoReader globalLayerMask = new GlobalLayerMaskInfoReader(reader);
+                DocumentResourceReader documentResource = new DocumentResourceReader(reader, this.EndPosition - reader.Position);
+
+                value = new LayerAndMaskInformationSection(layerInfo, globalLayerMask, documentResource);
+            }
         }
     }
 }

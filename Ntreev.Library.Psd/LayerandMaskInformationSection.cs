@@ -11,15 +11,15 @@ namespace Ntreev.Library.Psd
     {
         private readonly LayerInfoReader layerInfo;
         private readonly GlobalLayerMaskInfoReader globalLayerMask;
-        private readonly DocumentResourceReader documentResource;
+        private readonly IProperties documentResources;
 
         private ILinkedLayer[] linkedLayers;
 
-        public LayerAndMaskInformationSection(LayerInfoReader layerInfo, GlobalLayerMaskInfoReader globalLayerMask, DocumentResourceReader additionalLayerInformation)
+        public LayerAndMaskInformationSection(LayerInfoReader layerInfo, GlobalLayerMaskInfoReader globalLayerMask, IProperties documentResources)
         {
             this.layerInfo = layerInfo;
             this.globalLayerMask = globalLayerMask;
-            this.documentResource = additionalLayerInformation;
+            this.documentResources = documentResources;
         }
 
         public PsdLayer[] Layers
@@ -38,9 +38,9 @@ namespace Ntreev.Library.Psd
 
                     foreach (var item in ids)
                     {
-                        if (this.documentResource.Contains(item))
+                        if (this.documentResources.Contains(item))
                         {
-                            var items = this.documentResource.ToValue<ILinkedLayer[]>(item, "Items");
+                            var items = this.documentResources.ToValue<ILinkedLayer[]>(item, "Items");
                             list.AddRange(items);
                         }
                     }
@@ -52,7 +52,7 @@ namespace Ntreev.Library.Psd
 
         public IProperties Resources
         {
-            get { return this.documentResource; }
+            get { return this.documentResources; }
         }
     }
 }

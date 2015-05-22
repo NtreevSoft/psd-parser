@@ -45,6 +45,8 @@ namespace Ntreev.Library.Psd
 
         protected ValueReader(PsdReader reader, long length, object userData)
         {
+            if (length < 0)
+                throw new InvalidFormatException();
             this.reader = reader;
             this.length = length;
             this.readerVersion = reader.Version;

@@ -14,7 +14,7 @@ namespace Ntreev.Library.Psd
         private ImageResourcesSectionReader imageResourcesSection;
         private LayerAndMaskInformationSectionReader layerAndMaskSection;
         private ImageDataSectionReader imageDataSection;
-       
+
         private PsdReader reader;
         //private Uri baseUri;
 
@@ -107,7 +107,12 @@ namespace Ntreev.Library.Psd
 
         public bool HasImage
         {
-            get { return this.imageResourcesSection.ToBoolean("Version", "HasCompatibilityImage"); }
+            get
+            {
+                if (this.imageResourcesSection.Contains("Version") == false)
+                    return false;
+                return this.imageResourcesSection.ToBoolean("Version", "HasCompatibilityImage");
+            }
         }
 
         public event EventHandler Disposed;

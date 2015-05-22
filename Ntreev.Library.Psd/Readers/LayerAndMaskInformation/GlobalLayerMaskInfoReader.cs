@@ -6,16 +6,22 @@ using System.Text;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class GlobalLayerMaskInfoReader
+    class GlobalLayerMaskInfoReader : ValueReader<object>
     {
-        internal GlobalLayerMaskInfoReader(PsdReader reader)
+        public GlobalLayerMaskInfoReader(PsdReader reader)
+            : base(reader, true, null)
         {
-            int length = reader.ReadInt32();
-            long position = reader.Position;
-            if (length == 0)
-                return;
+            
+        }
 
-            reader.Position = position + length;
+        protected override long OnLengthGet(PsdReader reader)
+        {
+            return reader.ReadInt32();
+        }
+
+        protected override void ReadValue(PsdReader reader, object userData, out object value)
+        {
+            value = new object();
         }
     }
 }

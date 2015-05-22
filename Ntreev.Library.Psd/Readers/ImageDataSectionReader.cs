@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -10,7 +11,7 @@ namespace Ntreev.Library.Psd.Readers
         public ImageDataSectionReader(PsdReader reader, PsdDocument document)
             : base(reader, document)
         {
-            
+
         }
 
         protected override long OnLengthGet(PsdReader reader)
@@ -20,8 +21,16 @@ namespace Ntreev.Library.Psd.Readers
 
         protected override void ReadValue(PsdReader reader, object userData, out Channel[] value)
         {
-            PsdDocument document = userData as PsdDocument;
+            using (MemoryStream stream = new MemoryStream(reader.ReadBytes((int)this.Length)))
+            using (PsdReader r = new PsdReader(stream, reader.Resolver, reader.Uri))
+            {
+                r.Version = reader.Version;
+                value = ReadValue(r, userData as PsdDocument);
+            }
+        }
 
+        private static Channel[] ReadValue(PsdReader reader, PsdDocument document)
+        {
             int channelCount = document.FileHeaderSection.NumberOfChannels;
             int width = document.Width;
             int height = document.Height;
@@ -58,7 +67,7 @@ namespace Ntreev.Library.Psd.Readers
                 }
             }
 
-            value = channels.OrderBy(item => item.Type).ToArray();
+            return channels.OrderBy(item => item.Type).ToArray();
         }
     }
 }
