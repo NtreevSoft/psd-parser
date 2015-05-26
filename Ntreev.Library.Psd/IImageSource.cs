@@ -21,5 +21,7 @@ namespace Ntreev.Library.Psd
         float Opacity { get; }
 
         bool HasImage { get; }
+
+        bool HasMask { get; }
     }
 }

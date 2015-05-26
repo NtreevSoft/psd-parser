@@ -21,12 +21,13 @@ namespace Ntreev.Library.Psd.Readers
 
         protected override void ReadValue(PsdReader reader, object userData, out Channel[] value)
         {
-            using (MemoryStream stream = new MemoryStream(reader.ReadBytes((int)this.Length)))
-            using (PsdReader r = new PsdReader(stream, reader.Resolver, reader.Uri))
-            {
-                r.Version = reader.Version;
-                value = ReadValue(r, userData as PsdDocument);
-            }
+            //using (MemoryStream stream = new MemoryStream(reader.ReadBytes((int)this.Length)))
+            //using (PsdReader r = new PsdReader(stream, reader.Resolver, reader.Uri))
+            //{
+            //    r.Version = reader.Version;
+            //    value = ReadValue(r, userData as PsdDocument);
+            //}
+            value = ReadValue(reader, userData as PsdDocument);
         }
 
         private static Channel[] ReadValue(PsdReader reader, PsdDocument document)

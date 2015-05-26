@@ -209,6 +209,11 @@ namespace Ntreev.Library.Psd
             get { return 1.0f; }
         }
 
+        bool IImageSource.HasMask
+        {
+            get { return this.FileHeaderSection.NumberOfChannels > 4; }
+        }
+
         #endregion
     }
 }

@@ -12,7 +12,6 @@ namespace Ntreev.Library.Psd
     {
         private readonly PsdDocument document;
         private readonly LayerRecords records;
-        //private readonly LayerExtraRecordsReader extraRecords;
 
         private int left, top, right, bottom;
 
@@ -133,11 +132,6 @@ namespace Ntreev.Library.Psd
             get { return this.records; }
         }
 
-        //public LayerExtraRecords ExtraRecords
-        //{
-        //    get { return this.records; }
-        //}
-
         public ILinkedLayer LinkedLayer
         {
             get
@@ -165,6 +159,11 @@ namespace Ntreev.Library.Psd
                     return false;
                 return true;
             }
+        }
+
+        public bool HasMask
+        {
+            get { return this.records.Mask != null; }
         }
 
         public void ReadChannels(PsdReader reader)
@@ -234,55 +233,6 @@ namespace Ntreev.Library.Psd
             //this.props["Height"] = this.Height;
         }
 
-        //public static PsdLayer[] Initialize(PsdLayer parent, PsdLayer[] layers)
-        //{
-        //    Stack<PsdLayer> stack = new Stack<PsdLayer>();
-        //    List<PsdLayer> rootLayers = new List<PsdLayer>();
-
-        //    foreach (var item in layers.Reverse())
-        //    {
-        //        if (item.SectionType == SectionType.Divider)
-        //        {
-        //            parent = stack.Pop();
-        //            continue;
-        //        }
-
-        //        if (parent != null)
-        //        {
-        //            parent.childs.Insert(0, item);
-        //            item.parent = parent;
-        //        }
-        //        else
-        //        {
-        //            rootLayers.Insert(0, item);
-        //        }
-
-        //        if (item.sectionType == SectionType.Opend || item.sectionType == SectionType.Closed)
-        //        {
-        //            stack.Push(parent);
-        //            parent = item;
-        //        }
-        //    }
-
-        //    return rootLayers.ToArray();
-        //}
-
-        //private void ValidateSize(int width, int height)
-        //{
-        //    if ((width > 0x3000) || (height > 0x3000))
-        //    {
-        //        throw new Exception(string.Format("Invalidated size ({0}, {1})", width, height));
-        //    }
-        //}
-
-        //private void ValidateChannelCount(int channelCount)
-        //{
-        //    if (channelCount > 0x38)
-        //    {
-        //        throw new Exception(string.Format("Too many channels : {0}", channelCount));
-        //    }
-        //}
-
         #region IPsdLayer
 
         IPsdLayer IPsdLayer.Parent
@@ -295,11 +245,6 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        //ILinkedLayer IPsdLayer.LinkedLayer
-        //{
-        //    get { return this.LinkedLayer; }
-        //}
-
         IChannel[] IImageSource.Channels
         {
             get { return this.channels.Value; }
@@ -311,9 +256,6 @@ namespace Ntreev.Library.Psd
         }
 
         #endregion
-
-
-
     }
 }
 

@@ -5,10 +5,10 @@ using System.Linq;
 
 namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 {
-    class LayerInfoReader : LazyValueReader<PsdLayer[]>
+    class LayerInfoReader : ValueReader<PsdLayer[]>
     {
         public LayerInfoReader(PsdReader reader, PsdDocument document)
-            : base(reader, document)
+            : base(reader, true, document)
         {
             
         }
