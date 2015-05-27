@@ -13,6 +13,12 @@ namespace Ntreev.Library.Psd.Readers
             
         }
 
+        public static FileHeaderSection Read(PsdReader reader)
+        {
+            FileHeaderSectionReader instance = new FileHeaderSectionReader(reader);
+            return instance.Value;
+        }
+
         protected override void ReadValue(PsdReader reader, object userData, out FileHeaderSection value)
         {
             value = new FileHeaderSection();

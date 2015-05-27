@@ -32,12 +32,16 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
 
             bool isDocument = this.IsDocument(reader);
             LinkedDocumentReader documentReader = null;
+            LinkedDocumnetFileHeaderReader fileHeaderReader = null;
             if(length > 0 && isDocument == true)
             {
+                long position = reader.Position;
                 documentReader = new LinkedDocumentReader(reader, length);
+                reader.Position = position;
+                fileHeaderReader = new LinkedDocumnetFileHeaderReader(reader, length);
             }
 
-            value = new LinkedLayer(name, id, documentReader);
+            value = new LinkedLayer(name, id, documentReader, fileHeaderReader);
         }
 
         private bool IsDocument(PsdReader reader)

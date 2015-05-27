@@ -31,5 +31,15 @@ namespace Ntreev.Library.Psd
         {
             get;
         }
+
+        int Width
+        {
+            get;
+        }
+
+        int Height
+        {
+            get;
+        }
     }
 }

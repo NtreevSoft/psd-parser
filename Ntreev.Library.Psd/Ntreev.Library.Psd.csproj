@@ -71,6 +71,7 @@
     <Compile Include="LayerExtraRecords.cs" />
     <Compile Include="LayerRecords.cs" />
     <Compile Include="Readers\EmptyResourceReader.cs" />
+    <Compile Include="Readers\LayerAndMaskInformation\LinkedDocumnetFileHeaderReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\LinkedDocumentReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\EmbeddedLayerReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\LinkedLayerReader.cs" />
