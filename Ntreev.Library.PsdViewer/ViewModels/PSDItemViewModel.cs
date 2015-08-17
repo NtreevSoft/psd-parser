@@ -47,30 +47,6 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             {
                 this.Children.Add(new LayerItemViewModel(item, this));
             }
-
-            var bmp = this.document.GetBitmap();
-            //if (bmp != null)
-            //{
-            //    PngBitmapEncoder d = new PngBitmapEncoder();
-            //    d.Frames.Add(BitmapFrame.Create(bmp));
-            //    string n = Regex.Replace("root", "[\\\\/:*?\"<>|]", "_");
-            //    using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
-            //    {
-            //        d.Save(stream);
-            //    }
-            //}
-
-            //foreach (var item in document.Properties)
-            //{
-            //    if (item.Value is IProperties == true)
-            //    {
-            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value as IProperties, this));
-            //    }
-            //    else
-            //    {
-            //        this.Children.Add(new PropertiesItemViewModel(item.Key, item.Value, this));
-            //    }
-            //}
         }
 
         public override string Text

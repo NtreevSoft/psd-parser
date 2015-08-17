@@ -109,7 +109,7 @@ namespace Ntreev.Library.PsdViewer
         {
             if (layer.LinkedLayer != null)
             {
-                if(layer.LinkedLayer.AbsoluteUri != null)
+                if (layer.LinkedLayer.AbsoluteUri != null)
                     yield return layer.LinkedLayer.Name;
                 foreach (var item in recursive(layer.LinkedLayer.Document))
                 {
