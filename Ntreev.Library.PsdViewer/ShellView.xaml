@@ -11,7 +11,7 @@
     </mah:MetroWindow.Resources>
     <mah:MetroWindow.RightWindowCommands>
         <mah:WindowCommands >
-            <Button x:Name="OpenFile" Content="OpenFile" cal:Message.Attach="OpenFile" Click="Setting_Click" />
+            <Button x:Name="OpenFile" Content="OpenFile" cal:Message.Attach="OpenFile" />
             <Button Content="Refresh" cal:Message.Attach="RefreshFile" Visibility="{Binding CanRefresh, Converter={StaticResource booleanToVisibilityConverter}}"/>
         </mah:WindowCommands>
     </mah:MetroWindow.RightWindowCommands>

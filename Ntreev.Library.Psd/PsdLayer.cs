@@ -239,19 +239,10 @@ namespace Ntreev.Library.Psd
             if (isSet == false)
                 return;
 
-            //this.records.Value.Left = left;
-
             this.left = left;
             this.top = top;
             this.right = right;
             this.bottom = bottom;
-
-            //this.props["Left"] = this.left;
-            //this.props["Top"] = this.top;
-            //this.props["Right"] = this.right;
-            //this.props["Bottom"] = this.bottom;
-            //this.props["Width"] = this.Width;
-            //this.props["Height"] = this.Height;
         }
 
         #region IPsdLayer

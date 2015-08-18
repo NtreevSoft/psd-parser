@@ -34,16 +34,5 @@ namespace Ntreev.Library.PsdViewer
         {
             this.InitializeComponent();
         }
-
-        private void Setting_Click(object sender, System.Windows.RoutedEventArgs e)
-        {
-            int qwer = 0;
-
-        }
-
-        private void OpenFile_DataContextChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
-        {
-            Caliburn.Micro.Bind.SetModel(sender as System.Windows.DependencyObject, e.NewValue);
-        }
     }
 }

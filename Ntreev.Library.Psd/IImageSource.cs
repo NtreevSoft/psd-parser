@@ -32,9 +32,6 @@ namespace Ntreev.Library.Psd
 
         int Height { get; }
 
-        /// <summary>
-        /// the number of bits per channel. Supported values are 1, 8, 16 and 32.
-        /// </summary>
         int Depth { get; }
 
         IChannel[] Channels { get; }

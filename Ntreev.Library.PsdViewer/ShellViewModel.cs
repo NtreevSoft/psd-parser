@@ -85,18 +85,23 @@ namespace Ntreev.Library.PsdViewer
             }
         }
 
+        private void Test()
+        {
+            string filename = string.Empty;
+            using (PsdDocument document = PsdDocument.Create(filename))
+            {
+                foreach (var item in document.Childs)
+                {
+                    Console.WriteLine("LayerName : " + item.Name);
+                }
+            }
+        }
+
         private void RefreshFile(string filename)
         {
-            PsdDocument document = new PsdDocument();
-            var t = DateTime.Now;
-            document.Read(filename);
-            var ddd = recursive(document).Distinct().ToArray();
-            string text = string.Join(System.Environment.NewLine, recursive(document).ToArray());
+            PsdDocument document = PsdDocument.Create(filename);
 
 
-            var time = DateTime.Now - t;
-            Console.WriteLine(text);
-            Console.WriteLine(time);
             this.filename = filename;
             this.itemsSource = new List<TreeViewItemViewModel>();
             this.itemsSource.Add(new PSDItemViewModel(document));

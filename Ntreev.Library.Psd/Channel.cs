@@ -148,7 +148,7 @@ namespace Ntreev.Library.Psd
             }
         }
 
-        public static void DecodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)
+        private static void DecodeRLE(byte[] src, byte[] dst, int packedLength, int unpackedLength)
         {
             int index = 0;
             int num2 = 0;

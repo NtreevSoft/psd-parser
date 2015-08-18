@@ -125,8 +125,6 @@ namespace Ntreev.Library.Psd.Readers.ImageResources
             props["Target"] = properties["null"] as string;
             props["Message"] = properties["Msge"] as string;
             props["AltTag"] = properties["altTag"] as string;
-            //this.horzAlign;
-            //this.vertAlign;
 
             if (properties.Contains("bgColor") == true)
             {

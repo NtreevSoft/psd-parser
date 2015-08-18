@@ -36,8 +36,6 @@ namespace Ntreev.Library.PsdViewer.ViewModels
     {
         private readonly ILinkedLayer linkedLayer;
 
-        static int i = 0;
-
         public LinkedLayerItemViewModel(ILinkedLayer linkedLayer, PSDItemViewModel parent)
             : base(parent)
         {

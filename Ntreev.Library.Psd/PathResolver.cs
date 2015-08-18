@@ -39,8 +39,7 @@ namespace Ntreev.Library.Psd
 
             if (uriToDocuments.ContainsKey(absoluteUri) == false)
             {
-                PsdDocument document = new PsdDocument();
-                document.Read(filename);
+                PsdDocument document = PsdDocument.Create(filename);
                 uriToDocuments.Add(absoluteUri, document);
             }
 
