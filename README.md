@@ -1,11 +1,11 @@
 ===========================================
 
-»ç¿ë¹ý
+Usage :
 
 using (PsdDocument document = PsdDocument.Create(filename))
 {
     foreach (var item in document.Childs)
-    {
+	{
         Console.WriteLine("LayerName : " + item.Name);
     }
 }
