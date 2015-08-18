@@ -1,4 +1,7 @@
-﻿Developer
+﻿Ntreev Photoshop Document Parser for .Net
+=======
+
+Developer
 -------s2quake@ntreev.comSummary
 -------포토샵 파일을 분석해 필요한 정보를 사용할 수 있는 .net 용 라이브러리입니다..Net framework 3.5 기반으로 제작되었으며 Unity3D에서도 제약없이 사용이 가능합니다.라이브러리는 어도비에서 제공하는 포토샵 파일 포맷 정보 기반으로 제작되었습니다.http://www.adobe.com/devnet-apps/photoshop/fileformatashtml/Image Resource IDs와 Additional Layer Information 부분은 종류가 워낙 많아서 
 필요한 부분을 제외하고는 파싱 작업을 하지않았습니다.
