@@ -8,7 +8,7 @@ Developer
 
 라이브러리에서 제공하는 PsdViewer는 정보만 볼 수 있는 간단한 프로그램입니다. 
 레이어의 그림내용을 보여주지는 않습니다.
-작업의 목표는 쉬운 사용법, 모든 정보 추출, 빠른 속도입니다.Test Environment-------Photoshop CCUsage
+작업의 목표는 쉬운 사용법, 모든 정보 추출, 빠른 속도입니다.IDE-------Visual Studio 2013Test Environment-------Photoshop CCUsage
 -------
 
 SourceCode:
