@@ -37,6 +37,7 @@ namespace Ntreev.Library.Psd
         private string name;
         private SectionType sectionType;
         private Guid placedID;
+        private int version;
 
         public void SetExtraRecords(LayerMask layerMask, LayerBlendingRanges blendingRanges, IProperties resources, string name)
         {
@@ -46,13 +47,16 @@ namespace Ntreev.Library.Psd
             this.name = name;
 
             this.resources.TryGetValue<string>(ref this.name, "luni.Name");
-            this.resources.TryGetValue<SectionType>(ref this.sectionType, "lsct.SectionType");
+            this.resources.TryGetValue<int>(ref this.version, "lyvr.Version");
+            if (this.resources.Contains("lsct.SectionType") == true)
+                this.sectionType = (SectionType)this.resources.ToInt32("lsct.SectionType");
+            if (this.resources.Contains("lsdk.SectionType") == true)
+                this.sectionType = (SectionType)this.resources.ToInt32("lsdk.SectionType");
 
             if (this.resources.Contains("SoLd.Idnt") == true)
                 this.placedID = this.resources.ToGuid("SoLd.Idnt");
             else if (this.resources.Contains("SoLE.Idnt") == true)
                 this.placedID = this.resources.ToGuid("SoLE.Idnt");
-
 
             foreach (var item in this.channels)
             {
@@ -111,11 +115,11 @@ namespace Ntreev.Library.Psd
 
         public int ChannelCount
         {
-            get 
+            get
             {
                 if (this.channels == null)
                     return 0;
-                return this.channels.Length; 
+                return this.channels.Length;
             }
             set
             {
@@ -180,6 +184,11 @@ namespace Ntreev.Library.Psd
         public IProperties Resources
         {
             get { return this.resources; }
+        }
+
+        public int Version
+        {
+            get { return this.version; }
         }
     }
 }

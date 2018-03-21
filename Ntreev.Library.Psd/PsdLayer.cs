@@ -56,6 +56,11 @@ namespace Ntreev.Library.Psd
             this.bottom = this.records.Bottom;
         }
 
+        public override string ToString()
+        {
+            return this.Name;
+        }
+
         public Channel[] Channels
         {
             get { return this.channels.Value; }

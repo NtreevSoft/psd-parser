@@ -69,6 +69,8 @@
     <Compile Include="Readers\LayerResources\Reader_lnk3.cs" />
     <Compile Include="Readers\LayerResources\Reader_lnkD.cs" />
     <Compile Include="Readers\LayerResources\Reader_lnkE.cs" />
+    <Compile Include="Readers\LayerResources\Reader_lsdk.cs" />
+    <Compile Include="Readers\LayerResources\Reader_lyvr.cs" />
     <Compile Include="Readers\ResourceReaderBase.cs" />
     <Compile Include="ValueReader.cs" />
     <Compile Include="Readers\LayerAndMaskInformation\ChannelsReader.cs" />
