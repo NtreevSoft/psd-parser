@@ -75,6 +75,11 @@ namespace Ntreev.Library.Psd
         {
             get { return this.records.Name; }
         }
+		
+		public bool IsVisible
+	    {
+			get { return (this.records.Flags & LayerFlags.Visible) != LayerFlags.Visible; }
+	    }
 
         public float Opacity
         {

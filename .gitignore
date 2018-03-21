@@ -1,0 +1,7 @@
+# git ignore file
+bin/
+obj/
+Debug/
+Release/
+packages/
+*.suo
