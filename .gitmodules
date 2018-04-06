@@ -1,0 +1,6 @@
+[submodule "sub-modules/Ntreev.Library"]
+	path = sub-modules/Ntreev.Library
+	url = ../../NtreevSoft/Ntreev.Library.git
+[submodule "sub-modules/Ntreev.ModernUI.Framework"]
+	path = sub-modules/Ntreev.ModernUI.Framework
+	url = ../../NtreevSoft/Ntreev.ModernUI.Framework.git
