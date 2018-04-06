@@ -6,6 +6,8 @@
           xmlns:local="clr-namespace:Ntreev.Library.PsdViewer"
           xmlns:ctrl="clr-namespace:Ntreev.Library.PsdViewer.Controls"
           xmlns:conv="clr-namespace:Ntreev.Library.PsdViewer.Converters"
+          xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
+          xmlns:vm="clr-namespace:Ntreev.Library.PsdViewer.ViewModels"
           xml:lang="ko"
           mc:Ignorable="d" 
           d:DesignHeight="300" d:DesignWidth="500">
@@ -14,6 +16,8 @@
         <!--<conv:TreeViewItemToImageConverter x:Key="treeViewItemToImageConverter" />
         <conv:SyncStateToBrushConverter x:Key="syncStateToBrushConverter" />
         <conv:SyncStateToIconConverter x:Key="syncStateToIconConverter" />-->
+
+        <ctrl:CellTemplateSelector x:Key="cellTemplateSelector" />
 
         <Style TargetType="{x:Type GridViewColumnHeader}" BasedOn="{StaticResource {x:Type GridViewColumnHeader}}">
             <Setter Property="Background" Value="{DynamicResource DataGridHeaderBackground}" />
@@ -53,16 +57,13 @@
             </Setter>
         </Style>
 
-        <DataTemplate x:Key="CellTemplate_Name">
+        <DataTemplate x:Key="{x:Type vm:PropertiesItemViewModel}">
             <DockPanel Height="20">
                 <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
                               Margin="{Binding Level, Converter={StaticResource LevelToIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}"
                               IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" ClickMode="Press"/>
-                <!--<Border Width="9" Height="16">
-                    <Image x:Name="syncState" Source="{Binding SyncState, Converter={StaticResource syncStateToIconConverter}}" Stretch="None" HorizontalAlignment="Center"/>
-                </Border>
-                <Image x:Name="Icon" Width="16" Height="16" Source="{Binding Converter={StaticResource treeViewItemToImageConverter}}" Margin="0,0,2,0"/>-->
-                <TextBlock Text="{Binding Text}"  />
+                <Border Width="4" />
+                <TextBlock Text="{Binding DisplayName}" />
             </DockPanel>
             <DataTemplate.Triggers>
                 <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" Value="False">
@@ -71,17 +72,68 @@
             </DataTemplate.Triggers>
         </DataTemplate>
 
+        <DataTemplate x:Key="{x:Type vm:PSDItemViewModel}">
+            <DockPanel Height="20">
+                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                              Margin="{Binding Level, Converter={StaticResource LevelToIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" ClickMode="Press"/>
+                <nmfc:IconImage Source="/Ntreev.Library.PsdViewer;component/Images/ps.png" />
+                <Border Width="4" />
+                <TextBlock Text="{Binding DisplayName}" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" Value="False">
+                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Type vm:LinkedLayerItemViewModel}">
+            <DockPanel Height="20">
+                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                              Margin="{Binding Level, Converter={StaticResource LevelToIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" ClickMode="Press"/>
+                <nmfc:IconImage Source="/Ntreev.Library.PsdViewer;component/Images/linked_layer.png" />
+                <Border Width="4" />
+                <TextBlock Text="{Binding DisplayName}" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" Value="False">
+                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
+
+        <DataTemplate x:Key="{x:Type vm:LayerItemViewModel}">
+            <DockPanel Height="20" PreviewMouseLeftButtonDown="DockPanel_PreviewMouseLeftButtonDown">
+                <ToggleButton x:Name="Expander" Style="{StaticResource ExpandCollapseToggleStyle}" 
+                              Margin="{Binding Level, Converter={StaticResource LevelToIndentConverter}, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}"
+                              IsChecked="{Binding Path=IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" ClickMode="Press"/>
+                <!--<Border Width="9" Height="16">
+                    <Image x:Name="syncState" Source="{Binding SyncState, Converter={StaticResource syncStateToIconConverter}}" Stretch="None" HorizontalAlignment="Center"/>
+                </Border>
+                <Image x:Name="Icon" Width="16" Height="16" Source="{Binding Converter={StaticResource treeViewItemToImageConverter}}" Margin="0,0,2,0"/>-->
+                <nmfc:IconImage Source="/Ntreev.Library.PsdViewer;component/Images/image_layer.png" />
+                <Border Width="4" />
+                <TextBlock Text="{Binding DisplayName}" />
+            </DockPanel>
+            <DataTemplate.Triggers>
+                <DataTrigger Binding="{Binding Path=HasItems, RelativeSource={RelativeSource AncestorType={x:Type ctrl:TreeListViewItem}}}" Value="False">
+                    <Setter TargetName="Expander" Property="Visibility" Value="Hidden"/>
+                </DataTrigger>
+            </DataTemplate.Triggers>
+        </DataTemplate>
 
         <GridViewColumnCollection x:Key="gvcc">
-            <GridViewColumn Header="이름" CellTemplate="{StaticResource CellTemplate_Name}" Width="325"/>
-            <GridViewColumn Header="타입" Width="100" >
+            <GridViewColumn Header="Name" CellTemplateSelector="{StaticResource cellTemplateSelector}" Width="325" />
+            <GridViewColumn Header="Type" Width="100" >
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Type, TargetNullValue=''}" HorizontalAlignment="Right" />
                     </DataTemplate>
                 </GridViewColumn.CellTemplate>
             </GridViewColumn>
-            <GridViewColumn Header="값" Width="150" >
+            <GridViewColumn Header="Value" Width="150" >
                 <GridViewColumn.CellTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Value, TargetNullValue=''}" HorizontalAlignment="Right" />
@@ -91,15 +143,16 @@
         </GridViewColumnCollection>
 
         <Style TargetType="{x:Type ctrl:TreeListViewItem}">
-            <Setter Property="ItemsSource" Value="{Binding Children}"/>
+            <Setter Property="ItemsSource" Value="{Binding Items}"/>
             <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+            <Setter Property="Header" Value="{Binding DisplayName}" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ctrl:TreeListViewItem}">
                         <StackPanel>
                             <Border Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}" Padding="{TemplateBinding Padding}">
-                                <GridViewRowPresenter x:Name="PART_Header" Content="{TemplateBinding Header}" Columns="{StaticResource gvcc}" />
+                                <GridViewRowPresenter x:Name="PART_Header" Content="{Binding DataContext, RelativeSource={RelativeSource TemplatedParent}}" Columns="{StaticResource gvcc}" />
                             </Border>
                             <ItemsPresenter x:Name="ItemsHost" />
                         </StackPanel>

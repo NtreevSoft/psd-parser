@@ -5,3 +5,4 @@ Debug/
 Release/
 packages/
 *.suo
+/.vs

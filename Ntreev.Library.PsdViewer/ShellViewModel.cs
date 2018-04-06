@@ -18,7 +18,6 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
 using Ntreev.Library.Psd;
 using Ntreev.Library.PsdViewer.ViewModels;
 using System.Collections;
@@ -30,16 +29,22 @@ using System.Linq;
 using Microsoft.Win32;
 using System.Text;
 using System;
+using System.ComponentModel.Composition;
+using Ntreev.ModernUI.Framework;
+using Ntreev.ModernUI.Framework.ViewModels;
+using System.Threading.Tasks;
+
 namespace Ntreev.Library.PsdViewer
 {
-    public class ShellViewModel : Caliburn.Micro.PropertyChangedBase, IShell
+    [Export(typeof(IShell))]
+    public class ShellViewModel : ScreenBase, IShell
     {
         private List<TreeViewItemViewModel> itemsSource;
         private string filename;
 
         public ShellViewModel()
         {
-
+            this.DisplayName = "Photoshop File Viewer";
         }
 
         public IEnumerable ItemsSource
@@ -99,24 +104,31 @@ namespace Ntreev.Library.PsdViewer
 
         private void RefreshFile(string filename)
         {
-            PsdDocument document = PsdDocument.Create(filename);
+            this.BeginProgress();
+            try
+            {
+                PsdDocument document = PsdDocument.Create(filename);
 
-
-            this.filename = filename;
-            this.itemsSource = new List<TreeViewItemViewModel>();
-            this.itemsSource.Add(new PSDItemViewModel(document));
-            this.NotifyOfPropertyChange(() => this.ItemsSource);
-            this.NotifyOfPropertyChange(() => this.CanRefresh);
-            this.NotifyOfPropertyChange(() => this.Title);
+                this.filename = filename;
+                this.itemsSource = new List<TreeViewItemViewModel>();
+                this.itemsSource.Add(new PSDItemViewModel(document));
+                this.NotifyOfPropertyChange(() => this.ItemsSource);
+                this.NotifyOfPropertyChange(() => this.CanRefresh);
+                this.NotifyOfPropertyChange(() => this.Title);
+            }
+            finally
+            {
+                this.EndProgress();
+            }
         }
 
-        private static IEnumerable<string> recursive(Ntreev.Library.Psd.IPsdLayer layer)
+        private static IEnumerable<string> Recursive(Ntreev.Library.Psd.IPsdLayer layer)
         {
             if (layer.LinkedLayer != null)
             {
                 if (layer.LinkedLayer.AbsoluteUri != null)
                     yield return layer.LinkedLayer.Name;
-                foreach (var item in recursive(layer.LinkedLayer.Document))
+                foreach (var item in Recursive(layer.LinkedLayer.Document))
                 {
                     yield return item;
                 }
@@ -124,7 +136,7 @@ namespace Ntreev.Library.PsdViewer
 
             foreach (var item in layer.Childs)
             {
-                foreach (var i in recursive(item))
+                foreach (var i in Recursive(item))
                 {
                     yield return i;
                 }

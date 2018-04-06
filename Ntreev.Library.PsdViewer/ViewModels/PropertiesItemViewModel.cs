@@ -18,8 +18,8 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
 using Ntreev.Library.Psd;
+using Ntreev.ModernUI.Framework.ViewModels;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,7 +36,6 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         private string type;
 
         public PropertiesItemViewModel(string name, IProperties properties, TreeViewItemViewModel parent)
-            : base(parent)
         {
             this.name = name;
             foreach (var item in properties)
@@ -45,7 +44,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
                 if (value is IProperties == true)
                 {
-                    this.Children.Add(new PropertiesItemViewModel(item.Key, value as IProperties, this));
+                    this.Items.Add(new PropertiesItemViewModel(item.Key, value as IProperties, this));
                 }
                 else if (value is IEnumerable == true && value is string == false)
                 {
@@ -54,29 +53,27 @@ namespace Ntreev.Library.PsdViewer.ViewModels
                     {
                         string n = string.Format("{0}[{1}]", item.Key, index);
                         if (i is IProperties == true)
-                            this.Children.Add(new PropertiesItemViewModel(n, i as IProperties, this));
+                            this.Items.Add(new PropertiesItemViewModel(n, i as IProperties, this));
                         else
-                            this.Children.Add(new PropertiesItemViewModel(n, i, this));
+                            this.Items.Add(new PropertiesItemViewModel(n, i, this));
                         index++;
                     }
                 }
                 else
                 {
-                    this.Children.Add(new PropertiesItemViewModel(item.Key, value, this));
+                    this.Items.Add(new PropertiesItemViewModel(item.Key, value, this));
                 }
             }
         }
 
-
         public PropertiesItemViewModel(string name, object value, TreeViewItemViewModel parent)
-            : base(parent)
         {
             this.name = name;
             this.value = value;
             this.type = value.GetType().Name;
         }
 
-        public override string Text
+        public override string DisplayName
         {
             get
             {

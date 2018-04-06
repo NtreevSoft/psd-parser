@@ -18,53 +18,15 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
+using System;
+using System.Collections.Generic;
+using Caliburn.Micro;
+using Ntreev.ModernUI.Framework;
 
 namespace Ntreev.Library.PsdViewer
 {
-    using System;
-    using System.Collections.Generic;
-    using Caliburn.Micro;
-
-    public class AppBootstrapper : BootstrapperBase
+    public class AppBootstrapper : AppBootstrapper<IShell>
     {
-        SimpleContainer container;
-
-        public AppBootstrapper()
-        {
-            this.Initialize();
-        }
-
-        protected override void Configure()
-        {
-            container = new SimpleContainer();
-
-            container.Singleton<IWindowManager, WindowManager>();
-            container.Singleton<IEventAggregator, EventAggregator>();
-            container.PerRequest<IShell, ShellViewModel>();
-        }
-
-        protected override object GetInstance(Type service, string key)
-        {
-            var instance = container.GetInstance(service, key);
-            if (instance != null)
-                return instance;
-
-            throw new InvalidOperationException("Could not locate any instances.");
-        }
-
-        protected override IEnumerable<object> GetAllInstances(Type service)
-        {
-            return container.GetAllInstances(service);
-        }
-
-        protected override void BuildUp(object instance)
-        {
-            container.BuildUp(instance);
-        }
-
-        protected override void OnStartup(object sender, System.Windows.StartupEventArgs e)
-        {
-            DisplayRootViewFor<IShell>();
-        }
+        
     }
 }

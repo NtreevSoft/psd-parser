@@ -18,7 +18,6 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,16 +44,27 @@ namespace Ntreev.Library.PsdViewer.Controls
         {
             InitializeComponent();
         }
- 
+
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new TreeListViewItem();
         }
 
-        protected override bool
-                           IsItemItsOwnContainerOverride(object item)
+        protected override bool IsItemItsOwnContainerOverride(object item)
         {
             return item is TreeListViewItem;
+        }
+
+        private void DockPanel_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2 && sender is FrameworkElement fe && fe.DataContext is ICommand command)
+            {
+                if (command.CanExecute(fe.DataContext) == true)
+                {
+                    command.Execute(fe.DataContext);
+                    e.Handled = true;
+                }
+            }
         }
     }
 

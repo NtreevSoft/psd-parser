@@ -18,22 +18,32 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-using FirstFloor.ModernUI.Windows.Controls;
-using MahApps.Metro.Controls;
+using Ntreev.Library.Psd;
+using Ntreev.ModernUI.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows.Media.Imaging;
 
-namespace Ntreev.Library.PsdViewer
+namespace Ntreev.Library.PsdViewer.Dialogs.ViewModels
 {
-    partial class ShellView : ModernWindow
+    class PreviewViewModel : ModalDialogBase
     {
-        public ShellView()
+        private readonly IPsdLayer layer;
+        private readonly BitmapSource source;
+
+        public PreviewViewModel(IPsdLayer layer)
         {
-            this.InitializeComponent();
+            this.layer = layer;
+            this.source = layer.GetBitmap();
+            this.DisplayName = layer.Name;
+        }
+
+        public BitmapSource Source
+        {
+            get { return this.source; }
         }
     }
 }

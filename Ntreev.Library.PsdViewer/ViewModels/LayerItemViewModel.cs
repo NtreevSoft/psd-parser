@@ -18,8 +18,10 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
 using Ntreev.Library.Psd;
+using Ntreev.Library.PsdViewer.Dialogs.ViewModels;
+using Ntreev.ModernUI.Framework;
+using Ntreev.ModernUI.Framework.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,6 +29,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -35,28 +38,46 @@ namespace Ntreev.Library.PsdViewer.ViewModels
     class LayerItemViewModel : TreeViewItemViewModel
     {
         private readonly IPsdLayer layer;
+        private readonly ICommand previewCommand;
 
         public LayerItemViewModel(IPsdLayer layer, PSDItemViewModel parent)
-            : base(parent)
         {
             this.layer = layer;
 
             foreach (var item in layer.Childs)
             {
-                this.Children.Add(new LayerItemViewModel(item, parent));
+                this.Items.Add(new LayerItemViewModel(item, parent));
             }
 
-            if(layer.LinkedLayer != null)
+            if (layer.LinkedLayer != null)
             {
-                this.Children.Add(new LinkedLayerItemViewModel(layer.LinkedLayer, parent));
+                this.Items.Add(new LinkedLayerItemViewModel(layer.LinkedLayer, parent));
             }
 
-            //this.Children.Add(new PropertiesItemViewModel("Resources", layer.Resources, this));
+            this.Items.Add(new PropertiesItemViewModel("Resources", layer.Resources, this));
+            this.previewCommand = new DelegateCommand((p) => this.Preview(), (p) => this.CanPreview);
         }
 
-        public override string Text
+        public void Preview()
+        {
+            var dialog = new PreviewViewModel(this.layer);
+            dialog.ShowDialog();
+        }
+
+        public bool CanPreview
+        {
+            get { return true; }
+        }
+
+        public override ICommand DefaultCommand => this.previewCommand;
+
+        public override string DisplayName
         {
             get { return this.layer.Name; }
         }
+
+        public object Value => null;
+
+        public string Type => null;
     }
 }

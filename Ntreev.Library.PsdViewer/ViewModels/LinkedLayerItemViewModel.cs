@@ -18,8 +18,8 @@
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #endregion
-
 using Ntreev.Library.Psd;
+using Ntreev.ModernUI.Framework.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -37,11 +37,10 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         private readonly ILinkedLayer linkedLayer;
 
         public LinkedLayerItemViewModel(ILinkedLayer linkedLayer, PSDItemViewModel parent)
-            : base(parent)
         {
             this.linkedLayer = linkedLayer;
 
-            this.Children.Add(new PSDItemViewModel(linkedLayer.Document));
+            this.Items.Add(new PSDItemViewModel(linkedLayer.Document));
             //foreach (var item in linkedLayer.Document.Childs)
             //{
             //    this.Children.Add(new LayerItemViewModel(item, parent));
@@ -61,7 +60,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
 
         }
 
-        public override string Text
+        public override string DisplayName
         {
             get
             {
