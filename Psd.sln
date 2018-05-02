@@ -7,23 +7,21 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.Psd", "Ntree
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library.PsdViewer", "Ntreev.Library.PsdViewer\Ntreev.Library.PsdViewer.csproj", "{EEB86F6C-6EBA-4892-BC87-282DC667EC10}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{7ED489C0-8113-4044-8B09-C3C6A30590D7}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.Config = .nuget\NuGet.Config
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.Library", "sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj", "{1918437F-4FBF-4731-AC5B-981A4A4CB1F1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ntreev.ModernUI.Framework", "sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj", "{20C3D3DD-DE99-4126-9449-BCA12E4D255D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sud-modules", "sud-modules", "{7FD1A868-BE56-4917-8A49-FD384BD022DB}"
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Ntreev.Library.Psd.AssemblyInfo", "Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.shproj", "{720FDFEC-6E43-4663-B378-35DDC17034E0}"
+EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		sub-modules\Ntreev.Library\Ntreev.Library.AssemblyInfo\Ntreev.Library.AssemblyInfo.projitems*{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}*SharedItemsImports = 4
 		sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.AssemblyInfo\Ntreev.ModernUI.AssemblyInfo.projitems*{20c3d3dd-de99-4126-9449-bca12e4d255d}*SharedItemsImports = 4
+		Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.projitems*{2a3bad6e-ceb1-432b-87e2-0581e36067e7}*SharedItemsImports = 4
+		Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.projitems*{720fdfec-6e43-4663-b378-35ddc17034e0}*SharedItemsImports = 13
+		Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.projitems*{eeb86f6c-6eba-4892-bc87-282dc667ec10}*SharedItemsImports = 4
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

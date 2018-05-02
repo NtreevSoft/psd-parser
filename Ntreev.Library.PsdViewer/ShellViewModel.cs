@@ -1,9 +1,6 @@
-#region License
-//Ntreev Photoshop Document Parser for .Net
-//
 //Released under the MIT License.
 //
-//Copyright (c) 2015 Ntreev Soft co., Ltd.
+//Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 //documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
@@ -17,7 +14,7 @@
 //WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
 using Ntreev.Library.Psd;
 using Ntreev.Library.PsdViewer.ViewModels;
 using System.Collections;
@@ -33,23 +30,23 @@ using System.ComponentModel.Composition;
 using Ntreev.ModernUI.Framework;
 using Ntreev.ModernUI.Framework.ViewModels;
 using System.Threading.Tasks;
+using Ntreev.Library.Linq;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.Windows.Input;
+using Ntreev.Library.IO;
 
 namespace Ntreev.Library.PsdViewer
 {
     [Export(typeof(IShell))]
-    public class ShellViewModel : ScreenBase, IShell
+    public class ShellViewModel : TreeViewViewModel, IShell
     {
-        private List<TreeViewItemViewModel> itemsSource;
         private string filename;
+        private ICommand openFileCommand;
 
         public ShellViewModel()
         {
             this.DisplayName = "Photoshop File Viewer";
-        }
-
-        public IEnumerable ItemsSource
-        {
-            get { return this.itemsSource; }
+            this.openFileCommand = new DelegateCommand((p) => this.OpenFile(p as string), (p) => this.CanOpenFile);
         }
 
         public void OpenFile()
@@ -62,20 +59,42 @@ namespace Ntreev.Library.PsdViewer
 
             if (dlg.ShowDialog() == true)
             {
-                this.RefreshFile(dlg.FileName);
+                this.OpenFile(dlg.FileName);
             }
         }
 
-        public void RefreshFile()
+        public void Export()
         {
-            this.RefreshFile(this.filename);
+            var dialog = new CommonOpenFileDialog()
+            {
+                IsFolderPicker = true,
+            };
+
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                this.Export(dialog.FileName);
+            }
         }
 
-        public bool CanRefresh
+        public bool CanOpenFile
         {
             get
             {
-                return File.Exists(this.filename);
+                if (string.IsNullOrEmpty(this.filename) == false)
+                    return false;
+                return true;
+            }
+        }
+
+        public bool CanExport
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(this.filename) == true)
+                    return false;
+                if (this.IsProgressing == true)
+                    return false;
+                return true;
             }
         }
 
@@ -90,6 +109,17 @@ namespace Ntreev.Library.PsdViewer
             }
         }
 
+        public ICommand OpenFileCommand
+        {
+            get { return this.openFileCommand; }
+        }
+
+        protected override void OnProgress()
+        {
+            base.OnProgress();
+            this.NotifyOfPropertyChange(nameof(this.CanExport));
+        }
+
         private void Test()
         {
             string filename = string.Empty;
@@ -102,7 +132,7 @@ namespace Ntreev.Library.PsdViewer
             }
         }
 
-        private void RefreshFile(string filename)
+        private void OpenFile(string filename)
         {
             this.BeginProgress();
             try
@@ -110,15 +140,60 @@ namespace Ntreev.Library.PsdViewer
                 PsdDocument document = PsdDocument.Create(filename);
 
                 this.filename = filename;
-                this.itemsSource = new List<TreeViewItemViewModel>();
-                this.itemsSource.Add(new PSDItemViewModel(document));
-                this.NotifyOfPropertyChange(() => this.ItemsSource);
-                this.NotifyOfPropertyChange(() => this.CanRefresh);
+                this.Items.Clear();
+                this.Items.Add(new PSDItemViewModel(document));
+                this.NotifyOfPropertyChange(() => this.Items);
+                this.NotifyOfPropertyChange(() => this.CanOpenFile);
+                this.NotifyOfPropertyChange(() => this.CanExport);
                 this.NotifyOfPropertyChange(() => this.Title);
             }
             finally
             {
                 this.EndProgress();
+            }
+        }
+
+        private void Export(string path)
+        {
+            var items = EnumerableUtility.FamilyTree(this.Items, item => item.Items);
+            var layerList = new Dictionary<IPsdLayer, string>();
+            foreach (var item in items)
+            {
+                if (item is LayerItemViewModel layerViewModel && layerViewModel.HasLinkedLayer == false)
+                {
+                    var layer = layerViewModel.Layer;
+                    if (layerList.ContainsKey(layer) == true)
+                        continue;
+                    var documentViewModel = layerViewModel.GetDocumentViewModel();
+                    if (documentViewModel != null)
+                    {
+                        if (documentViewModel.Parent is LinkedLayerItemViewModel linkedLayer)
+                        {
+                            layerList.Add(layer, linkedLayer.LinkedLayer.Name);
+                        }
+                        else
+                        {
+                            layerList.Add(layer, string.Empty);
+                        }
+                    }
+                }
+            }
+
+            var items1 = layerList.Distinct().ToArray();
+            foreach (var item in items1)
+            {
+                var layer = item.Key;
+                var name = item.Value;
+                var filename = name == string.Empty ? Path.Combine(path, layer.Name + ".png") : Path.Combine(path, name, layer.Name + ".png");
+                var bitmap = item.Key.GetBitmap();
+                FileUtility.Prepare(filename);
+                using (var stream = new FileStream(filename, FileMode.Create))
+                {
+                    var encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                    encoder.Save(stream);
+                }
+
             }
         }
 

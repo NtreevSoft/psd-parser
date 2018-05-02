@@ -1,9 +1,6 @@
-﻿#region License
-//Ntreev Photoshop Document Parser for .Net
+﻿//Released under the MIT License.
 //
-//Released under the MIT License.
-//
-//Copyright (c) 2015 Ntreev Soft co., Ltd.
+//Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 //documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
@@ -17,7 +14,7 @@
 //WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
 using Ntreev.Library.Psd;
 using Ntreev.ModernUI.Framework.ViewModels;
 using System;
@@ -39,25 +36,7 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         public LinkedLayerItemViewModel(ILinkedLayer linkedLayer, PSDItemViewModel parent)
         {
             this.linkedLayer = linkedLayer;
-
             this.Items.Add(new PSDItemViewModel(linkedLayer.Document));
-            //foreach (var item in linkedLayer.Document.Childs)
-            //{
-            //    this.Children.Add(new LayerItemViewModel(item, parent));
-            //}
-
-            //var bmp = this.linkedLayer.Document.GetBitmap();
-            //if (bmp != null)
-            //{
-            //    PngBitmapEncoder d = new PngBitmapEncoder();
-            //    d.Frames.Add(BitmapFrame.Create(bmp));
-            //    string n = Regex.Replace(this.linkedLayer.FileName, "[\\\\/:*?\"<>|]", "_");
-            //    using (FileStream stream = new FileStream(n + ".png", FileMode.Create))
-            //    {
-            //        d.Save(stream);
-            //    }
-            //}
-
         }
 
         public override string DisplayName
@@ -67,5 +46,14 @@ namespace Ntreev.Library.PsdViewer.ViewModels
                 return string.Format("LinkedLayer({0})", this.linkedLayer.Name);
             }
         }
+
+        public ILinkedLayer LinkedLayer
+        {
+            get { return this.linkedLayer; }
+        }
+
+        public object Value => null;
+
+        public string Type => null;
     }
 }

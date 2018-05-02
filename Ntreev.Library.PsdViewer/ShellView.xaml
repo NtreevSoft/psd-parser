@@ -1,3 +1,21 @@
+<!--===================================================================================================================
+Released under the MIT License.
+    
+Copyright (c) 2018 Ntreev Soft co., Ltd.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
+documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
+rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit 
+persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the 
+Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE 
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
+OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+====================================================================================================================-->
 <mui:ModernWindow x:Class="Ntreev.Library.PsdViewer.ShellView"
                   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                   xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +25,8 @@
                   xmlns:nmfc="clr-namespace:Ntreev.ModernUI.Framework.Controls;assembly=Ntreev.ModernUI.Framework"
                   xmlns:ctrl="clr-namespace:Ntreev.Library.PsdViewer.Controls"
                   xmlns:conv="clr-namespace:Ntreev.Library.PsdViewer.Converters"
-                  Width="650" Style="{StaticResource ModernWindow_Style}">
+                  Width="650" Style="{StaticResource ModernWindow_Style}" 
+                  AllowDrop="True" nmfc:DragDropUtility.DropCommand="{Binding OpenFileCommand}">
     <mui:ModernWindow.Resources>
         <conv:BooleanToVisibilityConverter x:Key="booleanToVisibilityConverter" />
 
@@ -35,10 +54,13 @@
         </Grid.RowDefinitions>
         <nmfc:ExpandableToolBar Margin="10 0">
             <nmfc:IconButton x:Name="OpenFile" Source="/Ntreev.ModernUI.Framework;component/Images/folder_o.png" ToolTip="Open..." />
+            <nmfc:IconButton x:Name="Export" Source="/Ntreev.Library.PsdViewer;component/Images/export.png" ToolTip="Export..." />
         </nmfc:ExpandableToolBar>
         <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ItemBorder}" />
-        <nmfc:FilterBox Grid.Row="2" />
-        <ctrl:TreeListView Grid.Row="3" ItemsSource="{Binding ItemsSource}" BorderThickness="0" />
+        <nmfc:FilterBox Grid.Row="2" Text="{Binding FilterExpression, Delay=300, Mode=TwoWay}" 
+                        CaseSensitive="{Binding CaseSensitive, Delay=300, Mode=TwoWay}" 
+                        GlobPattern="{Binding GlobPattern, Delay=300, Mode=TwoWay}"/>
+        <ctrl:TreeListView Grid.Row="3" ItemsSource="{Binding Items}" BorderThickness="0" nmfc:TreeViewUtility.SelectedItemBindingPath="SelectedItem" />
         <nmfc:ProgressContent Grid.Row="2" Grid.RowSpan="2" Style="{StaticResource ProgressContent_Style}" />
     </Grid>
 </mui:ModernWindow>

@@ -1,9 +1,6 @@
-﻿#region License
-//Ntreev Photoshop Document Parser for .Net
+﻿//Released under the MIT License.
 //
-//Released under the MIT License.
-//
-//Copyright (c) 2015 Ntreev Soft co., Ltd.
+//Copyright (c) 2018 Ntreev Soft co., Ltd.
 //
 //Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 //documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
@@ -17,7 +14,8 @@
 //WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
 //COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR 
 //OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-#endregion
+
+using Ntreev.Library.Linq;
 using Ntreev.Library.Psd;
 using Ntreev.Library.PsdViewer.Dialogs.ViewModels;
 using Ntreev.ModernUI.Framework;
@@ -58,6 +56,30 @@ namespace Ntreev.Library.PsdViewer.ViewModels
             this.previewCommand = new DelegateCommand((p) => this.Preview(), (p) => this.CanPreview);
         }
 
+        public void Save(string filename)
+        {
+            var bitmap = this.layer.GetBitmap();
+            using (var stream = new FileStream(filename, FileMode.Create))
+            {
+                var encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(bitmap));
+                encoder.Save(stream);
+            }
+        }
+
+        public PSDItemViewModel GetDocumentViewModel()
+        {
+            var items = EnumerableUtility.Ancestors<TreeViewItemViewModel>(this, item => item.Parent);
+            foreach (var item in items)
+            {
+                if (item is PSDItemViewModel viewModel)
+                {
+                    return viewModel;
+                }
+            }
+            return null;
+        }
+
         public void Preview()
         {
             var dialog = new PreviewViewModel(this.layer);
@@ -67,6 +89,22 @@ namespace Ntreev.Library.PsdViewer.ViewModels
         public bool CanPreview
         {
             get { return true; }
+        }
+
+        public bool HasLinkedLayer
+        {
+            get
+            {
+                return this.layer.LinkedLayer != null;
+            }
+        }
+
+        public IPsdLayer Layer
+        {
+            get
+            {
+                return this.layer;
+            }
         }
 
         public override ICommand DefaultCommand => this.previewCommand;

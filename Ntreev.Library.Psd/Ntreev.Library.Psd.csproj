@@ -169,9 +169,7 @@
   <ItemGroup>
     <Reference Include="System" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="Ntreev.Library.Psd.licenseheader" />
-  </ItemGroup>
+  <Import Project="..\Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.projitems" Label="Shared" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PreBuildEvent />
