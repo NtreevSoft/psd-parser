@@ -1,7 +1,7 @@
 <!--===================================================================================================================
 Released under the MIT License.
     
-Copyright (c) 2018 Ntreev Soft co., Ltd.
+Copyright (c) 2015 Ntreev Soft co., Ltd.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated 
 documentation files (the "Software"), to deal in the Software without restriction, including without limitation the 
@@ -54,7 +54,7 @@ OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
         </Grid.RowDefinitions>
         <nmfc:ExpandableToolBar Margin="10 0">
             <nmfc:IconButton x:Name="OpenFile" Source="/Ntreev.ModernUI.Framework;component/Images/folder_o.png" ToolTip="Open..." />
-            <nmfc:IconButton x:Name="Export" Source="/Ntreev.Library.PsdViewer;component/Images/export.png" ToolTip="Export..." />
+            <nmfc:IconButton x:Name="Export" Source="Images/export.png" ToolTip="Export..." />
         </nmfc:ExpandableToolBar>
         <Border Grid.Row="1" BorderThickness="0 1 0 0" BorderBrush="{DynamicResource ItemBorder}" />
         <nmfc:FilterBox Grid.Row="2" Text="{Binding FilterExpression, Delay=300, Mode=TwoWay}" 
