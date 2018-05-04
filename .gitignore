@@ -6,6 +6,4 @@ Release/
 packages/
 *.suo
 /.vs
-/deploy-zip.bat
-/build.bat
-/build-new-ver.bat
+*.bat
