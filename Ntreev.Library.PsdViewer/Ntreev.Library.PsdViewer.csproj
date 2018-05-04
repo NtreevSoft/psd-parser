@@ -60,6 +60,12 @@
     <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.WindowsAPICodePack.Shell.1.1.0\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
     </Reference>
+    <Reference Include="Ntreev.Library, Version=3.6.0.0, Culture=neutral, PublicKeyToken=c38f7f9c4e34740b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ntreev.Library.3.6.18124.1632\lib\net45\Ntreev.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="Ntreev.ModernUI.Framework, Version=3.6.0.0, Culture=neutral, PublicKeyToken=c38f7f9c4e34740b, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ntreev.ModernUI.Framework.3.6.18124.1717\lib\net45\Ntreev.ModernUI.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Data" />
@@ -154,14 +160,6 @@
     <ProjectReference Include="..\Ntreev.Library.Psd\Ntreev.Library.Psd.csproj">
       <Project>{2a3bad6e-ceb1-432b-87e2-0581e36067e7}</Project>
       <Name>Ntreev.Library.Psd</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\sub-modules\Ntreev.Library\Ntreev.Library\Ntreev.Library.csproj">
-      <Project>{1918437f-4fbf-4731-ac5b-981a4a4cb1f1}</Project>
-      <Name>Ntreev.Library</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\sub-modules\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework\Ntreev.ModernUI.Framework.csproj">
-      <Project>{20c3d3dd-de99-4126-9449-bca12e4d255d}</Project>
-      <Name>Ntreev.ModernUI.Framework</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
