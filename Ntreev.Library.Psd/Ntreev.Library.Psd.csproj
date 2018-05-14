@@ -1,178 +1,34 @@
-ï»¿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" DefaultTargets="Build">
+<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <ProjectType>local</ProjectType>
-    <ProjectVersion>7.10.3077</ProjectVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{2A3BAD6E-CEB1-432B-87E2-0581E36067E7}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <AssemblyName>Ntreev.Library.Psd</AssemblyName>
-    <DefaultClientScript>JScript</DefaultClientScript>
-    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
-    <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <DelaySign>false</DelaySign>
-    <OutputType>Library</OutputType>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>0.0</OldToolsVersion>
-    <TargetFrameworkProfile>
-    </TargetFrameworkProfile>
+    <TargetFrameworks>netstandard2.0;net45;net35</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.1.18134.1310</Version>
+    <AssemblyVersion>1.1.0.0</AssemblyVersion>
+    <FileVersion>1.1.18134.1310</FileVersion>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseUrl>https://github.com/NtreevSoft/psd-parser/blob/master/LICENSE.md</PackageLicenseUrl>
+    <Copyright>Copyright ¨Ï Ntreev Soft 2018</Copyright>
+    <Description>Photoshop file parser for .net</Description>
+    <Company>NtreevSoft</Company>
+    <Authors>s2quake</Authors>
+    <RepositoryUrl>https://github.com/NtreevSoft/psd-parser</RepositoryUrl>
+    <PackageTags>c# parser photoshop .net</PackageTags>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>..\bin\Debug\lib\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DebugSymbols>true</DebugSymbols>
-    <NoStdLib>false</NoStdLib>
-    <Optimize>false</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>..\bin\Release\lib\</OutputPath>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DefineConstants>TRACE</DefineConstants>
-    <DebugSymbols>false</DebugSymbols>
-    <NoStdLib>false</NoStdLib>
-    <Optimize>true</Optimize>
-    <WarningLevel>4</WarningLevel>
-    <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup>
-    <RootNamespace>Ntreev.Library.Psd</RootNamespace>
-  </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="AdditionalLayerInformation.cs" />
-    <Compile Include="ChannelType.cs" />
-    <Compile Include="ColorMode.cs" />
-    <Compile Include="ColorSpace.cs" />
-    <Compile Include="CompressionType.cs" />
-    <Compile Include="LayerAndMaskInformationSection.cs" />
-    <Compile Include="LayerBlendingRanges.cs" />
-    <Compile Include="LayerMask.cs" />
-    <Compile Include="LayerExtraRecords.cs" />
-    <Compile Include="LayerRecords.cs" />
-    <Compile Include="Readers\EmptyResourceReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LinkedDocumnetFileHeaderReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LinkedDocumentReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\EmbeddedLayerReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LinkedLayerReader.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lnk2.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lnk3.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lnkD.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lnkE.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lsdk.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lyvr.cs" />
-    <Compile Include="Readers\ResourceReaderBase.cs" />
-    <Compile Include="ValueReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\ChannelsReader.cs" />
-    <Compile Include="Readers\ImageResources\Reader_GridAndGuides.cs" />
-    <Compile Include="IChannel.cs" />
-    <Compile Include="ILinkedLayer.cs" />
-    <Compile Include="Readers\ImageDataSectionReader.cs" />
-    <Compile Include="Readers\ImageResourcesSectionReader.cs" />
-    <Compile Include="InternalDocument.cs" />
-    <Compile Include="InvalidFormatException.cs" />
-    <Compile Include="IPsdLayer.cs" />
-    <Compile Include="EmbeddedLayer.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerExtraRecordsReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerRecordsReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerResourceReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\DocumentResourceReader.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerInfoReader.cs" />
-    <Compile Include="PathResolver.cs" />
-    <Compile Include="LazyValueReader.cs" />
-    <Compile Include="LazyProperties.cs" />
-    <Compile Include="PsdResolver.cs" />
-    <Compile Include="RangeStream.cs" />
-    <Compile Include="Readers\ColorModeDataSectionReader.cs" />
-    <Compile Include="Readers\FileHeaderSectionReader.cs" />
-    <Compile Include="Readers\ReaderCollector.cs" />
-    <Compile Include="ResourceIDAttribute.cs" />
-    <Compile Include="Readers\LayerResources\Reader_shmd.cs" />
-    <Compile Include="Readers\LayerResources\Reader_iOpa.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lsct.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lyid.cs" />
-    <Compile Include="Readers\LayerResources\Reader_luni.cs" />
-    <Compile Include="Readers\LayerResources\Reader_TySh.cs" />
-    <Compile Include="Readers\LayerResources\Reader_fxrp.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lnsr.cs" />
-    <Compile Include="Readers\LayerResources\Reader_PlLd.cs" />
-    <Compile Include="Readers\LayerResources\Reader_SoLd.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lfx2.cs" />
-    <Compile Include="Readers\LayerResources\Reader_SoLE.cs" />
-    <Compile Include="Readers\LayerResources\Reader_lrFX.cs" />
-    <Compile Include="Readers\ImageResources\Reader_VersionInfo.cs" />
-    <Compile Include="Readers\ImageResources\Reader_ResolutionInfo.cs" />
-    <Compile Include="Readers\ImageResources\Reader_SlicesInfo.cs" />
-    <Compile Include="Structures\BaseStructure.cs" />
-    <Compile Include="Structures\StructureReader.cs" />
-    <Compile Include="Structures\StructureAlias.cs" />
-    <Compile Include="Structures\StructureClass.cs" />
-    <Compile Include="Structures\StructureEngineData.cs" />
-    <Compile Include="Structures\StructureEnumerate.cs" />
-    <Compile Include="Structures\StructureEnumerateReference.cs" />
-    <Compile Include="Structures\StructureList.cs" />
-    <Compile Include="Structures\StructureObjectArray.cs" />
-    <Compile Include="Structures\StructureOffset.cs" />
-    <Compile Include="Structures\StructureProperty.cs" />
-    <Compile Include="Structures\StructureReference.cs" />
-    <Compile Include="Structures\StructureUnitFloat.cs" />
-    <Compile Include="Structures\StructureUnknownOSType.cs" />
-    <Compile Include="Extensions.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\GlobalLayerMaskInfoReader.cs" />
-    <Compile Include="IImageSource.cs" />
-    <Compile Include="IProperties.cs" />
-    <Compile Include="IPropertiesExtension.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerBlendingRangesReader.cs" />
-    <Compile Include="LayerFlags.cs" />
-    <Compile Include="Readers\LayerAndMaskInformation\LayerMaskReader.cs" />
-    <Compile Include="LinkedLayer.cs" />
-    <Compile Include="SectionType.cs" />
-    <Compile Include="Properties.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="DescriptorStructure.cs" />
-    <Compile Include="PsdReader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PsdDocument.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="BlendMode.cs" />
-    <Compile Include="Channel.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="FileHeaderSection.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PsdLayer.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Readers\LayerAndMaskInformationSectionReader.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="PsdUtility.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UnitType.cs" />
-  </ItemGroup>
-  <ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net35'">
     <Reference Include="System" />
+    <Reference Include="System.Core" />
   </ItemGroup>
-  <Import Project="..\Ntreev.Library.Psd.AssemblyInfo\Ntreev.Library.Psd.AssemblyInfo.projitems" Label="Shared" />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent />
-    <PostBuildEvent />
-  </PropertyGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+    <PackageReference Include="Microsoft.CSharp" Version="4.3.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net45'">
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+  </ItemGroup>
+
 </Project>
