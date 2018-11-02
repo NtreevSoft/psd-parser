@@ -8,6 +8,6 @@ using System.Reflection;
 [assembly: AssemblyCopyright("Copyright © Ntreev Soft 2015")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
-[assembly: AssemblyVersion("1.1.18134.1310")]
+[assembly: AssemblyVersion("1.1.18306.1005")]
 [assembly: AssemblyFileVersion("")]
 [assembly: AssemblyInformationalVersion("")]
