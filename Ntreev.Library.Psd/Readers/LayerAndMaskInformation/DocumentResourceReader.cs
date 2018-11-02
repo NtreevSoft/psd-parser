@@ -58,6 +58,10 @@ namespace Ntreev.Library.Psd.Readers.LayerAndMaskInformation
             {
                 length = reader.ReadInt64();
             }
+            else if(reader.Version == 2)
+            {
+                length = reader.ReadInt64();
+            }
             else
             {
                 length = reader.ReadInt32();
